@@ -5,9 +5,9 @@ const Api = {
   /////Login API List/////////////////////
  
   Login: Constants.BASEs_URL + 'ManageUserAccess/login',
-  ForgotPassword: Constants.BASE_URL + 'users/passwordrecovery',
-  PasswordRecoveryUserValidation: Constants.BASE_URL + 'users/PasswordRecoveryConfirm?',
-  SubmitRecoveredPassword: Constants.BASE_URL + 'users/SubmitRecoveredPassword?',
+  ForgotPassword: Constants.BASEs_URL + 'customer/passwordrecovery',
+  PasswordRecoveryUserValidation: Constants.BASEs_URL + 'customer/PasswordRecoveryConfirm?',
+  SubmitRecoveredPassword: Constants.BASEs_URL + 'customer/PasswordRecoveryConfirm?',//SubmitRecoveredPassword
   /////Logout API List/////////////////////
   Logout: Constants.BASEs_URL + 'customer/logout',
 
@@ -18,16 +18,18 @@ const Api = {
   Home: Constants.BASEs_URL + 'home/homepage',
   Widgets: Constants.BASEs_URL + 'homepageproducts/invoke',
   // Widget:Constants.BASE_URL + 'widget/configuration',
-  removeWishlistItem:
-    Constants.BASE_URL + 'shoppingcart/wishlist/remove?productId=',
+  //removeWishlistItem:Constants.BASE_URL + 'shoppingcart/wishlist/remove?productId=',
 
   /////ProductDetail API List/////////////////////
   ProductDetail: Constants.BASEs_URL + 'product/productdetails',
   UpdateAttributeAPI:
     Constants.BASEs_URL + '/ShoppingCart/ProductDetails_AttributeChange',
-  notifyMeAPI: Constants.BASE_URL + 'subscription/backinstock?productId=',
+  // notifyMeAPI: Constants.BASE_URL + 'subscription/backinstock?productId=',
+  notifyMeAPI: Constants.BASEs_URL + 'backinstocksubscription/subscribepopup?productId=',
   notifyMeSubscriptionAPI:
-    Constants.BASE_URL + 'subscription/backinstocksend?productId=',
+  Constants.BASEs_URL + 'backinstocksubscription/subscribepopup?productId=',
+
+    //Constants.BASE_URL + 'subscription/backinstocksend?productId=',
 
   /////AddToCart API List/////////////////////
   AddToCart: Constants.BASEs_URL + 'shoppingcart/addproducttocart_details',
@@ -40,11 +42,11 @@ const Api = {
 
 
   ApplyCoupen:
-    Constants.BASE_URL +
-    'shoppingcart/applydiscountgiftcouponcode?discountcouponcode=',
-  CancelCoupen: Constants.BASE_URL + 'shoppingcart/removediscount?discountId=',
+    Constants.BASEs_URL +
+    'shoppingcart/applydiscountcoupon?discountcouponcode=', //shoppingcart/applydiscountgiftcouponcode
+  CancelCoupen: Constants.BASEs_URL + 'shoppingcart/removediscountcoupon?discountId=', 
   CancelGiftCard:
-    Constants.BASE_URL + 'shoppingcart/removegiftcard?giftCardId=',
+    Constants.BASEs_URL + 'shoppingcart/removegiftcardcode?giftCardId=',
 
   /////CategoryProduct API List/////////////////////
   CategoryProduct: Constants.BASE_URL + 'categories/getcategory/',
@@ -53,7 +55,7 @@ const Api = {
   Search: Constants.BASEs_URL + 'Catalog/SearchTermAutoComplete?term=',
 
   /////AddToWishlist API List/////////////////////
-  AddToWishlist: Constants.BASE_URL + 'shoppingcart/widgetproduct/addtocart',
+  // AddToWishlist: Constants.BASE_URL + 'shoppingcart/widgetproduct/addtocart',
 
   ////////////// wish list page/////////////////
   getWishlist: Constants.BASEs_URL + 'shoppingcart/wishlist',
@@ -63,7 +65,7 @@ const Api = {
   //addCartButtonWishlist: Constants.BASE_URL + 'shoppingcart/wishlist/addtocart',
 
   ///////User Address list on checkout page///////////
-  UserAddressList: Constants.BASE_URL + 'checkout/product/onepagecheckout',
+  UserAddressList: Constants.BASEs_URL + 'checkout/onepagecheckout',
 
   ///////User Address list on account addresses page///////////
   UsersAddress: Constants.BASEs_URL + 'customer/addresses',
@@ -82,10 +84,10 @@ const Api = {
 
   //////////Users Address APIs//////////////////////////
   getAddressById: Constants.BASEs_URL + 'customer/addressedit', 
-  getCountryList: Constants.BASE_URL + 'customers/address/add',
+  getCountryList: Constants.BASEs_URL + 'customer/addressadd',
   getStateByCountryId: Constants.BASEs_URL + 'country/GetStatesByCountryId',
-  getCityByStateId: Constants.BASE_URL + 'country/getcitybystateid',
-  getAreaByCityId: Constants.BASE_URL + 'country/getaddressareabycityid',
+  //getCityByStateId: Constants.BASE_URL + 'country/getcitybystateid',
+  //getAreaByCityId: Constants.BASE_URL + 'country/getaddressareabycityid',
 
   setDefaultAddress: Constants.BASE_URL + 'customers/address/default',
   editAddress: Constants.BASEs_URL + 'customer/addressedit',
@@ -110,7 +112,7 @@ const Api = {
   CancelReasonCall: Constants.BASE_URL + 'orders/CancelOrder',
   SubmitCancelReqest: Constants.BASE_URL + 'orders/CancelOrder',
 
-  InvoiceAPI: Constants.BASE_URL + 'orders/pdforderinvoice?orderId=',
+  InvoiceAPI: Constants.BASEs_URL + 'order/getpdfinvoice?orderId=',
   externalSearchAPI: Constants.BASEs_URL + 'Catalog/Search',
 
   ////////////////////// Help Center ///////////////////////////////

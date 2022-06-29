@@ -228,7 +228,7 @@ class SignIn extends Component {
             SocialFullName: user.name,
             SignInType: 'facebook',
           });
-          this.registerUserOnBackend(token);
+          //this.registerUserOnBackend(token);
         }
       },
     );
@@ -241,7 +241,7 @@ class SignIn extends Component {
       SocialFullName: googleInfo.user.name,
       SignInType: 'google',
     });
-    this.registerUserOnBackend(token);
+    // this.registerUserOnBackend(token);
   };
   registerUserOnBackend = async (token) => {
     console.log(this.state.userInfo);

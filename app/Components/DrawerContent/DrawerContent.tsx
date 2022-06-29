@@ -21,7 +21,7 @@ import { AppEventsLogger } from "react-native-fbsdk-next";
 /*import Emarsys from "react-native-emarsys-wrapper";*/
 import DeviceInfo from 'react-native-device-info';
 
-
+ 
 
 
 class DrawerContent extends Component {
@@ -50,7 +50,7 @@ class DrawerContent extends Component {
         try {
 
 
-            let phone = '045563988';
+            let phone = '+919328772213';
             let phoneNumber = phone;
             if (Platform.OS !== 'android') {
                 phoneNumber = `telprompt:${phone}`;
@@ -235,7 +235,7 @@ class DrawerContent extends Component {
 
                                         <DrawerItem
                                             icon={({ color, size }) => (
-                                                <Image style={{ ...styles.rightTopIcon2, tintColor: 'none', height: 25, width: 25, margin: -2, }} source={Icons.heart} />
+                                                <Image style={{ ...styles.rightTopIcon2, tintColor: Colors.PRIMARY, borderColor:Colors.PRIMARY,  height: 25, width: 25, margin: -2, }} source={Icons.heart} />
                                             )}
                                             label="My WishList"
                                             testID={"mobileWishList"}
@@ -316,7 +316,7 @@ class DrawerContent extends Component {
                                     }}
                                         activeOpacity={0.7} style={styles.listRowContainer} >
                                         <Image style={styles.listRowIcon} source={Icons.phone} />
-                                        <Text style={styles.listRowText}>04 5563988</Text>
+                                        <Text style={styles.listRowText}>+91 932828772213</Text>
                                     </TouchableOpacity>
 
                                     <TouchableOpacity onPress={async () => {

@@ -120,17 +120,17 @@ class Menu extends Component {
   onRenderCall = async () => {
     console.log("addCategoryMenu...........", this.props.MenuData);
     //await this.setState({ loading: true });
-
-    if (this.props.MenuData.length > 0) {
-      await this.setState({
-        //scrollMenuData: data.flat_menu,
-        drawer_menu: this.props.MenuData
-      });
-    } else {
+    await this.getTopMenu();
+    // if (this.props.MenuData.length > 0) {
+    //   await this.setState({
+    //     //scrollMenuData: data.flat_menu,
+    //     drawer_menu: this.props.MenuData
+    //   });
+    // } else {
       //await this.fetchHomeData();
-      await this.getTopMenu();
+    //   await this.getTopMenu();
 
-    }
+    // }
     // this.getCartCountData();
     // this.ShowAlertWithDelay
     // setTimeout(() => {
@@ -167,8 +167,8 @@ class Menu extends Component {
 
   onSuccessCall(data) {
     this.setState({
-      scrollMenuData: data.flat_menu,
-      drawer_menu: data.drawer_menu
+      scrollMenuData: data.model.flat_menu,
+      drawer_menu: data.model.drawer_menu
     });
     this.props.addCategoryMenu({ MenuData: data.drawer_menu })
 
@@ -247,6 +247,8 @@ class Menu extends Component {
   }
 
   onSuccessTopMenuCall(data) {
+    console.log("shhsygs////=====",data);
+    
     this.setState({
       scrollMenuData: data.flat_menu,
       drawer_menu: data.model.Categories
