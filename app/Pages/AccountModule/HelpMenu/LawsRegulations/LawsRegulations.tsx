@@ -25,7 +25,8 @@ import { Strings, Api } from '@config';
 import styles from './LawsRegulationsStyles';
 import { Colors } from '@theme';
 import { connect } from 'react-redux';
-
+import { RenderHTML } from 'react-native-render-html';
+var html;
 
 class LawsRegulations extends Component {
   constructor(props) {
@@ -119,7 +120,7 @@ class LawsRegulations extends Component {
     });
   };
   handleSupportClick = () => {
-    Linking.openURL('mailto:mob.msainfotech@gmail.com')
+    Linking.openURL('mailto:support@msainfotech.in')
   };
 
   fetchHelpData = async () => {
@@ -135,11 +136,11 @@ class LawsRegulations extends Component {
     const serviceResponse = await ServiceCall(Service);
   };
   onSuccessFetchHelpData = (data) => {
-
+    html = data.model.Body;
     if (data.model && data.model.length > 0) {
       this.setState({
         listData: data.model,
-        QuestionaryData: data.model[0].TopicQuestions
+        QuestionaryData: data.model.Body
       })
 
       this.props.UpdatePolicyStaticData({
@@ -284,23 +285,21 @@ class LawsRegulations extends Component {
               <ScrollView
                 contentInsetAdjustmentBehavior="automatic"
                 style={styles.scrollView}>
+                  <RenderHTML source={{ html }} baseStyle={styles.normalText}/>
+                  
                 <View >
-
-
-
-
-                  <FlatList
+                  {/* <FlatList
                     style={[styles.container, this.props.containerStyles]}
                     data={this.state.QuestionaryData}
                     renderItem={this.nestedListRenderer}
                     keyExtractor={(item, index) => index}
-                  />
+                  /> */}
 
                   <View
                     style={{ ...styles.internalItemContainer, flexDirection: 'row', marginRight: 20, }}>
 
                     <Text>For any queries please contact us at  <Text style={[styles.HyperlinkText, this.props.HyperlinkTextStyles]} onPress={() => this.handleSupportClick()}>
-                      mob.msainfotech@gmail.com
+                      support@msainfotech.in
         </Text>
                     </Text>
 

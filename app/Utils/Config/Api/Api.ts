@@ -130,7 +130,8 @@ const Api = {
 
   reOrder: Constants.BASEs_URL + 'order/reorder',
   cancelOrder: Constants.BASE_URL + 'orders/cancel',
-  shipmentDetails: Constants.BASE_URL + 'orders/shipment',
+  // shipmentDetails: Constants.BASE_URL + 'orders/shipment',
+  shipmentDetails: Constants.BASEs_URL + 'order/shipmentdetails',
 
   ////////////////////// Help Menu ////////////////////
   helpData: Constants.BASEs_URL + 'topic/gethelpcentercontaxt',
@@ -142,11 +143,11 @@ const Api = {
   GetPage: Constants.BASE_URL + 'general/getpage',
   sendFCMToken: Constants.BASE_URL + 'notification/downloadnotification',
 
-  returnReqDetails: Constants.BASE_URL + 'orders/returnrequest',
-  uploadReturnFile: Constants.BASE_URL + 'orders/returnreqest/fileupload',
-  submitReturnDetails: Constants.BASE_URL + 'orders/returnreqest/submit',
+  returnReqDetails: Constants.BASEs_URL + 'returnrequest/returnrequest',
+  uploadReturnFile: Constants.BASEs_URL + 'returnreqest/uploadfilereturnreqest',
+  submitReturnDetails: Constants.BASEs_URL + 'ReturnRequest/ReturnRequest',
   ////////////////////// Returned Order ////////////////////
-  ReturnedRequestHistory: Constants.BASE_URL + 'orders/returnrequesthistory',
+  ReturnedRequestHistory: Constants.BASEs_URL + 'ReturnRequest/CustomerReturnRequests',
   ShipmentDetails:
     Constants.BASE_URL + 'orders/returnshipmentdetails?returnShipmentId=',
   // UserActivation: Constants.BASE_URL + 'customers/activateaccount?',

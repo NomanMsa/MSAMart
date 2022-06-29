@@ -25,7 +25,8 @@ import { Constants, Strings, Api } from '@config';
 import styles from './TermsConditionsStyles';
 import { Colors } from '@theme';
 import { connect } from 'react-redux';
-
+import{RenderHTML}from'react-native-render-html';
+var html;
 class TermsConditions extends Component {
   constructor(props) {
     super(props);
@@ -61,7 +62,7 @@ class TermsConditions extends Component {
 
   fetchHelpData = async () => {
     let Service = {
-      apiUrl: Api.TermsAndConditionAPI+'?systemName=ConditionOfUse',
+      apiUrl: Api.TermsAndConditionAPI+'?systemName=ConditionsOfUse',
       methodType: 'GET',
       headerData: { 'Content-Type': 'application/json' },
       onSuccessCall: this.onSuccessFetchHelpData,
@@ -72,11 +73,11 @@ class TermsConditions extends Component {
     const serviceResponse = await ServiceCall(Service);
   };
   onSuccessFetchHelpData = (data) => {
-
+    html =data.model.Body;
     if (data.model && data.model.length > 0) {
       this.setState({
         listData: data.model,
-        QuestionaryData: data.model[0].TopicQuestions
+        QuestionaryData: data.model.Body
       })
 
       this.props.UpdatePolicyStaticData({
@@ -220,16 +221,17 @@ class TermsConditions extends Component {
               <ScrollView
                 contentInsetAdjustmentBehavior="automatic"
                 style={styles.scrollView}>
-                <View >
+                    <RenderHTML  source={{ html }} baseStyle={styles.normalText}/>
+                {/* <View >
 
                   <FlatList
                     style={[styles.container, this.props.containerStyles]}
                     data={this.state.QuestionaryData}
                     renderItem={this.nestedListRenderer}
                     keyExtractor={(item, index) => index}
-                  />
+                  /> 
 
-                </View>
+                </View>*/}
                 <Footer
                   footerLinksList={[
                     { text: 'Privacy Policy', url: 'PrivacyPolicy' },

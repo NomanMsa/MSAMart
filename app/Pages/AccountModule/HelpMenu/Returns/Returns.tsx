@@ -24,7 +24,8 @@ import { Strings, Api } from '@config';
 import styles from './ReturnsStyles';
 import { Colors } from '@theme';
 import { connect } from 'react-redux';
-
+import { RenderHTML } from 'react-native-render-html';
+var html;
 
 class Returns extends Component {
   constructor(props) {
@@ -62,7 +63,7 @@ class Returns extends Component {
 
   fetchHelpData = async () => {
     let Service = {
-      apiUrl: Api.returnPolicyAPI+'?systemName=ShippingInfo',
+      apiUrl: Api.returnPolicyAPI + '?systemName=ShippingInfo',
       methodType: 'GET',
       headerData: { 'Content-Type': 'application/json' },
       onSuccessCall: this.onSuccessFetchHelpData,
@@ -73,7 +74,7 @@ class Returns extends Component {
     const serviceResponse = await ServiceCall(Service);
   };
   onSuccessFetchHelpData = (data) => {
-
+    html = data.model.Body;
     if (data.model && data.model.length > 0) {
       this.setState({
         listData: data.model,
@@ -108,7 +109,7 @@ class Returns extends Component {
   };
 
   onSuccessSubmit(data) {
-    if( data.message!=null && data.message.length > 0 ){
+    if (data.message != null && data.message.length > 0) {
       Toast.showWithGravity(data.message, Toast.LONG, Toast.CENTER);
     }
     this.setState({
@@ -218,20 +219,16 @@ class Returns extends Component {
               <ScrollView
                 contentInsetAdjustmentBehavior="automatic"
                 style={styles.scrollView}>
-                <View >
+                <RenderHTML source={{ html }} baseStyle={styles.normalText}/>
 
-
-
-
+                {/* <View >
                   <FlatList
                     style={[styles.container, this.props.containerStyles]}
                     data={this.state.QuestionaryData}
                     renderItem={this.nestedListRenderer}
                     keyExtractor={(item, index) => index}
                   />
-
-
-                </View>
+                </View> */}
                 <Footer
                   footerLinksList={[
                     { text: 'Privacy Policy', url: 'PrivacyPolicy' },

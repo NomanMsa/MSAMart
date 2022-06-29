@@ -86,12 +86,12 @@ export default class ReturnOrderList extends Component {
 
     _onSuccessfetchROList = (data) => {
         console.log(data);
-        if(data.model && data.model.CommonShipToModel){
-            this.setState({
-              shipToEnabled: data.model.CommonShipToModel.IsShipToEnable,
-              currentCountryModel: data.model.CommonShipToModel.CurrentCountryModel,
-            });
-        }
+        // if(data.model && data.model.CommonShipToModel){
+        //     this.setState({
+        //       shipToEnabled: data.model.CommonShipToModel.IsShipToEnable,
+        //       currentCountryModel: data.model.CommonShipToModel.CurrentCountryModel,
+        //     });
+        // }
         if (data.status) {
             this.setState({
                 Items: data.model.Items,
@@ -141,8 +141,8 @@ export default class ReturnOrderList extends Component {
                 }}
                 backButtonClick={() => this.props.navigation.pop()}
                 NavButton={true}
-                countryModel={this.state.currentCountryModel}
-                shipToEnabled={this.state.shipToEnabled}
+                // countryModel={this.state.currentCountryModel}
+                // shipToEnabled={this.state.shipToEnabled}
                 shipToButtonClick={this.handleShipToButtonClick}
                 userIcoStyles={{ tintColor: Colors.WHITE }}
                 cartIcoStyles={{ tintColor: Colors.WHITE }}

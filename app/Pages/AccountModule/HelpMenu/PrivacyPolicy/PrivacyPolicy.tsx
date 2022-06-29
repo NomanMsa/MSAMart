@@ -9,6 +9,7 @@ import {
   Image,
   TouchableOpacity,
   LogBox,
+  useWindowDimensions,
   FlatList,
 } from 'react-native';
 LogBox.ignoreAllLogs();
@@ -24,8 +25,9 @@ import { Constants, Strings, Api } from '@config';
 import styles from './PrivacyPolicyStyles';
 import { Colors } from '@theme';
 import { connect } from 'react-redux';
-
-
+import { RenderHTML } from 'react-native-render-html'
+import { WebView } from 'react-native-webview';
+var html;
 class PrivacyPolicy extends Component {
   constructor(props) {
     super(props);
@@ -37,6 +39,7 @@ class PrivacyPolicy extends Component {
       enquiry: '',
       emailFormat: true,
       QuestionaryData: [],
+      datahtml: '<p></p>'
     };
     this.onSuccessSubmit = this.onSuccessSubmit.bind(this);
     this.onFailureAPI = this.onFailureAPI.bind(this);
@@ -60,7 +63,7 @@ class PrivacyPolicy extends Component {
 
   fetchHelpData = async () => {
     let Service = {
-      apiUrl: Api.PrivacyPolicyAPI +'?systemName=Privacyinfo',
+      apiUrl: Api.PrivacyPolicyAPI + '?systemName=PrivacyInfo',
       methodType: 'GET',
       headerData: { 'Content-Type': 'application/json' },
       onSuccessCall: this.onSuccessFetchHelpData,
@@ -71,15 +74,17 @@ class PrivacyPolicy extends Component {
     const serviceResponse = await ServiceCall(Service);
   };
   onSuccessFetchHelpData = (data) => {
-
+    console.log("ghbsh//////////////////////////", data.model);
+    html = data.model.Body;
     if (data.model && data.model.length > 0) {
       this.setState({
         listData: data.model,
-        QuestionaryData: data.model[0].TopicQuestions
+        QuestionaryData: data.model,
+        datahtml: data.model.Body
       })
       this.props.UpdatePolicyStaticData({
         DeliveryData: this.props.DeliveryData,
-        PrivacyPolicyData: data.model,
+        PrivacyPolicyData: data.model.Body,
         ReturnsData: this.props.ReturnsData,
         TermsAndConditionData: this.props.TermsAndConditionData,
       })
@@ -108,7 +113,7 @@ class PrivacyPolicy extends Component {
 
 
   onSuccessSubmit(data) {
-    if( data.message!=null && data.message.length > 0 ){
+    if (data.message != null && data.message.length > 0) {
       Toast.showWithGravity(data.message, Toast.LONG, Toast.CENTER);
     }
     this.setState({
@@ -194,6 +199,7 @@ class PrivacyPolicy extends Component {
   };
 
   render() {
+    // const contentWidth = useWindowDimensions();
     return (
       <>
         <AnimatedLoader
@@ -216,22 +222,23 @@ class PrivacyPolicy extends Component {
                 offlineTextStyle={{}}
                 noInternetTextStyle={{}}
               />
+
               <ScrollView
+
                 contentInsetAdjustmentBehavior="automatic"
                 style={styles.scrollView}>
-                <View >
+                <RenderHTML  source={{ html }}baseStyle={styles.normalText} />
+                
+                
 
-
-
-
-                  <FlatList
+                {/* <FlatList
                     style={[styles.container, this.props.containerStyles]}
                     data={this.state.QuestionaryData}
                     renderItem={this.nestedListRenderer}
                     keyExtractor={(item, index) => index}
-                  />
+                  /> */}
 
-                </View>
+
                 <Footer
                   footerLinksList={[
                     { text: 'Privacy Policy', url: 'PrivacyPolicy' },

@@ -325,7 +325,7 @@ class DrawerContent extends Component {
                                             await analytics().logEvent('hamburger_menu', { 'navigate': 'Email customer support' });
                                             AppEventsLogger.logEvent(EventTags.HAMBURGER_MENU_NAVIGATION, { 'navigate': 'Email customer support' });
                                             EmarsysEvents.trackEmarsys(EventTags.HAMBURGER_MENU_NAVIGATION, { 'navigate': 'Email customer support' });
-                                            await Linking.openURL('mailto:mob.msainfotech@gmail.com')
+                                            await Linking.openURL('mailto:support@msainfotech.in')
                                         } catch (e) {
                                             Toast.showWithGravity('Service not available', Toast.LONG, Toast.BOTTOM);
 

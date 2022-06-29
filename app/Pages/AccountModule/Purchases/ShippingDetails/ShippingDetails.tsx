@@ -34,6 +34,7 @@ export default class ShippingDetails extends Component {
       loaderVisible: false,
       shipmentId: 0,
       shipmentData: [],
+      order:[],
       // ShipmentStatusEvents: [],
       loading: true
     };
@@ -66,6 +67,7 @@ export default class ShippingDetails extends Component {
     this.setState({
       shipmentId: (this.props.route.params).passData,
       shipmentData: data.model,
+      order:data.model.Order
       // ShipmentStatusEvents: data.model.ShipmentStatusEvents
     });
   }
@@ -288,7 +290,7 @@ export default class ShippingDetails extends Component {
                     <View style={styles.detailContainer}>
                       <View style={styles.detailBlock}>
                         <Text style={styles.detailHeaderTxt}>Shipping Method</Text>
-                        <Text style={styles.detailTxt}>{(this.state.shipmentData).ShipmentMethod ? (this.state.shipmentData).ShipmentMethod : ''}</Text>
+                        <Text style={styles.detailTxt}>{this.state.order.ShippingMethod}</Text>
                       </View>
                       <View style={styles.detailBlock}>
                         <Text style={styles.detailHeaderTxt}>Date Shipped</Text>

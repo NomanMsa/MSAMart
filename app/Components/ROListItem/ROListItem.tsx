@@ -88,7 +88,7 @@ export default class extends Component {
                                 <View style={{ height: 16 }} />
                             }
                             {
-                                item.ReturnShipmentBriefModel.Id ?
+                                // item.ReturnShipmentBriefModel.Id ?
 
                                     <View style={styles.orderContainer}>
                                         <View style={{ ...styles.thread, alignSelf: 'center', marginBottom: 24 }} />
@@ -98,9 +98,9 @@ export default class extends Component {
                                                 <Text style={styles.detailTxt}>Return Id:</Text>
                                             </View>
                                             <View style={styles.detailBlock}>
-                                                <Text style={styles.detailTxt}>{item.ReturnShipmentBriefModel.Id}</Text>
+                                                <Text style={styles.detailTxt}>{item.Id}</Text>
                                             </View>
-                                            {(item.ReturnShipmentBriefModel.TrackingNumber) && <><View style={styles.detailBlock}>
+                                            {/* {(item.ReturnShipmentBriefModel.TrackingNumber) && <><View style={styles.detailBlock}>
                                                 <Text style={styles.detailTxt}>Tracking Number: </Text>
                                             </View>
                                                 <View style={styles.detailBlock}>
@@ -111,7 +111,7 @@ export default class extends Component {
                                             </View>
                                             <View style={styles.detailBlock}>
                                                 <Text style={styles.detailTxt}>{item.ReturnShipmentBriefModel.ReturnedDate ? FormatDate.formatDate(item.ReturnShipmentBriefModel.ReturnedDate, 'dd/mm/yyyy') : null}</Text>
-                                            </View>
+                                            </View> */}
 
                                             <View style={styles.detailBlock}>
                                                 <Text style={styles.detailTxt}></Text>
@@ -119,7 +119,7 @@ export default class extends Component {
                                             <View style={styles.detailBlock}>
                                                 <TouchableOpacity
                                                     style={styles.btnViewDetail}
-                                                    onPress={() => this.props.onProductClick(item.ReturnShipmentBriefModel)}
+                                                    onPress={() => this.props.onProductClick(item)}
                                                 >
                                                     <Text style={{ color: 'red', fontSize: 15, fontWeight: 'bold' }}>View Details</Text>
                                                 </TouchableOpacity>
@@ -136,9 +136,9 @@ export default class extends Component {
 
                                     </View>
 
-                                    :
+                                   // :
 
-                                    null
+                                    //null
                             }
                         </View>
                     </TouchableOpacity>

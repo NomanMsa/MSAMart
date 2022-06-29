@@ -65,7 +65,7 @@ export default class ThankYou extends Component {
     console.log(data);
   }
   fetchReturnOrderDetails = async (orderId, itemId) => {
-    let finalApi = Api.returnReqDetails + '?orderId=' + orderId + '&orderItemId=' + itemId;
+    let finalApi = Api.returnReqDetails + '?orderId=' + orderId   //+ '&orderItemId=' + itemId;
     if (itemId == 0 || itemId == '0' || itemId == undefined || itemId == null) {
       finalApi = Api.returnReqDetails + '?orderId=' + orderId;
     }
@@ -230,19 +230,35 @@ console.log(realPath)
       }, 500)
     }
     else {
+      var a='{'
+      for (let i = 0; i < returnItemArray.length; i++) {
+        var keyName = "quantity" + returnItemArray[i].Id;
+      const value = returnItemArray[i].Quantity;
+      a = a + '"' + keyName +'"'+ ":" +'"'+ value+'"';
+      if(i != returnItemArray.length - 1){
+        a = a + ",";
+        
+      }
+    }
+    a = a + '}';
+  var custom=   JSON.parse(a);
+  var resonid= this.state.selectedReasonId
+  var actionid =this.state.selectedActionId
+  var comment =  this.state.comment
       let Service = {
-        apiUrl: Api.submitReturnDetails,
+        apiUrl: Api.submitReturnDetails+'?orderId='+orderId,
         methodType: 'POST',
         bodyData: JSON.stringify({
-          "orderId": orderId,
-          "orderItemId": itemId,
-          "model": {
-            "UploadedFileGuid": downloadGuid,
+          // "orderId": orderId,
+          // "orderItemId": itemId,
+          
+            //"UploadedFileGuid": downloadGuid,
+            "UploadedFileGuid": "00000000-0000-0000-0000-000000000000",
             "Items": returnItemArray,
-            "ReturnRequestReasonId": this.state.selectedReasonId,
-            "ReturnRequestActionId": this.state.selectedActionId,
-            "Comments": this.state.comment,
-          }
+            "ReturnRequestReasonId": resonid,
+            "ReturnRequestActionId": actionid,
+            "Comments": comment,
+            "CustomProperties":custom
         }),
         headerData: { 'Content-Type': 'application/json' },
         onSuccessCall: this.onSuccesssubmitReturnDetails,
@@ -289,15 +305,15 @@ console.log(realPath)
   }
 
   onSuccesssubmitReturnDetails = async (data) => {
-    console.log(data)
+    console.log("++---///",data)
     if (data.status) {
 
 
       if (await AsyncStorage.getItem('loginStatus') == 'true') {
         setTimeout(async () => {
           Alert.alert(
-            'MsaMart',
-            data.model.Result, [{
+            data.message,
+            data.Result, [{
               text: 'Ok',
               onPress: async () => { this.props.navigation.pop() }
             },], {
@@ -308,8 +324,8 @@ console.log(realPath)
       } else {
         setTimeout(async () => {
           Alert.alert(
-            'MsaMart',
-            data.model.Result, [{
+            data.message,
+            data.Result, [{
               text: 'Ok',
               onPress: async () => { this.props.navigation.pop() }
             },], {
