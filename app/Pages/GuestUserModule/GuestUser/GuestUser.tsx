@@ -549,6 +549,8 @@ class GuestUser extends Component {
     };
 
     getCartCountData = async () => {
+        let authToken = await AsyncStorage.getItem('custToken');
+		if(authToken != null){
         let Service = {
             apiUrl: Api.getShoppingCount,
             methodType: 'GET',
@@ -559,6 +561,7 @@ class GuestUser extends Component {
             onOffline: this.onOffline,
         };
         const serviceResponse = await ServiceCall(Service);
+    }
     };
     onSuccessGetCountCall = async (data) => {
         await this.setState({

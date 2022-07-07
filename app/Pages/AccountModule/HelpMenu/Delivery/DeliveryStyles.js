@@ -13,9 +13,9 @@ export default StyleSheet.create({
     width:'100%',
     height:'100%',
     backgroundColor: Colors.WHITE,
-    paddingTop:20,
-    paddingBottom:20,
-    marginBottom:70,
+//    paddingTop:20,
+  //  paddingBottom:20,
+    //marginBottom:50,
   },
 
   pageContainer:{backgroundColor:Colors.WHITE, height:height},

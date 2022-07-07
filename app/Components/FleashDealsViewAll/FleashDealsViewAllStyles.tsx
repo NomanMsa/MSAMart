@@ -28,7 +28,7 @@ module.exports = StyleSheet.create({
 		justifyContent:'center',
 		padding:10,
 		borderWidth:1,
-		borderColor: Colors.PRIMARY_DARK_BTN,
+		borderColor: Colors.PRIMARY,
 		alignItems: 'center',
 		alignContent: 'center',
 	},
@@ -45,7 +45,7 @@ module.exports = StyleSheet.create({
 		  fontFamily: 'verdanab',
 		  },
 		}),
-		color: Colors.PRIMARY_DARK_BTN,
+		color: Colors.PRIMARY,
 		
 	//	height:50,
 		marginRight:5,

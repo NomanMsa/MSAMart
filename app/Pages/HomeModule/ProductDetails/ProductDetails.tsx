@@ -147,9 +147,10 @@ class ProductDetails extends Component {
     pdpTrace.putAttribute('occurrence', 'firstVisit');
     await pdpTrace.stop();
     this.setState({ loading: false, productId:passData.Id});
-    await this.fetchWidgitData(passData.Id);
+    //await this.fetchWidgitData(passData.Id);
      await this.getCartCountData();
     this.props.updateCartCount();
+    this.fetchordreTotal();
     this.fetchShoppingData();
     this.setState({ loading: false });
     this.focusListener = await this.props.navigation.addListener(
@@ -161,7 +162,7 @@ class ProductDetails extends Component {
         await this.fetchProductDetialsData(passData.Id);
         pdpTrace.putAttribute('occurrence', 'reVisit');
         await pdpTrace.stop();
-        this.fetchWidgitData(passData.Id);
+        //this.fetchWidgitData(passData.Id);
         await this.props.updateCartCount();
         this.setState({ loading: false });
 
@@ -189,12 +190,31 @@ class ProductDetails extends Component {
     if(nextProps!=null && nextProps.route!=null && nextProps.route.params!=null && nextProps.route.params.passData.Id != this.state.productId){     
       await this.setState({ loading: true });
       await this.fetchProductDetialsData(nextProps.route.params.passData.Id);
-      await this.fetchWidgitData(nextProps.route.params.passData.Id);
+     // await this.fetchWidgitData(nextProps.route.params.passData.Id);
       await this.props.updateCartCount();
       await this.setState({ loading: false });
     }
   }
+  fetchordreTotal = async()=>{
+    let Service = {
+      apiUrl:Api.ordreTotal,
+      methodType: 'POST',
+      headerData: { 'Content-Type': 'application/json' },
+      onSuccessCall: this.onSuccessgetOrderTotal,
+      onFailureAPI: this.onFailureAPI,
+      onPromiseFailure: this.onPromiseFailure,
+      onOffline: this.onOffline,
+    };
+    const serviceResponse = await ServiceCall(Service);
+  }
 
+  onSuccessgetOrderTotal = async (data) => { 
+    let data1 = data.model;
+    
+    await this.setState({
+      summuryData : data1,
+    })
+  }
   fetchShoppingData = async () => {
     let Service = {
       apiUrl: Api.getShoppingCartList,
@@ -213,11 +233,11 @@ class ProductDetails extends Component {
   onSuccessShoppingCall = async (dataa) => {
     let data = dataa.model;
     // this.props.UpdateShoppingData({ ShoppingCartData: data })
-    var discountBox = data.DiscountBox
-    var customData = data.CustomProperties
-    console.log("onSuccessShoppingCall.........", customData.OrderTotals);
+    // var discountBox = data.DiscountBox
+    // var customData = data.CustomProperties
+    // console.log("onSuccessShoppingCall.........", customData.OrderTotals);
     await this.setState({
-      summuryData: customData.OrderTotals,
+      summuryData: data,
     })
   }
 
@@ -527,12 +547,12 @@ class ProductDetails extends Component {
   fetchWidgitData = async (prodId) => {
     let Service = {
       apiUrl: Api.Widgets,
-      methodType: 'POST',
+      methodType: 'GET',
       headerData: { 'Content-Type': 'application/json' },
-      bodyData: JSON.stringify({
-        widget: 'product',
-        productid: prodId,
-      }),
+      // bodyData: JSON.stringify({
+      //   widget: 'product',
+      //   productid: prodId,
+      // }),
       onSuccessCall: this.onSuccessWidgetCall,
       onFailureAPI: this.onFailureAPI,
       onPromiseFailure: this.onPromiseFailure,
@@ -542,7 +562,7 @@ class ProductDetails extends Component {
   };
 
   onWishIconClick = async () => {
-    await this.fetchWidgitData();
+   // await this.fetchWidgitData();
     await this.getCartCountData();
 
     this.props.updateWishlist();
@@ -734,9 +754,19 @@ class ProductDetails extends Component {
     }
 
     }
+    var keysName ="customer_qty"
+    if(a =="{"){
+      a = a + '"' + keysName +'"'+ ":" +'"'+ this.state.QuantitySelectorText+'"';
+    }else{
+      a = a+"," + '"' + keysName +'"'+ ":" +'"'+ this.state.QuantitySelectorText+'"';
+    }
+    
     a = a + '}';
+
+
     let form = JSON.parse(a);
-    customProperties.push(JSON.parse(a));
+    
+   
     let Service = {
       apiUrl: Api.UpdateAttributeAPI + '?productId='+this.state.pData.Id + '&validateAttributeConditions=true&loadPicture=true',
       methodType: 'POST',
@@ -916,6 +946,12 @@ var addcart = 2;
     }
 
     }
+    var keysName ="customer_qty"
+    if(a =="{"){
+      a = a + '"' + keysName +'"'+ ":" +'"'+ this.state.QuantitySelectorText+'"';
+    }else{
+      a = a+"," + '"' + keysName +'"'+ ":" +'"'+ this.state.QuantitySelectorText+'"';
+    }
     a = a + '}';
     let form = JSON.parse(a);
     customProperties.push(JSON.parse(a));
@@ -1030,18 +1066,26 @@ var addcart = 2;
   };
 
   onBuyNowClick = async () => {
-    
+    let a ='{'
+    let attributearay =this.state.AttributeValueArray;
+    var customProperties = [];
+    for (let key = 0; key < attributearay.length; key++) {
+      var keyName = "product_attribute_" + attributearay[key].id;
+      const value = attributearay[key].value;
+      a = a + '"' + keyName +'"'+ ":" +'"'+ value+'"';
+      if(key != attributearay.length - 1){
+        a = a + ",";
+    }
 
-
+    }
+    a = a + '}';
+    let form = JSON.parse(a);
     let Service = {
-      apiUrl: Api.AddToCart,
+      apiUrl: Api.AddToCart+'?productId='+this.state.pData.Id + '&shoppingCartTypeId=1',
       methodType: 'POST',
       headerData: { 'Content-Type': 'application/json' },
       bodyData: JSON.stringify({
-        productId: this.state.pData.Id,
-        shoppingCartTypeId: 1,
-        quantity: this.state.QuantitySelectorText,
-        form: this.state.AttributeValueArray,
+        form
       }),
       onSuccessCall: this.onSuccessonBuyNowClick,
       onFailureAPI: this.onFailureAPI,
@@ -1053,30 +1097,42 @@ var addcart = 2;
   };
 
   onSuccessonBuyNowClick = async (data) => {
+    this.fetchordreTotal();
+    let token = await AsyncStorage.getItem('custGuid')
+    console.log("/////////////******/////////");
+    
+    // await this.props.navigation.navigate('PayNow', { passData: token, })
     if (data.message) {
-
-      let token = await AsyncStorage.getItem('custGuid')
+      
+      
       this.setState({ isSummuryOpen: false });
       if (await AsyncStorage.getItem('loginStatus') == 'true') {
+        
         let coupenData = '';
-        if (this.state.summuryData.OrderTotalDiscount != '' && this.state.summuryData.OrderTotalDiscount != null) {
-          coupenData = this.state.summuryData.OrderTotalDiscount
-        }
+        // if (this.state.summuryData.OrderTotalDiscount != '' && this.state.summuryData.OrderTotalDiscount != null) {
+        //   coupenData = this.state.summuryData.OrderTotalDiscount
+        // }else{}
+        
         // for (let i = 0; this.state.)
         //   //await analytics().logEvent('begin_checkout', { 'coupon': coupenData, 'currency': '', 'items': [data.Id,], 'value': data.SubTotal });
         const value = await AsyncStorage.getItem('@currencysymbol')
-        console.log("value.......", value)
+        console.log("////////////******22222");
+        console.log("////value.......", value)
         if (value !== null) {
           let beginCheckoutEventParams = { 'coupon': coupenData, 'currency': value, 'value': this.state.summuryData.SubTotal };
           await analytics().logEvent('begin_checkout', beginCheckoutEventParams);
           EmarsysEvents.trackEmarsys('begin_checkout', beginCheckoutEventParams);
           AppEventsLogger.logEvent(EventTags.BEGIN_CHECKOUT, beginCheckoutEventParams);
         } else {
+          
+          
 
           let beginCheckoutEventParams = { 'coupon': coupenData, 'currency': ' ', 'value': this.state.summuryData.SubTotal };
           EmarsysEvents.trackEmarsys('begin_checkout', beginCheckoutEventParams);
           await analytics().logEvent('begin_checkout', beginCheckoutEventParams);
           AppEventsLogger.logEvent(EventTags.BEGIN_CHECKOUT, beginCheckoutEventParams);
+          console.log("***//////**////444");
+          
         }
         await this.props.navigation.navigate('PayNow', { passData: token, })
       } else {
@@ -1091,6 +1147,8 @@ var addcart = 2;
   };
 
   getCartCountData = async () => {
+    let authToken = await AsyncStorage.getItem('custToken');
+		if(authToken != null){
     let Service = {
       apiUrl: Api.getShoppingCount,
       methodType: 'GET',
@@ -1102,6 +1160,7 @@ var addcart = 2;
       onOffline: this.onOffline,
     };
     const serviceResponse = await ServiceCall(Service);
+  }
   };
 
   onSuccessGetCountCall = (data) => {
@@ -1484,7 +1543,7 @@ var addcart = 2;
                     {this.state.IsProductInYourWishList && (
                       <ButtonWithIcon
                         testId={"addedToWishListMobileBtn"}
-                        userClick={(data) => this.onAddToWishList()}
+                        userClick={(data) => this.onRemoveFromWishlist()}
                         titleStyle={{ color: Colors.PRIMARY }}
                         imageAvtarStyle={{
                           height: 25,

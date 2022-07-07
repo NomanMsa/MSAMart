@@ -76,7 +76,7 @@ class ShoppingCart extends Component {
       // totalValue: '16,576.91',
       totalValue: 'calculated during checkout',
 
-      totalCurrancy: 'AED',
+      totalCurrancy: '$',
       scrollMenuData: [],
       imgSliderData: [],
       imgCardsData: [],
@@ -530,6 +530,8 @@ let jdata ={
   }
 
   getCartCountData = async () => {
+    let authToken = await AsyncStorage.getItem('custToken');
+		if(authToken != null){
     let Service = {
       apiUrl: Api.getShoppingCount,
       methodType: 'GET',
@@ -541,6 +543,7 @@ let jdata ={
       onOffline: this.onOffline,
     };
     const serviceResponse = await ServiceCall(Service);
+  }
   };
 
   onSuccessGetCountCall = (data) => {

@@ -31,7 +31,10 @@ const getCartCountData = async () => {
     //data.headers = Service.headerData;
     datas.headers = { 'Content-Type': 'application/json', 'Authorization': token };
     //datas.body = bodyData;
+    let authToken = await AsyncStorage.getItem('custToken');
+    if(authToken != null){
     const responce = await fetch(Api.getShoppingCount, datas)
+    }
     const data = await responce.json();
     if (responce.status > 200) {
         throw new Error(data.error);
@@ -153,4 +156,4 @@ const getHelpCenterData = async () => {
 };
 
 
-export { getCartCountData, getHomeDataCountData, getWidgitData, getWishlistData, getShoppingCartData, getHelpCenterData }
+export { getCartCountData, getHomeDataCountData, getWidgitData, getWishlistData, getShoppingCartData}//getHelpCenterData

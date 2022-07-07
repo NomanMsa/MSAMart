@@ -23,12 +23,12 @@ export default class extends Component {
         {
           id: 1,
           label: 'Item SubTotal',
-          Value: 'AED 640',
+          Value: '',
         },
         {
           id: 2,
           label: 'Item SubTotal',
-          Value: 'AED 640',
+          Value: '',
         },
       ],
     };

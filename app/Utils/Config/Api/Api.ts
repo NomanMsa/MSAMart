@@ -18,7 +18,7 @@ const Api = {
   Home: Constants.BASEs_URL + 'home/homepage',
   Widgets: Constants.BASEs_URL + 'homepageproducts/invoke',
   // Widget:Constants.BASE_URL + 'widget/configuration',
-  //removeWishlistItem:Constants.BASE_URL + 'shoppingcart/wishlist/remove?productId=',
+  removeWishlistItem:Constants.BASEs_URL + 'shoppingcart/wishlist/remove?productId=',
 
   /////ProductDetail API List/////////////////////
   ProductDetail: Constants.BASEs_URL + 'product/productdetails',
@@ -89,9 +89,9 @@ const Api = {
   //getCityByStateId: Constants.BASE_URL + 'country/getcitybystateid',
   //getAreaByCityId: Constants.BASE_URL + 'country/getaddressareabycityid',
 
-  setDefaultAddress: Constants.BASE_URL + 'customers/address/default',
+  setDefaultAddress: Constants.BASEs_URL + 'customer/address/default',
   editAddress: Constants.BASEs_URL + 'customer/addressedit',
-  defaultAddress: Constants.BASE_URL + 'customers/address/default',
+  defaultAddress: Constants.BASEs_URL + 'customer/address/default',
 
   addAddress: Constants.BASEs_URL + 'customer/addressadd',
   //https://dmtest.dpworld.com/api/v1/customers/address/default?id=5236
@@ -101,7 +101,7 @@ const Api = {
   vendorFilterAPI: Constants.BASEs_URL + 'catalog/vendor',
   ManufacturerFilterAPI:
     Constants.BASE_URL + 'catalog/getproductsbymanufacturer',
-  orderCompleted: Constants.BASE_URL + 'checkout/product/ordercompleted',
+  orderCompleted: Constants.BASEs_URL + 'checkout/completed',
 
   orderHistory: Constants.BASEs_URL + 'order/customerorders',
   orderDetails: Constants.BASEs_URL + 'order/details',
@@ -127,8 +127,8 @@ const Api = {
   HelpCenterAllInOneAPI: Constants.BASEs_URL + 'topic/topicdetailspopup',
 
   /////////////////////// Email a friend //////////////////////////
-  userEmailDetailAPI: Constants.BASE_URL + 'shoppingcart/wishlist/email',
-  sendEmailAPI: Constants.BASE_URL + 'shoppingcart/wishlist/sendemail',
+  userEmailDetailAPI: Constants.BASEs_URL + 'shoppingcart/emailwishlist',
+  sendEmailAPI: Constants.BASEs_URL + 'shoppingcart/emailwishlistsend',
 
   reOrder: Constants.BASEs_URL + 'order/reorder',
   cancelOrder: Constants.BASE_URL + 'orders/cancel',
@@ -139,7 +139,7 @@ const Api = {
   helpData: Constants.BASEs_URL + 'topic/gethelpcentercontaxt',
 
   ////////////////////// Regenerate Session ////////////////////
-  getSession: Constants.BASE_URL + 'users/getsession',
+  getSession: Constants.BASEs_URL + 'ManageUserAccess/getsession',
 
   DiscountBanner: Constants.BASE_URL + 'discounts/banner',
   GetPage: Constants.BASE_URL + 'general/getpage',

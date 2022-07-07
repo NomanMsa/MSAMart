@@ -127,6 +127,7 @@ export default class Home extends Component {
       gender: data.Gender,
       phcode: data.CountryCode,
       phnumber: data.Phone,
+      
     });
     console.log("-----------------------------------------------------done---"+this.state.fullname +"set///////////////////////////////////////");
     console.log("-----------------------------------------------------done---"+data.FirstName +"set///////////////////////////////////////");

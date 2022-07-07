@@ -92,12 +92,12 @@ export default class ProductList extends Component {
 
         if (i == this.state.index) {
           let tempRoom = this.state.listData[i];
-          if (this.state.listData[i].CustomProperties.IsProductInYourWishList == false) {
-            tempRoom.CustomProperties.IsProductInYourWishList = true
+          if (this.state.listData[i].CustomProperties.IsProductInWishlist == false) {
+            tempRoom.CustomProperties.IsProductInWishlist = true
             IdArray.push(this.state.listData[i]);
 
-          } else if (this.state.listData[i].CustomProperties.IsProductInYourWishList == true) {
-            tempRoom.CustomProperties.IsProductInYourWishList = false
+          } else if (this.state.listData[i].CustomProperties.IsProductInWishlist == true) {
+            tempRoom.CustomProperties.IsProductInWishlist = false
             IdArray.push(this.state.listData[i]);
           }
 
@@ -105,7 +105,7 @@ export default class ProductList extends Component {
         }
         else {
           let tempRoom = this.state.listData[i];
-          tempRoom.CustomProperties.IsProductInYourWishList = tempRoom.CustomProperties.IsProductInYourWishList
+          tempRoom.CustomProperties.IsProductInWishlist = tempRoom.CustomProperties.IsProductInWishlist
           tempRoom.ProductPrice.DisableWishlistButton = tempRoom.ProductPrice.DisableWishlistButton
 
           return tempRoom;
@@ -178,12 +178,12 @@ export default class ProductList extends Component {
 
         if (i == this.state.index) {
           let tempRoom = this.state.listData[i];
-          if (this.state.listData[i].CustomProperties.IsProductInYourWishList == false) {
-            tempRoom.CustomProperties.IsProductInYourWishList = true
+          if (this.state.listData[i].CustomProperties.IsProductInWishlist == false) {
+            tempRoom.CustomProperties.IsProductInWishlist = true
             IdArray.push(this.state.listData[i]);
 
-          } else if (this.state.listData[i].CustomProperties.IsProductInYourWishList == true) {
-            tempRoom.CustomProperties.IsProductInYourWishList = false
+          } else if (this.state.listData[i].CustomProperties.IsProductInWishlist == true) {
+            tempRoom.CustomProperties.IsProductInWishlist = false
             IdArray.push(this.state.listData[i]);
           }
 
@@ -191,7 +191,7 @@ export default class ProductList extends Component {
         }
         else {
           let tempRoom = this.state.listData[i];
-          tempRoom.CustomProperties.IsProductInYourWishList = tempRoom.CustomProperties.IsProductInYourWishList
+          tempRoom.CustomProperties.IsProductInWishlist = tempRoom.CustomProperties.IsProductInWishlist
           tempRoom.ProductPrice.DisableWishlistButton = tempRoom.ProductPrice.DisableWishlistButton
 
           return tempRoom;
@@ -231,7 +231,7 @@ export default class ProductList extends Component {
 
     let tempArray = []
     this.setState({ index: index })
-    if (item.CustomProperties.IsProductInYourWishList == false) {
+    if (item.CustomProperties.IsProductInWishlist == false) {
       this.UpdateWishlistandAddToCartData(item)
 
     } else {

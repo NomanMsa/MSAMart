@@ -24,6 +24,7 @@ import { Colors } from '@theme';
 import AsyncStorage from '@react-native-community/async-storage';
 import { ServiceCall } from '@utils';
 import { Api } from '@config';
+import { connect } from 'react-redux'
 var PushNotificationLogModels = {};
 export default class PayNow extends Component {
   static defaultProps = {
@@ -33,7 +34,7 @@ export default class PayNow extends Component {
     super(props);
     this.state = {
       loaderVisible: true,
-      newurl: Constants.HOST_URL + 'onepagecheckout',
+      newurl: Constants.HOSTs_URL + 'onepagecheckout',
       session: false,
     }
     this.onFailureAPI = this.onFailureAPI.bind(this);
@@ -42,6 +43,10 @@ export default class PayNow extends Component {
     this.fetchSession = this.fetchSession.bind(this);
     this.onSuccessfetchSession = this.onSuccessfetchSession.bind(this);
     this.getParameterByName = this.getParameterByName.bind(this);
+    this.fetchOrderCompleteDetails =this.fetchOrderCompleteDetails.bind(this);
+    this.onSuccessfetchOrderDetails =this.onSuccessfetchOrderDetails.bind(this);
+    this.getCartCountData = this.getCartCountData.bind(this);
+    this.onSuccessGetCountCall = this.onSuccessGetCountCall.bind(this);
 
   }
   async componentWillUnmount() {
@@ -67,7 +72,7 @@ export default class PayNow extends Component {
     let Service = {
       apiUrl: Api.getSession,
       methodType: 'POST',
-      bodyData: JSON.stringify({ "identity": token }),
+      //bodyData: JSON.stringify({ "identity": token }),
       headerData: { 'Content-Type': 'application/json' },
       onSuccessCall: this.onSuccessfetchSession,
       onFailureAPI: this.onFailureAPI,
@@ -80,8 +85,51 @@ export default class PayNow extends Component {
   async onSuccessfetchSession(data) {
     this.setState({ loading: false });
     //Alert.alert('session regenerated')
-    this.setState({ session: true })
+    this.setState({ session: true,token:data.customer_guid })
   }
+  fetchOrderCompleteDetails = async (orderId) => {
+    let Service = {
+      apiUrl: Api.orderCompleted + '?orderId=' + orderId,
+      methodType: 'GET',
+      headerData: { 'Content-Type': 'application/json' },
+      onSuccessCall: this.onSuccessfetchOrderDetails,
+      onFailureAPI: this.onFailureAPI,
+      onPromiseFailure: this.onPromiseFailure,
+      onOffline: this.onOffline,
+    };
+    const serviceResponse = await ServiceCall(Service);
+  };
+
+  onSuccessfetchOrderDetails = async (data) => {
+    let payment_data = data.model
+    this.getCartCountData();
+     this.props.navigation.navigate('PurchaseDetails', { passData: { data: { Id: data.model.OrderId} } })
+  }
+  getCartCountData = async () => {
+    let authToken = await AsyncStorage.getItem('custToken');
+		if(authToken != null){
+    let Service = {
+      apiUrl: Api.getShoppingCount,
+      methodType: 'GET',
+      headerData: { 'Content-Type': 'application/json' },
+
+      onSuccessCall: this.onSuccessGetCountCall,
+      onFailureAPI: this.onFailureAPI,
+      onPromiseFailure: this.onPromiseFailure,
+      onOffline: this.onOffline,
+    };
+    const serviceResponse = await ServiceCall(Service);
+  }
+  };
+
+  onSuccessGetCountCall = (data) => {
+    this.setState({
+      CartCount: data.model.Items.length,
+    });
+    this.props.addCountToCart({
+      cartCount: data.model.Items.length,
+    });
+  };
   handleBackButtonClick = () => {
     //this.props.navigation.goBack(null);
     return true;
@@ -165,8 +213,8 @@ export default class PayNow extends Component {
               uri: this.state.newurl,
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': (this.props.route.params).passData,
-                'DeviceInfo': PushNotificationLogModels,
+                'Authorization':this.state.token,  //(this.props.route.params).passData,
+                //'DeviceInfo': PushNotificationLogModels,
               },
             }}
               originWhitelist={['*']}
@@ -182,7 +230,7 @@ export default class PayNow extends Component {
               onNavigationStateChange={(webViewState) => {
                 console.log("pay now -- ", webViewState)
                 console.log("pay now url-- ", webViewState.url)//https://dmtest.dpworld.com/checkout/RosoomResponse
-                if (((webViewState.url).split('?')[0]).includes(Constants.HOST_URL + 'checkout/RosoomResponse')) {
+                if (((webViewState.url).split('?')[0]).includes(Constants.HOSTs_URL + 'checkout/RosoomResponse')) {
                   console.log('into rosoom response')
                   let urlstatus = this.getParameterByName('status', webViewState.url)
                   console.log(urlstatus)
@@ -192,31 +240,36 @@ export default class PayNow extends Component {
                     this.props.navigation.navigate('ShoppingCart');
                   }
                 }
-                if (webViewState.url.includes(Constants.HOST_URL + 'checkout/completed/')) {
+                if (webViewState.url.includes(Constants.HOSTs_URL + 'checkout/completed/')) {
+                  console.log("/////////////////--",webViewState.url);
                   let lastItem = webViewState.url.substring(webViewState.url.lastIndexOf('/') + 1)
-                  this.props.navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'ThankYou', params: { productId: lastItem }, }] }));
+                  this.fetchOrderCompleteDetails(lastItem);
+                  
+                  //this.props.navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'ThankYou', params: { productId: lastItem }, }] }));
                   //this.props.navigation.navigate('ThankYou', { productId: lastItem });
+                }else if(webViewState.url.includes(Constants.HOSTs_URL +'')){
+
                 }
                 // if (webViewState.url.includes('https://rosoomuat.dubaitrade.ae/rosoom/cancelTransaction')) {
                 //for DMTest environment
-                if (webViewState.url.includes('https://rosoom.dubaitrade.ae/rosoom/cancelTransaction')) {
-                  //for Production environment
-                  let lastItem = webViewState.url.substring(webViewState.url.lastIndexOf('/') + 1)
-                  Alert.alert('Payment was unsuccessfull');
-                  //Toast.showWithGravity('Payment was unsuccessfull', Toast.LONG, Toast.BOTTOM);
-                  this.props.navigation.navigate('ShoppingCart');
-                }
+                // if (webViewState.url.includes('https://rosoom.dubaitrade.ae/rosoom/cancelTransaction')) {
+                //   //for Production environment
+                //   let lastItem = webViewState.url.substring(webViewState.url.lastIndexOf('/') + 1)
+                //   Alert.alert('Payment was unsuccessfull');
+                //   //Toast.showWithGravity('Payment was unsuccessfull', Toast.LONG, Toast.BOTTOM);
+                //   this.props.navigation.navigate('ShoppingCart');
+                // }
                 // if (webViewState.url.includes('https://testsecureacceptance.cybersource.com/canceled')) {
                 //for DMTest environment
-                if (webViewState.url.includes('https://secureacceptance.cybersource.com/canceled')) {
-                  //for Production environment
-                  let lastItem = webViewState.url.substring(webViewState.url.lastIndexOf('/') + 1)
-                  Alert.alert('Payment was unsuccessfull');
-                  //Toast.showWithGravity('Payment was unsuccessfull', Toast.LONG, Toast.BOTTOM);
-                  this.props.navigation.navigate('ShoppingCart');
-                }
+                // if (webViewState.url.includes('https://secureacceptance.cybersource.com/canceled')) {
+                //   //for Production environment
+                //   let lastItem = webViewState.url.substring(webViewState.url.lastIndexOf('/') + 1)
+                //   Alert.alert('Payment was unsuccessfull');
+                //   //Toast.showWithGravity('Payment was unsuccessfull', Toast.LONG, Toast.BOTTOM);
+                //   this.props.navigation.navigate('ShoppingCart');
+                // }
 
-                if (webViewState.url == Constants.HOST_URL) {
+                if (webViewState.url == Constants.HOSTs_URL) {
                   this.props.navigation.navigate('Home');
                 }
 
@@ -239,4 +292,18 @@ export default class PayNow extends Component {
 
     );
   }
+  
 }
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addCountToCart: (newCount) => dispatch({ type: 'CART_COUNT_CHANGE', paylod: newCount })
+  }
+}
+const mapStateToProps = (state) => {
+  let Store_data = state.Count
+  return {
+    CarCount: Store_data.shoppingCartCount,
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PayNow)

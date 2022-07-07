@@ -305,7 +305,7 @@ class SignIn extends Component {
       });
       await AsyncStorage.setItem('loginStatus', 'true');
       await this.props.UpdateAuthStatus({ loginStatus: 'true' });
-      await AsyncStorage.setItem('userName', data.model.FullName);
+      await AsyncStorage.setItem('userName', data.model.Username);
       await AsyncStorage.setItem('custGuid', data.model.Id.toString());
       await AsyncStorage.setItem('custToken', data.model.token.toString());
       await analytics().logEvent('login', { method: this.state.SignInType });
@@ -354,7 +354,7 @@ class SignIn extends Component {
         name = data.model.CustomerName;
       }
       //this.initEmarsysSDK(data.model.id);
-      await AsyncStorage.setItem('userName', "name");
+      await AsyncStorage.setItem('userName', data.model.Username);
       await AsyncStorage.setItem('custGuid', "data.model.customer_guid");
       if(data.model.Token){
         await AsyncStorage.setItem('custToken', data.model.Token);

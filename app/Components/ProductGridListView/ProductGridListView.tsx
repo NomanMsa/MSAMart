@@ -10,7 +10,7 @@ import {
 import { Icons, Images, Loaders } from '@assets';
 import { Colors } from "@theme";
 import { ServiceCall } from '@utils';
-import { Api ,EventTags,EmarsysEvents} from '@config';
+import { Api, EventTags, EmarsysEvents } from '@config';
 
 import Toast from 'react-native-simple-toast';
 import FleashDealsViewAll from '../FleashDealsViewAll/FleashDealsViewAll.tsx';
@@ -29,7 +29,7 @@ export default class extends Component {
     OnProductClick: () => { },
     OnWishlistClick: () => { },
     ViewAllClick: () => { },
-    UpdateWishlistandAddToCartData:()=>{},
+    UpdateWishlistandAddToCartData: () => { },
   };
   constructor(props) {
     super(props);
@@ -54,13 +54,13 @@ export default class extends Component {
   }
 
   UpdateWishlistandAddToCartData = async (data) => {
-    console.log("test21234**********",data);
-    
+    console.log("test21234**********", data);
+
     let Service = {
-      apiUrl: Api.widgetProductAddWishlist + '?productId=' +data.Id +'&shoppingCartTypeId=2' +'&quantity=1',
+      apiUrl: Api.widgetProductAddWishlist + '?productId=' + data.Id + '&shoppingCartTypeId=2' + '&quantity=1',
       methodType: 'POST',
       headerData: { 'Content-Type': 'application/json' },
-     
+
       onSuccessCall: this.onSuccessWishlistCall,
       onFailureAPI: this.onFailureAPI,
       onPromiseFailure: this.onPromiseFailure,
@@ -70,9 +70,9 @@ export default class extends Component {
   };
   onSuccessWishlistCall = async (datas) => {
     console.log("success////////");
-    
-    if(this.state.apiLoading == false) {
-      this.setState({ apiLoading: true});
+
+    if (this.state.apiLoading == false) {
+      this.setState({ apiLoading: true });
       console.log("onSuccessWishlistCall............", datas)
       this.props.OnWishlistClick()
       let IdArray = [];
@@ -98,7 +98,7 @@ export default class extends Component {
         if (datas.message != null && datas.message.length > 0) {
           Toast.showWithGravity(datas.message, Toast.LONG, Toast.BOTTOM);
         }
-        
+
         tempArray = this.state.listData;
         tempArray = Array.apply(null, Array(this.state.listData.length)).map((v, i) => {
 
@@ -106,16 +106,16 @@ export default class extends Component {
             let tempRoom = this.state.listData[i];
             console.log("onSuccessWishlistCall............", tempRoom)
 
-            if (this.state.listData[i].CustomProperties.IsProductInYourWishList == false) {
-              tempRoom.CustomProperties.IsProductInYourWishList = true
+            if (this.state.listData[i].CustomProperties.IsProductInWishlist == false) {
+              tempRoom.CustomProperties.IsProductInWishlist = true
               IdArray.push(this.state.listData[i]);
               let prizeDetails = tempRoom.ProductPrice
               AppEventsLogger.logEvent(EventTags.ADD_TO_WISHLIST, { 'currency': '', 'item_id': tempRoom.Id, 'value': prizeDetails.Price });
               analytics().logEvent('add_to_wishlist', { 'currency': '', 'item_id': tempRoom.Id, 'value': prizeDetails.Price });
               EmarsysEvents.trackEmarsys('add_to_wishlist', { 'currency': '', 'item_id': tempRoom.Id, 'value': prizeDetails.Price });
 
-            } else if (this.state.listData[i].CustomProperties.IsProductInYourWishList == true) {
-              tempRoom.CustomProperties.IsProductInYourWishList = false
+            } else if (this.state.listData[i].CustomProperties.IsProductInWishlist == true) {
+              tempRoom.CustomProperties.IsProductInWishlist = false
               IdArray.push(this.state.listData[i]);
             }
 
@@ -123,7 +123,7 @@ export default class extends Component {
           }
           else {
             let tempRoom = this.state.listData[i];
-            tempRoom.CustomProperties.IsProductInYourWishList = tempRoom.CustomProperties.IsProductInYourWishList
+            tempRoom.CustomProperties.IsProductInWishlist = tempRoom.CustomProperties.IsProductInWishlist
             tempRoom.ProductPrice.DisableWishlistButton = tempRoom.ProductPrice.DisableWishlistButton
             return tempRoom;
           }
@@ -135,7 +135,7 @@ export default class extends Component {
       }
       var data = datas.model
       //await this.props.OnWishlistClick();
-      this.setState({apiLoading:false});
+      this.setState({ apiLoading: false });
     }
   }
 
@@ -181,12 +181,12 @@ export default class extends Component {
 
         if (i == this.state.index) {
           let tempRoom = this.state.listData[i];
-          if (this.state.listData[i].CustomProperties.IsProductInYourWishList == false) {
-            tempRoom.CustomProperties.IsProductInYourWishList = true
+          if (this.state.listData[i].CustomProperties.IsProductInWishlist == false) {
+            tempRoom.CustomProperties.IsProductInWishlist = true
             IdArray.push(this.state.listData[i]);
 
-          } else if (this.state.listData[i].CustomProperties.IsProductInYourWishList == true) {
-            tempRoom.CustomProperties.IsProductInYourWishList = false
+          } else if (this.state.listData[i].CustomProperties.IsProductInWishlist == true) {
+            tempRoom.CustomProperties.IsProductInWishlist = false
             IdArray.push(this.state.listData[i]);
           }
 
@@ -194,7 +194,7 @@ export default class extends Component {
         }
         else {
           let tempRoom = this.state.listData[i];
-          tempRoom.CustomProperties.IsProductInYourWishList = tempRoom.CustomProperties.IsProductInYourWishList
+          tempRoom.CustomProperties.IsProductInWishlist = tempRoom.CustomProperties.IsProductInWishlist
           tempRoom.ProductPrice.DisableWishlistButton = tempRoom.ProductPrice.DisableWishlistButton
           return tempRoom;
         }
@@ -231,31 +231,31 @@ export default class extends Component {
 
 
   onWishlist = (item, index) => {
-    
-    
+
+
     console.log("testcastgvdn///////'''///////''////'''//////");
-    
+
     let IdArray = [];
 
     let tempArray = []
     this.setState({ index: index })
     this.UpdateWishlistandAddToCartData(item)
-    // if (item.CustomProperties.IsProductInYourWishList == false) {
-    //   this.UpdateWishlistandAddToCartData(item)
-    //   this.props.OnWishlistClick()
+    if (item.CustomProperties.IsProductInWishlist == false) {
+      this.UpdateWishlistandAddToCartData(item)
+      this.props.OnWishlistClick()
 
-    // } else {
-    //   var DeleteArray = []
-    //   DeleteArray = this.state.DeleteWishlistItem;
-    //   DeleteArray.push(item.Id)
-    //   this.setState({ DeletedItemData: DeleteArray })
-    //   this.UpdateWishlistandAddToCartData(item)
-    //   //this.UpdateWishlistData(item)
-    //   this.props.OnWishlistClick(item)
-      
-    //   this.setState({ DeletedItemData: [] })
+    } else {
+      var DeleteArray = []
+      DeleteArray = this.state.DeleteWishlistItem;
+      DeleteArray.push(item.Id)
+      this.setState({ DeletedItemData: DeleteArray })
+      this.UpdateWishlistandAddToCartData(item)
+      this.UpdateWishlistData(item)
+      //this.props.OnWishlistClick(item)
 
-    // }
+      this.setState({ DeletedItemData: [] })
+
+    }
 
   }
 
@@ -295,7 +295,7 @@ export default class extends Component {
 
           {item.ProductPrice.DisableWishlistButton == false && (
             <>
-              {/* { <TouchableOpacity
+              {item.CustomProperties.IsProductInWishlist == true && <TouchableOpacity
                 testID={"addedToWishListBtn"}
                 accessibilityLabel="addedToWishListBtn"
                 style={styles.rightTopIconContainer} onPress={() => this.onWishlist(item, index)}>
@@ -306,8 +306,8 @@ export default class extends Component {
                   source={Icons.heartClear}
                 />
               </TouchableOpacity>
-              } */}
-              { <TouchableOpacity
+              }
+              {item.CustomProperties.IsProductInWishlist == false && <TouchableOpacity
                 testID={"addtoWishListBtn"}
                 accessibilityLabel="addtoWishListBtn"
                 style={styles.rightTopIconContainer} onPress={() => this.onWishlist(item, index)}>

@@ -2,8 +2,12 @@ import React, { Component } from 'react';
 import NetInfo from "@react-native-community/netinfo";
 import Api from '../../Config/Api/Api';
 //import  ServiceCall  from '../../ServiceCall/ServiceCall';
+import AsyncStorage from '@react-native-community/async-storage';
 const Cart = {
+	
 	Count: function () {
+		let authToken = await AsyncStorage.getItem('custToken');
+		if(authToken != null){
 		return fetch(Api.getShoppingCount)
 			.then((response) => {
 				const statusCode = response.status;
@@ -27,6 +31,7 @@ const Cart = {
 			.catch((error) => {
 				return 0;
 			})
+		}
 	}
 }
 export default Cart;

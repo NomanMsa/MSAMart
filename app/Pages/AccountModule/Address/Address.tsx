@@ -37,8 +37,8 @@ export default class Home extends Component {
     this.addEdit = this.addEdit.bind(this);
     this.addDeletePrompt = this.addDeletePrompt.bind(this);
     this.addDelete = this.addDelete.bind(this);
-    //this.addDefault = this.addDefault.bind(this);
-    //this.onSuccessAddressDefalutCall = this.onSuccessAddressDefalutCall.bind(this);
+    this.addDefault = this.addDefault.bind(this);
+    this.onSuccessAddressDefalutCall = this.onSuccessAddressDefalutCall.bind(this);
     this.checkAddressLimit = this.checkAddressLimit.bind(this);
     this.onSuccessAddressLimit = this.onSuccessAddressLimit.bind(this);
   }
@@ -106,7 +106,7 @@ export default class Home extends Component {
       }
     });
     this.setState({ userAddresses: tempArr })
-    //this.addDefault(item)
+    this.addDefault(item)
   }
   addEdit = (item, key) => {
     console.log(item);
@@ -145,30 +145,30 @@ export default class Home extends Component {
   }
 
 
-  // addDefault = async (item, key) => {
-  //   let Service = {
-  //     apiUrl: Api.defaultAddress + '?id=' + item.Id,
-  //     methodType: 'POST',
-  //     headerData: { 'Content-Type': 'application/json' },
-  //     onSuccessCall: this.onSuccessAddressDefalutCall,
-  //     onFailureAPI: this.onFailureAPI,
-  //     onPromiseFailure: this.onPromiseFailure,
-  //     onOffline: this.onOffline,
-  //   };
-  //   const serviceResponse = await ServiceCall(Service);
-  // }
+  addDefault = async (item, key) => {
+    let Service = {
+      apiUrl: Api.defaultAddress + '?id=' + item.Id,
+      methodType: 'POST',
+      headerData: { 'Content-Type': 'application/json' },
+      onSuccessCall: this.onSuccessAddressDefalutCall,
+      onFailureAPI: this.onFailureAPI,
+      onPromiseFailure: this.onPromiseFailure,
+      onOffline: this.onOffline,
+    };
+    const serviceResponse = await ServiceCall(Service);
+  }
 
-  // onSuccessAddressDefalutCall = async (data) => {
-  //   console.log("saev default add--", data.model);
-  //   if (data.message) {
-  //     testID = "address-0"
-  //     accessibilityLabel = "address-0"
-  //     if( data.message!=null && data.message.length > 0 ){
-  //       Toast.showWithGravity(data.message, Toast.LONG, Toast.BOTTOM);
-  //     }
-  //   }
-  //   //await this.fetchAddressList();
-  // }
+  onSuccessAddressDefalutCall = async (data) => {
+    console.log("saev default add--", data.model);
+    if (data.message) {
+      testID = "address-0"
+      accessibilityLabel = "address-0"
+      if( data.message!=null && data.message.length > 0 ){
+        Toast.showWithGravity(data.message, Toast.LONG, Toast.BOTTOM);
+      }
+    }
+    await this.fetchAddressList();
+  }
 
   onSuccessAddressDeleteCall = async (data) => {
     console.log(data);

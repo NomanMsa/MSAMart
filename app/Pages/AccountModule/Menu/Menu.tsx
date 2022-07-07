@@ -15,7 +15,7 @@ import {
 import styles from './MenuStyles';
 //import NestedListView, { NestedRow } from 'react-native-nested-listview';NestedList
 import AnimatedLoader from "react-native-animated-loader";
-
+import AsyncStorage from '@react-native-community/async-storage';
 type WindowDimensions = { width: number; height: number };
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -204,6 +204,8 @@ class Menu extends Component {
   };
 
   getCartCountData = async () => {
+    let authToken = await AsyncStorage.getItem('custToken');
+		if(authToken != null){
     let Service = {
       apiUrl: Api.getShoppingCount,
       methodType: 'GET',
@@ -215,6 +217,7 @@ class Menu extends Component {
       onOffline: this.onOffline,
     };
     const serviceResponse = await ServiceCall(Service);
+  }
   };
 
   onSuccessGetCountCall = (data) => {

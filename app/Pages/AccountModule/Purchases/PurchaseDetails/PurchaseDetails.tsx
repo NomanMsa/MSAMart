@@ -103,7 +103,7 @@ class PurchaseDetails extends Component {
         //StackActions.replace('Home')
         setTimeout(async () => {
           Alert.alert(
-            'Dragon Mart',
+            'Msa Mart',
             'Order don\'t belongs to you', [{
               text: 'Ok',
               onPress: async () => {
@@ -191,7 +191,7 @@ class PurchaseDetails extends Component {
   reorderItem = async () => {
     let Service = {
       apiUrl: Api.reOrder + '?orderId=' + (this.props.route.params).passData.data.Id,
-      methodType: 'GET',
+      methodType: 'POST',
       headerData: { 'Content-Type': 'application/json' },
       onSuccessCall: this.onSuccessReorder,
       onFailureAPI: this.onFailureAPI,

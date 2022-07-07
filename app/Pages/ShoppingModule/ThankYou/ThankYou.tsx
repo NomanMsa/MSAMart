@@ -74,8 +74,8 @@ class ThankYou extends Component {
     console.log('Tankyou Page')
     console.log((this.props.route.params).productId);
     this.setState({ loading: true });
-    await this.fetchOrderCompleteDetails((this.props.route.params).productId);
     await this.getCartCountData();
+    await this.fetchOrderCompleteDetails((this.props.route.params).productId);
     this.setState({ loading: false });
 
 
@@ -89,31 +89,31 @@ class ThankYou extends Component {
   }
 
   onSuccessfetchOrderDetails = async (data) => {
-    let payment_data = data.model
-    let order_details = payment_data.orderDetailsModel
-    //  let coupen_data = data.
+   let payment_data = data.model
+    //let order_details = payment_data.orderDetailsModel
+    this.props.navigation.navigate('PurchaseDetails', { passData: { data: { Id: data.model.OrderId} } })
     await this.setState({
-      userEmail: data.model.DPWEmail,
+      // userEmail: data.model.DPWEmail,
       orderId: data.model.OrderId,
-      billingAddress: data.model.orderDetailsModel.BillingAddress,
-      shippingAddress: data.model.CustomProperties.ShippingAddress,
-      OrderTotal: data.model.orderDetailsModel.OrderTotal,
-      ItemsArray: data.model.orderDetailsModel.Items,
+      //billingAddress: data.model.orderDetailsModel.BillingAddress,
+      //shippingAddress: data.model.CustomProperties.ShippingAddress,
+      //OrderTotal: data.model.orderDetailsModel.OrderTotal,
+      //ItemsArray: data.model.orderDetailsModel.Items,
     });
     const value = await AsyncStorage.getItem('@currencysymbol')
     console.log("value.......", value)
-    if (value !== null) {
-      let purchaseEventParams = { 'affiliation': ' ', 'coupon': order_details.GiftCards, 'currency': value, 'items': order_details.Items, 'transaction_id': payment_data.OrderId, 'shipping': order_details.DPWOrderShippingWithoutCurr, 'tax': order_details.DPWTaxWithoutCurr, 'value': order_details.DPWOrderTotalWithoutCurr, 'payment_method': order_details.PaymentMethod };
-      let fbEventsParams = { 'currency': value, 'transaction_id': payment_data.OrderId, 'value': order_details.DPWOrderTotalWithoutCurr, 'payment_method': order_details.PaymentMethod ,'tax': order_details.DPWTaxWithoutCurr, 'value': order_details.DPWOrderTotalWithoutCurr};
-      AppEventsLogger.logEvent(EventTags.PURCHASE, fbEventsParams);
-      analytics().logEvent('purchase', purchaseEventParams);
-    } else {
-      let purchaseEventParams = { 'affiliation': ' ', 'coupon': order_details.GiftCards, 'currency': ' ', 'items': order_details.Items, 'transaction_id': payment_data.OrderId, 'shipping': order_details.DPWOrderShippingWithoutCurr, 'tax': order_details.DPWTaxWithoutCurr, 'value': order_details.DPWOrderTotalWithoutCurr, 'payment_method': order_details.PaymentMethod };
-      let fbEventsParams = { 'transaction_id': payment_data.OrderId, 'value': order_details.DPWOrderTotalWithoutCurr, 'payment_method': order_details.PaymentMethod ,'tax': order_details.DPWTaxWithoutCurr, 'value': order_details.DPWOrderTotalWithoutCurr};
-      AppEventsLogger.logEvent(EventTags.PURCHASE, fbEventsParams);
-      analytics().logEvent('purchase', purchaseEventParams);
+    // if (value !== null) {
+    //   let purchaseEventParams = { 'affiliation': ' ', 'coupon': order_details.GiftCards, 'currency': value, 'items': order_details.Items, 'transaction_id': payment_data.OrderId, 'shipping': order_details.DPWOrderShippingWithoutCurr, 'tax': order_details.DPWTaxWithoutCurr, 'value': order_details.DPWOrderTotalWithoutCurr, 'payment_method': order_details.PaymentMethod };
+    //   let fbEventsParams = { 'currency': value, 'transaction_id': payment_data.OrderId, 'value': order_details.DPWOrderTotalWithoutCurr, 'payment_method': order_details.PaymentMethod ,'tax': order_details.DPWTaxWithoutCurr, 'value': order_details.DPWOrderTotalWithoutCurr};
+    //   AppEventsLogger.logEvent(EventTags.PURCHASE, fbEventsParams);
+    //   analytics().logEvent('purchase', purchaseEventParams);
+    // } else {
+    //   let purchaseEventParams = { 'affiliation': ' ', 'coupon': order_details.GiftCards, 'currency': ' ', 'items': order_details.Items, 'transaction_id': payment_data.OrderId, 'shipping': order_details.DPWOrderShippingWithoutCurr, 'tax': order_details.DPWTaxWithoutCurr, 'value': order_details.DPWOrderTotalWithoutCurr, 'payment_method': order_details.PaymentMethod };
+    //   let fbEventsParams = { 'transaction_id': payment_data.OrderId, 'value': order_details.DPWOrderTotalWithoutCurr, 'payment_method': order_details.PaymentMethod ,'tax': order_details.DPWTaxWithoutCurr, 'value': order_details.DPWOrderTotalWithoutCurr};
+    //   AppEventsLogger.logEvent(EventTags.PURCHASE, fbEventsParams);
+    //   analytics().logEvent('purchase', purchaseEventParams);
 
-    }
+    // }
     this.trackPurchase(payment_data.OrderId,order_details);
     if(data.model && data.model.CommonShipToModel){
       await this.setState({
@@ -168,8 +168,9 @@ class ThankYou extends Component {
 
   getCartCountData = async () => {
     //console.log("wishlistItem........................", data)
+    let authToken = await AsyncStorage.getItem('custToken');
+		if(authToken != null){
     let Service = {
-      //apiUrl: "https://dmtest.dpworld.com/api/v1//shoppingcart/getcount",
       apiUrl: Api.getShoppingCount,
       methodType: 'GET',
       headerData: { 'Content-Type': 'application/json' },
@@ -180,6 +181,7 @@ class ThankYou extends Component {
       onOffline: this.onOffline,
     };
     const serviceResponse = await ServiceCall(Service);
+  }
   };
 
   onSuccessGetCountCall = (data) => {

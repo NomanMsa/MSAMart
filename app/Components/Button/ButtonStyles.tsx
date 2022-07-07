@@ -15,7 +15,7 @@ module.exports = StyleSheet.create({
 	borderColor:Colors.DARK_GRAY_TEXT,
 	borderWidth:1,
 	justifyContent:'center',
-	backgroundColor:Colors.PRIMARY_LIGHT_BTN,
+	backgroundColor:Colors.PRIMARY,
 	marginBottom:15,
 	},
  mainTitleStyle:{

@@ -65,7 +65,7 @@ export default class Home extends Component {
       loading: false,
       firstname: '',
       lastname: '',
-      country: '1',
+      country: "1",
       email: '',
       address1: '',
       address2: '',
@@ -204,7 +204,7 @@ console.log("-----------------------------------------**-");
         countrycodeArray: [],//AvailableCountryCodeArray,
         firstname: passData.FirstName,
         lastname: passData.LastName,
-        country: "",//passData.CountryCode,
+        country: passData.CountryId.toString(),
         email:  passData.Email,
         address1: passData.Address1,
         address2: passData.Address2,
@@ -227,7 +227,7 @@ console.log("-----------------------------------------**-");
       })
     }
     //this.onSuccessCountryList
-    console.log("-----------------------------assikij--------------------------");
+    console.log("-----------------------------assikij--------------------------",this.state.country.toString());
     
   }
   onFailureAPI(data) {
@@ -871,7 +871,7 @@ console.log("-----------------------------------------**-");
                         style={[styles.dropdownContainerInner]}
                         onValueChange={(selCountry, index) => this.countryChange(selCountry)} >
                         {this.state.countryArray.map((item, index) => {
-                          return <Picker.Item key={index} value={item.Value} label={item.Text} />
+                          return <Picker.Item key={index} value={item.Value} label={item.Text}  />
                         })}
 
                       </Picker>

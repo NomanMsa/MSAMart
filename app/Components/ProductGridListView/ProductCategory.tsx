@@ -236,8 +236,8 @@ export default class extends Component {
       DeleteArray = this.state.DeleteWishlistItem;
       DeleteArray.push(item.Id)
       this.setState({ DeletedItemData: DeleteArray })
-      this.UpdateWishlistandAddToCartData(item)
-      //this.UpdateWishlistData(item)
+      //this.UpdateWishlistandAddToCartData(item)
+      this.UpdateWishlistData(item)
       this.setState({ DeletedItemData: [] })
 
     }

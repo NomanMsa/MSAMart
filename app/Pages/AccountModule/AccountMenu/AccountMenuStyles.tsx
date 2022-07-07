@@ -63,7 +63,7 @@ export default StyleSheet.create({
   logOutText: {
     padding: 10,
     fontSize: 15,
-    color: Colors.PRIMARY_DARK_BTN,
+    color: Colors.PRIMARY,
 		...Platform.select({
 			ios: {
 				fontWeight: '800',
@@ -99,7 +99,7 @@ export default StyleSheet.create({
   },
   logoutAvatar: {
     //backgroundColor: Colors.PRIMARY_DARK_BTN,
-    tintColor: Colors.PRIMARY_DARK_BTN,
+    tintColor: Colors.PRIMARY,//_DARK_BTN
     height: 25,
     width: 25,
   },

@@ -4,6 +4,7 @@ import { Icons, Images, Loaders } from '@assets';
 import { ServiceCall } from '@utils';
 import { Api } from '@config';
 import { connect } from 'react-redux';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const styles = require('./HeaderStyles');
 import { SvgUri } from 'react-native-svg';
@@ -103,6 +104,8 @@ class Headers extends Component {
 		return text.replace(/[^+\d]/g, '');
 	};
 	getCartCountData = async () => {
+		let authToken = await AsyncStorage.getItem('custToken');
+		if(authToken != null){
 		let Service = {
 			apiUrl: Api.getShoppingCount,
 			methodType: 'GET',
@@ -113,6 +116,7 @@ class Headers extends Component {
 			onOffline: this.onOffline,
 		};
 		const serviceResponse = await ServiceCall(Service);
+	}
 	};
 	onSuccessGetCountCall = (data) => {
 		this.setState({

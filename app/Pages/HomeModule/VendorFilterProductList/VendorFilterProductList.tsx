@@ -411,6 +411,8 @@ class VendorFilterProductList extends Component {
 
 
   getCartCountData = async () => {
+    let authToken = await AsyncStorage.getItem('custToken');
+		if(authToken != null){
     let Service = {
       apiUrl: Api.getShoppingCount,
       methodType: 'GET',
@@ -422,6 +424,7 @@ class VendorFilterProductList extends Component {
       onOffline: this.onOffline,
     };
     const serviceResponse = await ServiceCall(Service);
+  }
   };
 
   onSuccessGetCountCall = (data) => {
