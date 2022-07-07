@@ -35,6 +35,7 @@ import store from './ReduxActions/Store';
 import { ShoppingCartCount } from '@reducers';
 import {Images, Icons} from '@assets';
 
+
 import {
   Home,
   Menu,
@@ -113,12 +114,12 @@ export default class App extends Component {
             }}
             drawerContent={(props) => <DrawerContent {...props} />}
             >
-            <Drawer.Screen name="HomeStack" component={HomeStack} />
-            <Drawer.Screen name="Home" component={Home} />
-            <Drawer.Screen name="Category " component={Menu} />
-            <Drawer.Screen name="Shopping Cart" component={ShoppingCart} />
-            <Drawer.Screen name="Search" component={Search} />
-            <Drawer.Screen name="Help" component={HelpMenu} /> 
+            <Drawer.Screen name="HomeStack" component={HomeStack} options={{headerShown: false, hidden: true}} />
+            <Drawer.Screen name="Home" component={Home}  options={{headerShown: false, hidden: true}} />
+            <Drawer.Screen name="Category " component={Menu}  options={{headerShown: false, hidden: true}}/>
+            <Drawer.Screen name="Shopping Cart" component={ShoppingCart}  options={{headerShown: false, hidden: true}}/>
+            <Drawer.Screen name="Search" component={Search}  options={{headerShown: false, hidden: true}}/>
+            <Drawer.Screen name="Help" component={HelpMenu}  options={{headerShown: false, hidden: true}} /> 
           </Drawer.Navigator>
         </NavigationContainer>
       </Provider>

@@ -1078,6 +1078,13 @@ var addcart = 2;
     }
 
     }
+    var keysName ="customer_qty"
+    if(a =="{"){
+      a = a + '"' + keysName +'"'+ ":" +'"'+ this.state.QuantitySelectorText+'"';
+    }else{
+      a = a+"," + '"' + keysName +'"'+ ":" +'"'+ this.state.QuantitySelectorText+'"';
+    }
+    
     a = a + '}';
     let form = JSON.parse(a);
     let Service = {
