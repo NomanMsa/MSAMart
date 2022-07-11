@@ -60,6 +60,7 @@ import { RemotePushController } from '@utils';
 
 import CategoryMenuData from '../../../ReduxActions/Reducers/CategoryMenuData/CategoryMenuData';
 import ProductCategory from '../../../Components/ProductGridListView/ProductCategory';
+import ThemedDialog from 'react-native-elements/dist/dialog/Dialog';
 
 const Drawer = createDrawerNavigator();
 class Home extends Component {
@@ -700,6 +701,7 @@ class Home extends Component {
   };
 
   getCartCountData = async () => {
+
     let authToken = await AsyncStorage.getItem('custToken');
     if(authToken != null){
 
@@ -726,6 +728,10 @@ class Home extends Component {
       cartCount: data.model.Items.length,
       //wishListCount: data.model.Items.length,
     });
+    if ((await AsyncStorage.getItem('loginStatus')) == 'false') {
+      await AsyncStorage.setItem('custToken', '');
+    }
+    
   };
 
   OnBanerclick = async(item)=>{
@@ -1009,12 +1015,13 @@ class Home extends Component {
                         this.OnBanerclick(data)
                       }
                     />
+                    
                   )}
 
                 {this.state.topBanner && this.state.topBanner.length > 0 ? (
                   <>
                     {this.state.topBanner.map((item, i) => (
-                      <View style={{ paddingTop: 10 }}>
+                      <View style={{ paddingTop: 10, }}>
                         <DiscountBanner data={[item]} />
                       </View>
                     ))}
@@ -1029,9 +1036,9 @@ class Home extends Component {
                 )}
 
                 {/* Top Widget */}
-                
-                
-                  <>
+                <>
+                <Text style={styles.CTitles}>FETURED CATEGORIES</Text>
+                  
                   <ProductCategory
                   //showAllButton={false}
                   //ViewAllClick={() => this.OnViewAllPress(this.state.productData)}
@@ -1139,6 +1146,7 @@ class Home extends Component {
                               titleStyle={{ fontSize: 14 }}
                               
                             /> */}
+                            <Text style={styles.PTitle}>FETURED PRODUCTS</Text>
                             <ProductGridListView
                               //key={i}
                               showAllButton={true}

@@ -255,7 +255,7 @@ class ApplyFilterPage extends Component {
   }
   fetchCategoriesData = async (catId) => {
     this.setState({ isOpen: false, loading: true });
-    let FinalURL = Api.CategoryProduct + '?id=' + catId
+    let FinalURL = Api.CategoryProduct + '?categoryId=' + catId
       await this.setState({ loading: true, filterPageId: this.props.Filterdata.categoryId, manufacturerId: 0, vendorId: 0, PageName: 'filterPage', manufacturarFilterIDsData: [], VendorFilterIDsData: [], });
       //FinalURL = Api.CategoryProduct + '?id=' + catId
     /*let FinalURL = ''
@@ -278,13 +278,13 @@ class ApplyFilterPage extends Component {
     let Service = {
       apiUrl: FinalURL + '&loadFilters=true',
 
-      methodType: 'GET',
+      methodType: 'POST',
       headerData: { 'Content-Type': 'application/json' },
-      // bodyData: JSON.stringify({
-      //   categoryIncludeInTopMenu: 'true',
-      //   showOnHomePage: true,
-      //   parentSliderWidget: 'home',
-      // }),
+      bodyData: JSON.stringify({
+        categoryIncludeInTopMenu: 'true',
+        showOnHomePage: true,
+        parentSliderWidget: 'home',
+      }),
       onSuccessCall: this.onSuccessCategoryViewCall,
       onFailureAPI: this.onFailureAPI,
       onPromiseFailure: this.onPromiseFailure,

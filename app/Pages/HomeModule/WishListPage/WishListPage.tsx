@@ -87,6 +87,7 @@ class WishListPage extends Component {
     this.onSuccessWidgetCall = this.onSuccessWidgetCall.bind(this);
     this.renderTotalPrize = this.renderTotalPrize.bind(this);
     this.onSuccessUpdatedWishlistCall = this.onSuccessUpdatedWishlistCall.bind(this);
+    this.onAddToCartClick = this.onAddToCartClick.bind(this);
 
   }
   async componentDidMount() {
@@ -386,6 +387,7 @@ class WishListPage extends Component {
     var QuentityArray = []
     QuentityArray.push(Number(data.Id))
     await this.setState({ UpdatedQuentityItemData: QuentityArray, loading: true })
+console.log("/////",UpdatedQuentityItemData);
 
     await this.UpdateCartData()
 
@@ -417,6 +419,8 @@ class WishListPage extends Component {
   }
 
   onQuentityChange = (data) => {
+    console.log("shdgd****////*****//*/**//****/**");
+    
     var QuentityArray = {}
     // QuentityArray.push(data.Quantity)
     var dict = {};
@@ -701,7 +705,7 @@ class WishListPage extends Component {
                     // onCartClick={(data) => console.log('common   ' + data.text)}
                     UpdateWishlistClick={(data) => console.log('common   ' + data)}
                     EmailClick={(data) => this.props.navigation.navigate('EmailFriend')}
-                    AddToCartClick={(data) => console.log('common   ' + data)}
+                    AddToCartClick={(data) => this.onAddToCartClick(data)}
                     onAddToCartClick={(data) => this.onAddToCartClick(data)}
                     onRemoveClick={(data) => this.onDeleteWishListItem(data)}
                     QuentityUpdate={(data) => this.onQuentityUpdateShoppingItem(data)}

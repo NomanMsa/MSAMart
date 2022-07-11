@@ -26,11 +26,22 @@ export default StyleSheet.create({
     paddingHorizontal: 24,
   },
   PTitle:{
-    fontSize: 20,
-    fontWeight: '600',
-    color: 'black',
-    textAlign:'center'
-
+    
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#0069d1',
+    textAlign:'center',
+    fontFamily: 'verdana',
+    
+  },
+  CTitles:{
+    marginTop: 20,
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#0069d1',
+    textAlign:'center',
+    fontFamily: 'verdana',
+    
   },
   sectionTitle: {
     fontSize: 24,

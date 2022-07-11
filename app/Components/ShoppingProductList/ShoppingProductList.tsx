@@ -194,20 +194,21 @@ export default class extends Component {
 
 
                   </View>
-                    {/* {item.IsShipToEnable == true ?  */}
+                     {/* {item.IsShipToEnable == true ?  */}
                         {/* ( */}
 
-                         { item.IsServiceableByVendor != true ? <Text style={{color:'red'}}> Item not deliverable</Text> :
+                        {/* { item.IsServiceableByVendor != true ? <Text style={{color:'red'}}> Item not deliverable</Text> : */}
                         <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: -20, flex: 1, alignContent: 'center', }}>
    
                         <ProductQuantity key={index}
                           Quantity={item.Quantity.toString()}
                           //Quantity="2"
                           onTextChange={(text) => this.QuentityChange(text, item, index)}
-                          maxProductQuantity={item.DPWStockQuantity}
-                          ProductLimitIndicatorCount={item.DPWProductLeftLimit}
+                          maxProductQuantity={2}
+                          ProductLimitIndicatorCount={5}
                         />
-                      </View>}
+                      </View>
+                      {/* } */}
                        {/* ) */}
                        {/* : 
                        (<View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: -20, flex: 1, alignContent: 'center', }}>

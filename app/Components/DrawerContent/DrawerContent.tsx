@@ -76,7 +76,7 @@ class DrawerContent extends Component {
 
     onLogoutPress = async () => {
         let Service = {
-            apiUrl: Api.Logout,
+            apiUrl: Api.Logout +"?DeviceId="+DeviceInfo.getUniqueId(),
             methodType: 'GET',
             headerData: { 'Content-Type': 'application/json' },
             onSuccessCall: this.onSuccessLogout,

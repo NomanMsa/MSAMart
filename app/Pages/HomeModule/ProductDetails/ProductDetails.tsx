@@ -285,7 +285,7 @@ class ProductDetails extends Component {
       easyReturnAvailable: data.IsEasyReturnAvailable,
       serviceableByVendor: data.IsServiceableByVendor,
       nonReturnable: data.NotReturnable,
-      noOfReturnRequestAvailable: data.NumberOfDaysReturnRequestAvailable,
+      noOfReturnRequestAvailable: (data.NumberOfDaysReturnRequestAvailable !=undefined) ? data.NumberOfDaysReturnRequestAvailable:7,
       deliveryDate: data.DeliveryDate,
       // pBreadcrumb: data.Breadcrumb.CategoryBreadcrumb
       htmlData: {html: data.FullDescription}
@@ -946,7 +946,7 @@ var addcart = 2;
     }
 
     }
-    var keysName ="customer_qty"
+    var keysName ="addtocart_"+this.state.pData.Id
     if(a =="{"){
       a = a + '"' + keysName +'"'+ ":" +'"'+ this.state.QuantitySelectorText+'"';
     }else{
@@ -1078,7 +1078,7 @@ var addcart = 2;
     }
 
     }
-    var keysName ="customer_qty"
+    var keysName ="addtocart_"+this.state.pData.Id
     if(a =="{"){
       a = a + '"' + keysName +'"'+ ":" +'"'+ this.state.QuantitySelectorText+'"';
     }else{
@@ -1870,7 +1870,7 @@ var addcart = 2;
               }}
               icon={Icons.returnsAllowedUpto}
               text={'Returns allowed upto'}
-              Secondarytext={this.state.noOfReturnRequestAvailable+" Days"}
+              Secondarytext={this.state.noOfReturnRequestAvailable +" Days"}
               secondaryTitleStyle={{
                 color: Colors.PRIMARY,
                 marginTop: 5,

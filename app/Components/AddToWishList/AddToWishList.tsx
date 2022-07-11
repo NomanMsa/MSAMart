@@ -50,11 +50,17 @@ export default class extends Component {
 
   }
 
-  componentWillReceiveProps(nextProps) {
-    console.log("next props.----", nextProps.flag);
-    if (nextProps.flag !== this.state.userWishListFlag) {
-		  this.setState({ userWishListFlag: nextProps.flag });
-		}
+  // componentWillReceiveProps(nextProps) {
+  //   console.log("next props.----", nextProps.flag);
+  //   if (nextProps.flag !== this.state.userWishListFlag) {
+	// 	  this.setState({ userWishListFlag: nextProps.flag });
+	// 	}
+  // }
+
+  cartclick(data) {
+    this.props.AddToCartClick(data)
+    console.log(data);
+
   }
   
   onQuentityChange = (text, item, index) => {
@@ -115,7 +121,7 @@ export default class extends Component {
 
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 10, }}>
               <View>
-              <TouchableOpacity onPress={() => this.props.onAddToCartClick(item)}>
+              <TouchableOpacity onPress={() => this.cartclick(item)}>
                 <Text style={styles.radioText}
                   testID="addToCartBtn"
                   accessibilityLabel="addToCartBtn"

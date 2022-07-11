@@ -2,16 +2,18 @@ import React, { Component } from 'react';
 import NetInfo from "@react-native-community/netinfo";
 import AsyncStorage from '@react-native-community/async-storage';
 import crashlytics from '@react-native-firebase/crashlytics';
+import DeviceInfo from 'react-native-device-info';
 const ServiceCall = async function (Service) {
 	let data ={};
 	let token = await AsyncStorage.getItem('custGuid');
 	let authToken = await AsyncStorage.getItem('custToken');
 	let username = await AsyncStorage.getItem('userName');
+	let DeviceId = DeviceInfo.getUniqueId();
 	data.method = Service.methodType;
 	//data.headers = Service.headerData;
 	console.log("auth token " + authToken);
 	if(Service.apiUrl.indexOf("mobcms") > -1){
-		data.headers = { 'Content-Type': 'application/json', 'Authorization' : 'Bearer ' + authToken};
+		data.headers = { 'Content-Type': 'application/json', 'Authorization' : 'Bearer ' + authToken, 'DeviceId':DeviceId};
 	}else{
 		data.headers = { 'Content-Type': 'application/json', 'Authorization' : token };
 	}

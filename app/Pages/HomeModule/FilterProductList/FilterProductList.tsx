@@ -236,14 +236,14 @@ class FilterProductList extends Component {
     this.setState({ categoryId: catId });
 
     let Service = {
-      apiUrl: Api.CategoryProduct + '?id=' + catId,
-      methodType: 'GET',
+      apiUrl: Api.CategoryProduct + '?categoryId=' + catId,
+      methodType: 'POST',
       headerData: { 'Content-Type': 'application/json' },
-      // bodyData: JSON.stringify({
-      //   categoryIncludeInTopMenu: 'true',
-      //   showOnHomePage: true,
-      //   parentSliderWidget: 'home',
-      // }),
+      bodyData: JSON.stringify({
+        categoryIncludeInTopMenu: 'true',
+        showOnHomePage: true,
+        parentSliderWidget: 'home',
+      }),
       onSuccessCall: this.onSuccessCategoryViewCall,
       onFailureAPI: this.onFailureAPI,
       onPromiseFailure: this.onPromiseFailure,

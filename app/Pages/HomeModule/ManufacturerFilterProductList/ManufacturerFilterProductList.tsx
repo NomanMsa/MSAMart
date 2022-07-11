@@ -208,7 +208,7 @@ class ManufacturerFilterProductList extends Component {
     let Service = {
       apiUrl: Api.ManufacturerFilterAPI + '?manufacturerId=' + catId,
 
-      methodType: 'GET',
+      methodType: 'POST',
       headerData: { 'Content-Type': 'application/json' },
       // bodyData: JSON.stringify({
       //   categoryIncludeInTopMenu: 'true',

@@ -8,7 +8,7 @@ export default StyleSheet.create({
     width: '100%',
     height: '100%',
     backgroundColor: Colors.WHITE,
-    marginBottom: 70,
+    marginBottom: 30,
   },
   container: {
     flex: 1,

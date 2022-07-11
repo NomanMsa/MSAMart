@@ -93,6 +93,7 @@ class ShoppingCart extends Component {
       summuryCustomData: '',
       DeletedItemData: '',
       UpdatedQuentityItemData: '',
+      cartqtyarr:[],
       CartCount: 0,
       wishListCount: 0,
       CoupenCode: '',
@@ -283,6 +284,8 @@ class ShoppingCart extends Component {
   }
 
   onUpdateSuccessCall = async (datas) => {
+    console.log("sucessss**/*/*//**/*///**//***",datas.model);
+    
     if (datas.errorlist > 0) {
       Alert.alert('MsaMart', datas.errorlist[0])
     } else {
@@ -426,12 +429,17 @@ class ShoppingCart extends Component {
     dict.key1 = item.Id.toString()
     dict.key2 = text.toString();
     QuentityArray[dict.key1] = dict.key2
+    var a="{"+"itemquantity"+dict.key1+":"+'"'+ text.toString()+'"'+"}"
+    console.log("newjson/*//*/**/***",a);
+    
     //QuentityArray.push()
-    await this.setState({ UpdatedQuentityItemData: QuentityArray })
+    await this.setState({ cartqtyarr: dict })
+console.log("//**////*//////*/*/*///****/*/**/",this.state.UpdatedQuentityItemData);
 
-    await this.onUpdateShoppingItem('')
+    
     this.setState({ UpdatedQuentityItemData: '' })
     console.log("3/3/3/3/3/3/3/3/3/3/3/3", dict)
+    await this.onUpdateShoppingItem('')
 
 
   }
@@ -443,15 +451,17 @@ class ShoppingCart extends Component {
 
 
   onUpdateShoppingItem = async (id) => {
-    console.log("////////////////////////"+id)
+    var dict =this.state.cartqtyarr;
+    var keyname ="itemquantity"+dict.key1
+    var keyname2 ="removefromcart"
+    var a ='{'+'"'+keyname+'"'+ ":"+'"'+dict.key2+'"'+','+'"'+keyname2+'"'+":"+'"'+id+'"'+'}';
+    console.log("////////////////////////"+a)
     //var id= this.state.DeletedItemData;
     let Service = {
       apiUrl: Api.UpdateShoppingCartList,
       methodType: 'POST',
       headerData: { 'Content-Type': 'application/json' },
-      bodyData: JSON.stringify({
-        "removefromcart": id,
-      }),
+      bodyData: a,
 
 
       onSuccessCall: this.onUpdateSuccessCall,

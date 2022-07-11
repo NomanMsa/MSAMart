@@ -195,8 +195,8 @@ class SearchFilterProductList extends Component {
     this.setState({ isOpen: false, loading: true, categoryId: catId });
 
     let Service = {
-      apiUrl: Api.CategoryProduct + '?id=' + catId,
-      methodType: 'GET',
+      apiUrl: Api.CategoryProduct + '?categoryId=' + catId,
+      methodType: 'POST',
       headerData: { 'Content-Type': 'application/json' },
       bodyData: JSON.stringify({
         categoryIncludeInTopMenu: 'true',

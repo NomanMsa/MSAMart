@@ -61,12 +61,12 @@ function* HandleHelpCenter() {
 
 // watcher saga
 function* RootSaga() {
-    yield takeEvery('COUNT_CALL', HandleCount)
+    //yield takeEvery('COUNT_CALL', HandleCount)
     // yield takeEvery('HOME_CALL', HandleHome)
     // yield takeEvery('WIDGET_CALL', HandleWidget)
-    yield takeEvery('WISHLIST_CALL', HandleWishlist)
-    yield takeEvery('SHOPPING_CALL', HandleShoppingCart)
-    yield takeEvery('HELPMODUL_CALL', HandleHelpCenter)
+   // yield takeEvery('WISHLIST_CALL', HandleWishlist)
+    //yield takeEvery('SHOPPING_CALL', HandleShoppingCart)
+    // yield takeEvery('HELPMODUL_CALL', HandleHelpCenter)
 
 }
 

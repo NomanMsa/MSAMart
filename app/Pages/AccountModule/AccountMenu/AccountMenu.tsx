@@ -22,6 +22,7 @@ import { connect } from 'react-redux';
 const { width, height } = Dimensions.get('window');
 import SafeAreaView from 'react-native-safe-area-view';
 /*import Emarsys from "react-native-emarsys-wrapper";*/
+import DeviceInfo from 'react-native-device-info';
 
 class MenuContainer extends Component {
   constructor(props) {
@@ -191,9 +192,12 @@ class MenuContainer extends Component {
     }
   }
   async onSuccessLogout(data) {
+    
+    
     if (data.status == true) {
       await AsyncStorage.setItem('loginStatus', 'false');
       await AsyncStorage.setItem('custGuid', '');
+      await AsyncStorage.setItem('userName','');
       // await AsyncStorage.removeItem('userName');
       // await AsyncStorage.removeItem('appleUserName');
       // await AsyncStorage.removeItem('appletoken');
@@ -240,7 +244,7 @@ class MenuContainer extends Component {
   }
   onLogoutPress = async () => {
     let Service = {
-      apiUrl: Api.Logout,
+      apiUrl: Api.Logout +"?deviceId="+DeviceInfo.getUniqueId().toString(),
       methodType: 'GET',
       headerData: { 'Content-Type': 'application/json', },
       onSuccessCall: this.onSuccessLogout,

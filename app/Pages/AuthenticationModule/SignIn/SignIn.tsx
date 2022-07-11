@@ -29,7 +29,7 @@ import Toast from 'react-native-simple-toast';
 import { StackActions } from '@react-navigation/native';
 import analytics from '@react-native-firebase/analytics';
 import { AppEventsLogger } from "react-native-fbsdk-next";
-
+import DeviceInfo from 'react-native-device-info';
 /*import { AppleButton, AppleButtonStyle, AppleButtonType, appleAuth } from '@invertase/react-native-apple-authentication';
 import Emarsys from "react-native-emarsys-wrapper";*/
 
@@ -481,6 +481,7 @@ class SignIn extends Component {
           Username: this.state.email,
           Email: this.state.email,
           Password: this.state.password,
+          DeviceId: DeviceInfo.getUniqueId().toString()
         }),
         onSuccessCall: this.onSuccessLogin,
         onFailureAPI: this.onFailureAPI,
