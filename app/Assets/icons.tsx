@@ -1,5 +1,6 @@
 const icons = {
   logo: require('./Icons/logo.png'),
+  
   fleash: require('./Icons/flash.png'),
   arrow: require('./Icons/arrow.png'),
   searchNoBorder: require('./Icons/searchNoBorder.png'),

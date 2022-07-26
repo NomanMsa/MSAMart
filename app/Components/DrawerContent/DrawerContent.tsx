@@ -21,7 +21,11 @@ import { AppEventsLogger } from "react-native-fbsdk-next";
 /*import Emarsys from "react-native-emarsys-wrapper";*/
 import DeviceInfo from 'react-native-device-info';
 
- 
+var orderTitle = ''
+var wishlistTitle= ''
+var acDetailTitle= ''
+var saddTitle= ''
+var catagorytitle=''
 
 
 class DrawerContent extends Component {
@@ -31,7 +35,63 @@ class DrawerContent extends Component {
         this.state = {
             loading: false,
             pData: {},
+            imageUri: null,
+            mobile: null,
+            sEmail: null,
+            navarr: [],
+            // orderTitle: '',
+            // wishlistTitle: '',
+            // acDetailTitle: '',
+            // saddTitle: '',
+            // catagorytitle:''
         }
+
+        AsyncStorage.multiGet(["image", "mobieno", "semail"]).then(response => {
+            this.setState({
+                imageUri: response[0][1]
+            });
+            this.setState({
+                mobile: response[1][1]
+            });
+
+            this.setState({
+                sEmail: response[2][1]
+            });
+        });
+
+        AsyncStorage.getItem("navmodel").then(response=>{
+            this.setState({
+              navarr:JSON.parse(response)
+            })
+
+            this.state.navarr.map((nav,i)=>{
+              if(nav.LinkName=="wishlist"){
+                
+                wishlistTitle =nav.Link
+               
+              }
+              if(nav.LinkName=="order"){
+                
+                  orderTitle = nav.Link
+               
+              }
+              if(nav.LinkName=="accountdetail"){
+               
+                  acDetailTitle = nav.Link
+               
+              }
+              if(nav.LinkName=="savedaddress"){
+             
+                  saddTitle = nav.Link
+                
+              }
+              if(nav.LinkName=="category"){
+               
+                  catagorytitle = nav.Link
+              }
+              
+            });
+          });
     }
 
     async componentDidMount() {
@@ -49,8 +109,7 @@ class DrawerContent extends Component {
     dialCall = () => {
         try {
 
-
-            let phone = '+919328772213';
+            let phone = this.state.mobile;
             let phoneNumber = phone;
             if (Platform.OS !== 'android') {
                 phoneNumber = `telprompt:${phone}`;
@@ -76,7 +135,7 @@ class DrawerContent extends Component {
 
     onLogoutPress = async () => {
         let Service = {
-            apiUrl: Api.Logout +"?DeviceId="+DeviceInfo.getUniqueId(),
+            apiUrl: Api.Logout + "?DeviceId=" + DeviceInfo.getUniqueId(),
             methodType: 'GET',
             headerData: { 'Content-Type': 'application/json' },
             onSuccessCall: this.onSuccessLogout,
@@ -117,7 +176,7 @@ class DrawerContent extends Component {
             console.log(e);
         }
     }
-    
+
     onFailureAPI(data) {
         console.log(data);
     }
@@ -143,7 +202,7 @@ class DrawerContent extends Component {
                             <Image
                                 testID={"mobilelogo"}
                                 accessibilityLabel="mobilelogo"
-                                style={styles.dragonIcon} source={Icons.logo} />
+                                style={styles.dragonIcon} source={{ uri: this.state.imageUri }} />
 
 
                         </View>
@@ -181,7 +240,7 @@ class DrawerContent extends Component {
                                                     accessibilityLabel="featureCategories"
                                                     style={styles.rightTopIcon2} source={Icons.list} />
                                             )}
-                                            label="Category"
+                                            label={catagorytitle}
                                             onPress={async () => {
                                                 analytics().logEvent('hamburger_menu', { 'navigate': 'Category' });
                                                 AppEventsLogger.logEvent(EventTags.HAMBURGER_MENU_NAVIGATION, { 'navigate': 'Category' });
@@ -198,7 +257,7 @@ class DrawerContent extends Component {
                                                     icon={({ color, size }) => (
                                                         <Image style={styles.rightTopIcon2} source={Icons.cart} />
                                                     )}
-                                                    label="My Purchase"
+                                                    label={orderTitle}
                                                     onPress={async () => {
                                                         if (this.props.AuthStatus == 'true') {
                                                             await analytics().logEvent('hamburger_menu', { 'navigate': 'My Purchase' });
@@ -216,7 +275,7 @@ class DrawerContent extends Component {
                                                 <DrawerItem
                                                     icon={({ color, size }) => (
                                                         <Image style={styles.rightTopIcon2} source={Icons.cart} />)}
-                                                    label="My Purchase"
+                                                    label={orderTitle}
                                                     testID={"mobileWishList"}
                                                     accessibilityLabel="mobileWishList"
                                                     onPress={async () => {
@@ -235,9 +294,9 @@ class DrawerContent extends Component {
 
                                         <DrawerItem
                                             icon={({ color, size }) => (
-                                                <Image style={{ ...styles.rightTopIcon2, tintColor: Colors.PRIMARY, borderColor:Colors.PRIMARY,  height: 25, width: 25, margin: -2, }} source={Icons.heart} />
+                                                <Image style={{ ...styles.rightTopIcon2, tintColor: Colors.PRIMARY, borderColor: Colors.PRIMARY, height: 25, width: 25, margin: -2, }} source={Icons.heart} />
                                             )}
-                                            label="My WishList"
+                                            label= {wishlistTitle}
                                             testID={"mobileWishList"}
                                             accessibilityLabel="mobileWishList"
                                             onPress={async () => {
@@ -258,7 +317,7 @@ class DrawerContent extends Component {
                                             icon={({ color, size }) => (
                                                 <Image style={styles.rightTopIcon2} source={Icons.user} />
                                             )}
-                                            label="My Account"
+                                            label={acDetailTitle}
                                             testID={"myAccountMobile"}
                                             accessibilityLabel="myAccountMobile"
                                             onPress={async () => {
@@ -276,9 +335,9 @@ class DrawerContent extends Component {
                                             icon={({ color, size }) => (
                                                 <Image style={styles.rightTopIcon2} source={Icons.addressIco} />
                                             )}
+                                            label={saddTitle}
                                             testID="Saved addresses"
                                             accessibilityLabel="Saved addresses"
-                                            label="Saved Address"
                                             testID={"savedAddress"}
                                             accessibilityLabel="savedAddress"
                                             onPress={async () => {
@@ -316,7 +375,7 @@ class DrawerContent extends Component {
                                     }}
                                         activeOpacity={0.7} style={styles.listRowContainer} >
                                         <Image style={styles.listRowIcon} source={Icons.phone} />
-                                        <Text style={styles.listRowText}>+91 932828772213</Text>
+                                        <Text style={styles.listRowText}>{this.state.mobile}</Text>
                                     </TouchableOpacity>
 
                                     <TouchableOpacity onPress={async () => {
@@ -325,7 +384,7 @@ class DrawerContent extends Component {
                                             await analytics().logEvent('hamburger_menu', { 'navigate': 'Email customer support' });
                                             AppEventsLogger.logEvent(EventTags.HAMBURGER_MENU_NAVIGATION, { 'navigate': 'Email customer support' });
                                             EmarsysEvents.trackEmarsys(EventTags.HAMBURGER_MENU_NAVIGATION, { 'navigate': 'Email customer support' });
-                                            await Linking.openURL('mailto:support@msainfotech.in')
+                                            await Linking.openURL('mailto:' + this.state.sEmail)
                                         } catch (e) {
                                             Toast.showWithGravity('Service not available', Toast.LONG, Toast.BOTTOM);
 
@@ -334,7 +393,7 @@ class DrawerContent extends Component {
                                     }}
                                         activeOpacity={0.7} style={styles.listRowContainer} >
                                         <Image style={styles.listRowIcon} source={Icons.email} />
-                                        <Text style={styles.listRowText}>msamart@support</Text>
+                                        <Text style={styles.listRowText}>{this.state.sEmail}</Text>
                                     </TouchableOpacity>
                                 </Drawer.Section>
                             </View>

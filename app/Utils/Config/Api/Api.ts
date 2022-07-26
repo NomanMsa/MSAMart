@@ -3,7 +3,7 @@ import Constants from '../Constants/Constants';
 
 const Api = {
   /////Login API List/////////////////////
- 
+ AppConfig:Constants.BASEs_URL +'AppConfiguration/AppConfiguration?clientId=1',
   Login: Constants.BASEs_URL + 'ManageUserAccess/login',
   ForgotPassword: Constants.BASEs_URL + 'customer/passwordrecovery',
   PasswordRecoveryUserValidation: Constants.BASEs_URL + 'customer/PasswordRecoveryConfirm?',
@@ -32,6 +32,7 @@ const Api = {
 
   /////AddToCart API List/////////////////////
   AddToCart: Constants.BASEs_URL + 'shoppingcart/addproducttocart_details',
+  AddItemsToCartFromWishlist:Constants.BASEs_URL+'shoppingcart/AddItemsToCartFromWishlist',
 
   /////Shopping page API List/////////////////////
   getShoppingCartList: Constants.BASEs_URL + 'shoppingcart/cart',
@@ -77,7 +78,7 @@ const Api = {
   
 
   ////////// widget product add wishlist  /////////////////
-  widgetProductAddWishlist:Constants.BASEs_URL +'shoppingcart/addproducttocart_catalog',
+  widgetProductAddWishlist:Constants.BASEs_URL +'shoppingcart/addproducttocart_details',
 
   //////////Users Address APIs//////////////////////////
   getAddressById: Constants.BASEs_URL + 'customer/addressedit', 

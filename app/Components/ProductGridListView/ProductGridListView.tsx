@@ -55,12 +55,19 @@ export default class extends Component {
 
   UpdateWishlistandAddToCartData = async (data) => {
     console.log("test21234**********", data);
+    let jdata ={
+      "additionalProp1": "string",
+      "additionalProp2": "string",
+      "additionalProp3": "string"
+    }
 
     let Service = {
-      apiUrl: Api.widgetProductAddWishlist + '?productId=' + data.Id + '&shoppingCartTypeId=2' + '&quantity=1',
+      apiUrl: Api.widgetProductAddWishlist + '?productId=' + data.Id + '&shoppingCartTypeId=2',
       methodType: 'POST',
       headerData: { 'Content-Type': 'application/json' },
-
+      bodyData: JSON.stringify({
+        jdata
+      }),
       onSuccessCall: this.onSuccessWishlistCall,
       onFailureAPI: this.onFailureAPI,
       onPromiseFailure: this.onPromiseFailure,
@@ -239,7 +246,7 @@ export default class extends Component {
 
     let tempArray = []
     this.setState({ index: index })
-    this.UpdateWishlistandAddToCartData(item)
+    //this.UpdateWishlistandAddToCartData(item)
     if (item.CustomProperties.IsProductInWishlist == false) {
       this.UpdateWishlistandAddToCartData(item)
       this.props.OnWishlistClick()
@@ -249,7 +256,7 @@ export default class extends Component {
       DeleteArray = this.state.DeleteWishlistItem;
       DeleteArray.push(item.Id)
       this.setState({ DeletedItemData: DeleteArray })
-      this.UpdateWishlistandAddToCartData(item)
+      // this.UpdateWishlistandAddToCartData(item)
       this.UpdateWishlistData(item)
       //this.props.OnWishlistClick(item)
 

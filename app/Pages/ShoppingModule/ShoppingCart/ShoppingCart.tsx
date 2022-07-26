@@ -74,7 +74,7 @@ class ShoppingCart extends Component {
       isSummuryOpen: false,
       totalText: 'Total',
       // totalValue: '16,576.91',
-      totalValue: 'calculated during checkout',
+      totalValue: '',
 
       totalCurrancy: '$',
       scrollMenuData: [],
@@ -88,6 +88,7 @@ class ShoppingCart extends Component {
       productData:[],
       shoppingCartData: '',
       shoppingCartList: [],
+      isShowallbutton:null,
       summuryData: [],
       summuryDataCustomProperties: '',
       summuryCustomData: '',
@@ -216,6 +217,12 @@ class ShoppingCart extends Component {
       coupenAppliedList: discountBox.AppliedDiscountsWithCodes,
       isShipToEnable:false, //data.CommonShipToModel.IsShipToEnable
     })
+    //
+    if(this.state.shoppingCartList.length >0){
+      this.state.isShowallbutton =null
+    }else{
+      this.state.isShowallbutton =true
+    }
     this.fetchordreTotal();
     this.state.shoppingCartList.map(item => {
       item.Items.map(val => {
@@ -455,6 +462,11 @@ console.log("//**////*//////*/*/*///****/*/**/",this.state.UpdatedQuentityItemDa
     var keyname ="itemquantity"+dict.key1
     var keyname2 ="removefromcart"
     var a ='{'+'"'+keyname+'"'+ ":"+'"'+dict.key2+'"'+','+'"'+keyname2+'"'+":"+'"'+id+'"'+'}';
+    if(id==''){
+      a ='{'+'"'+keyname+'"'+ ":"+'"'+dict.key2+'"'+'}';
+    }else{
+      a ='{'+'"'+keyname2+'"'+ ":"+'"'+id+'"'+'}';
+    }
     console.log("////////////////////////"+a)
     //var id= this.state.DeletedItemData;
     let Service = {
@@ -926,19 +938,19 @@ let jdata ={
                   {this.state.Title}
                 </Text>
               </View>
-              {this.state.customeProperty && this.state.StandardDeliveryModel && (this.state.StandardDeliveryModel).IsFreeBanner == true ? <View style={{ flexDirection: 'row', padding: 15 }}>
+              {this.state.customeProperty && this.state.StandardDeliveryModel && (this.state.StandardDeliveryModel).IsFreeBanner == true ? <View style={{ flexDirection: 'row', padding: 10 }}>
                 <View style={styles.IcoContainer}>
                   <Image style={styles.FlashDealsIcon} source={Icons.freeShippingDone} />
                 </View>
                 <Text
-                  style={{ ...styles.prizeText, fontSize: 14, paddingRight: 20 }}>
+                  style={{ ...styles.prizeText, fontSize: 14, paddingRight: 10 }}>
                   {(this.state.customeProperty).StandardDelivery}
                 </Text>
               </View>
                 :
                 <></>}
 
-              {this.state.customeProperty && this.state.StandardDeliveryModel && (this.state.StandardDeliveryModel).IsFreeBanner == false ? <View style={{ flexDirection: 'row', padding: 15 }}>
+              {this.state.customeProperty && this.state.StandardDeliveryModel && (this.state.StandardDeliveryModel).IsFreeBanner == false ? <View style={{ flexDirection: 'row', padding: 10 }}>
 
                 <View style={styles.IcoContainer}>
                   <Image style={styles.FlashDealsIcon} source={Icons.freeShippingWarning} />
@@ -968,12 +980,12 @@ let jdata ={
                     {
                       <View>
                         <ButtonWithIcon
-                          mainContainerStyles={{ padding: 0, marginTop: 15, }}
-                          // icon={Icons.notify}
+                          mainContainerStyles={{ padding: 0, marginTop: 5, }}
+                          icon={Icons.notify}
                           imageAvtarStyle={{
                             height: 0,
                             width: 0,
-                            margin: 5,
+                            margin: 0,
                             
                           }}
                           testId={"cart_sellerDetails"}
@@ -1262,7 +1274,7 @@ let jdata ={
                           /> */}
                           <ProductGridListView 
                           //key={i}
-                            showAllButton={true}
+                            showAllButton={this.state.isShowallbutton}
                             ViewAllClick={() => this.OnViewAllPress(this.state.productData)}
                             listViewContainerStyle={{ borderTopWidth: 0, marginTop: 0, }}
 
@@ -1316,7 +1328,7 @@ let jdata ={
                     this.state.isShipToEnable == true ?
                       (this.state.summuryData.OrderTotal != null ?
                         this.state.summuryData.OrderTotal : 'calculated during checkout')
-                      : (this.state.totalValue)
+                      : (this.state.summuryData.OrderTotal)
                   }
                 </Text>
               </View>

@@ -25,8 +25,18 @@ class Headers extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			CartCount: "0"
+			CartCount: "0",
+			imageUri:null
 		};
+		AsyncStorage.getItem("image").then(response => {
+			this.setState({
+			  imageUri:response
+			});
+			console.log("/*/*/*/*/*/*/*testttt",this.state.imageUri);
+			
+		  });
+		
+		
 		this.withBurgerMenu = this.withBurgerMenu.bind(this);
 		this.getCartCountData = this.getCartCountData.bind(this);
 		this.onSuccessGetCountCall = this.onSuccessGetCountCall.bind(this);
@@ -68,7 +78,7 @@ class Headers extends Component {
 						style={[styles.burgerMenuIcon, this.props.menuIcoStyles]} source={Icons.arrowBack} />
 				</TouchableOpacity>}
 				<TouchableOpacity onPress={() => this.props.logoClick(this)}>
-					<Image style={[styles.dragonIcon, this.props.logoStyles]} source={Icons.logo}
+					<Image style={[styles.dragonIcon, this.props.logoStyles]} source={{uri:this.state.imageUri}}
 						testID={this.props.testId_Logo}
 						accessibilityLabel={this.props.testId_Logo}
 					/>

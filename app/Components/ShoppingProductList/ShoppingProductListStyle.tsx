@@ -14,7 +14,7 @@ module.exports = StyleSheet.create({
   productRowBox: {
     // flexDirection: 'row',
     width: width-30 ,
-    marginTop: 30,
+    marginTop: 25,
     marginBottom: 4,
     borderRadius: 5,
     borderBottomColor: Colors.SILVER,

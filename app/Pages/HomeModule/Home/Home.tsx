@@ -43,13 +43,13 @@ import analytics from '@react-native-firebase/analytics';
 import { AppEventsLogger } from "react-native-fbsdk-next";
 
 import AnimatedLoader from 'react-native-animated-loader';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Toast from 'react-native-simple-toast';
 import DeviceInfo from 'react-native-device-info';
 
 import AsyncStorage from '@react-native-community/async-storage';
 import { ServiceCall } from '@utils';
-import {Api, EventTags,EmarsysEvents} from '@config';
+import { Api, EventTags, EmarsysEvents } from '@config';
 import styles from './HomeStyles';
 import { Colors } from '@theme';
 const { width, height } = Dimensions.get('window');
@@ -63,6 +63,8 @@ import ProductCategory from '../../../Components/ProductGridListView/ProductCate
 import ThemedDialog from 'react-native-elements/dist/dialog/Dialog';
 
 const Drawer = createDrawerNavigator();
+var tittle1 = '';
+var tittle2 = '';
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -72,7 +74,7 @@ class Home extends Component {
       scrollMenuData: [],
       imgSliderData: [],
       imgCardsData: [],
-      productData :[],
+      productData: [],
       topWidget: [],
       bottomWidget: [],
       beforeNewsWidget: [],
@@ -80,8 +82,8 @@ class Home extends Component {
       beforeProductsWidget: [],
       topBanner: [],
       bottomBanner: [],
-      CatagoryData:[],
-      NewsData:[],
+      CatagoryData: [],
+      NewsData: [],
       ShoppingCartType: '',
       CartCount: 0,
       wishListCount: 0,
@@ -91,6 +93,9 @@ class Home extends Component {
       shipToEnabled: false,
       currentCountryModel: null,
       apiCallInProgress: false,
+      appimage: '',
+      productTitle: '',
+      categorytitle: ''
     };
     this.onSuccessCall = this.onSuccessCall.bind(this);
     this.onSuccessWidgetCall = this.onSuccessWidgetCall.bind(this);
@@ -221,7 +226,7 @@ class Home extends Component {
     const authStatus = await messaging().requestPermission();
     //const token = await messaging().getToken();
     //this.sendFCMToken(token);
-    
+
     const enabled =
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
@@ -240,7 +245,7 @@ class Home extends Component {
     }
 
     dynamicLinks().getInitialLink().then(link => {
-      console.log("Dynamic link is ",link);
+      console.log("Dynamic link is ", link);
       this.handleDynamicLink(link);
     });
 
@@ -328,14 +333,14 @@ class Home extends Component {
       slug_url: ' ',
       entity_name: 'Home',
     };
-    console.log("home duration--", this.state.startTime ," ---- ", durationM);
+    console.log("home duration--", this.state.startTime, " ---- ", durationM);
     await analytics().logEvent('homeScreen_renderingTime', homerenderTime);
     AppEventsLogger.logEvent(EventTags.homeScreen_renderingTime, homerenderTime);
   }
 
   componentWillMount() {
     let startTimeM = new Date().getTime()
-    this.setState({ startTime : startTimeM });
+    this.setState({ startTime: startTimeM });
   }
 
   componentWillUnmount() {
@@ -368,9 +373,9 @@ class Home extends Component {
       }
     }
   };
-  handleDynamicLink= (link)=>{
+  handleDynamicLink = (link) => {
     const url = link.url;
-    if(url!=null){
+    if (url != null) {
       this.onReceiveURL(url);
     }
   }
@@ -403,48 +408,108 @@ class Home extends Component {
     this.getCartCountData();
     let catdata = data.model.CategoryModels;
     this.setState({
-      CatagoryData : catdata
+      CatagoryData: catdata
     })
   };
+  async GetConfiguration() {
+    let Service = {
+      apiUrl: Api.AppConfig,
+      methodType: 'GET',
+      headerData: { 'Content-Type': 'application/json' },
+      onSuccessCall: this.Success
+    }
+    await ServiceCall(Service);
+  }
+  async Success(data) {
+    var a = "data:image/png;base64,"
+    // await  AsyncStorage.setItem("image",i)
+    AsyncStorage.setItem("image", '')
+    var appdata1 = data.model.AppImageConfiguration;
+    var textconfig = data.model.AppTextConfig
+
+AsyncStorage.setItem("navmodel",JSON.stringify(data.model.NavigationLink))
+    appdata1.map((element, index) => {
+      if (element.ConfigKey == "headerlogo") {
+        AsyncStorage.setItem("image", a + element.ImgBinary)
+      }
+      if (element.ConfigKey == "footerlogo") {
+        AsyncStorage.setItem("footerlogo", a + element.ImgBinary)
+      }
+    });
+    textconfig.forEach(element => {
+      if (element.TextKey == "feturedcategory") {
+
+       tittle1 = element.Body
+      }
+      if (element.TextKey == "feturedproduct") {
+       tittle2 = element.Body
+      }
+      if(element.TextKey == "phonenumber"){
+        AsyncStorage.setItem("mobieno",element.Body)
+      }
+      if(element.TextKey == "supportemail"){
+        AsyncStorage.setItem("semail",element.Body)
+      }
+    });
+    console.log("***/*/*/*/-*----/-/-/--/-/-/-/-/-/---/-/-//**/*/*/*/gvdsvdhbh",this.state.categorytitle);
+
+    // textconfig.map((text,index)=>{
+    //   if(text.TextKey =="feturedproduct"){
+    //      this.setState({
+    //       productTitle:text.Body
+    //     })
+    //   }
+
+    //   if(text.TextKey =="feturedcategory"){
+    //     this.setState({
+    //      categorytitle:text.Body
+    //    })
+    //  }
+
+    // });
+
+
+  }
   onSuccessCall = async (data) => {
+    this.GetConfiguration();
     console.log('HomeData...........', data);
     let catdata = data.model.CategoryModels;
     if (data.errorlist && data.errorlist.length > 0) {
       console.log("---------------------------------------------------------if");
-      
+
       // Alert.alert('MsaMart', data.errorlist[0]);
     } else {
       console.log("-------------------------------------------------------else");
-      
+
       let imgSliderData = {};
       let imgCardsData = {};
 
       imgSliderData = data.model.PublicInfoModelApi;
-      console.log("--------------------------------------------------------------------------------slider images length = "+imgSliderData.length);
+      console.log("--------------------------------------------------------------------------------slider images length = " + imgSliderData.length);
       for (var i = 0; i < imgSliderData.length; i++) {
-       /* if (data.home_slider_images[i].WidgetZone == 'home_page_main_slider') {
-          //imgSliderData = data.home_slider_images[i];
-        }
-        if (
-          data.home_slider_images[i].WidgetZone ==
-          'home_page_before_best_sellers'
-        ) {*/
+        /* if (data.home_slider_images[i].WidgetZone == 'home_page_main_slider') {
+           //imgSliderData = data.home_slider_images[i];
+         }
+         if (
+           data.home_slider_images[i].WidgetZone ==
+           'home_page_before_best_sellers'
+         ) {*/
         imgSliderData = imgSliderData[i];
-          imgCardsData = imgSliderData[i];
-        
+        imgCardsData = imgSliderData[i];
+
       }
       await this.setState({
         loading: false,
         //scrollMenuData: data.flat_menu,
         imgSliderData: imgSliderData,
         imgCardsData: imgCardsData,
-        CatagoryData : catdata,
-        NewsData:data.model.HomepageNewsItemsModel
+        CatagoryData: catdata,
+        NewsData: data.model.HomepageNewsItemsModel
         //isShipToEnable: data.CommonShipToModel.IsShipToEnable,
       });
-     
-        this.props.addCategoryMenu({ MenuData: catdata });
-      
+
+      this.props.addCategoryMenu({ MenuData: catdata });
+
 
       /*await AsyncStorage.setItem('IsShipToEnable', JSON.stringify(data.CommonShipToModel.IsShipToEnable));
       // await this.props.addCategoryMenu({ MenuData: data.drawer_menu })
@@ -537,7 +602,7 @@ class Home extends Component {
     // }
     await this.setState({
       loading: false,
-      productData :model,
+      productData: model,
       // topWidget: topWidget,
       // bottomWidget: bottomWidget,
       // beforeNewsWidget: beforeNewsWidget,
@@ -613,7 +678,7 @@ class Home extends Component {
       apiUrl: Api.Widgets,
       methodType: 'GET',
       headerData: { 'Content-Type': 'application/json' },
-     bodyData: JSON.stringify({ widget: 'home' }),
+      bodyData: JSON.stringify({ widget: 'home' }),
       onSuccessCall: this.onSuccessWidgetCall,
       onFailureAPI: this.onFailureAPI,
       onPromiseFailure: this.onPromiseFailure,
@@ -623,18 +688,18 @@ class Home extends Component {
   };
   UpdateWishlistData = async (data) => {
     console.log("testdtdtdtdftdftdftdfdtfdtftjhududubyhb-----==-=--");
-    
-    // if(this.state.apiCallInProgress == false){
-      await this.setState({ apiCallInProgress: true});
-      this.UpdateWishlistandAddToCartData();
-      
 
-      this.setState({ ShoppingCartType: 'Wishlist' });
-  
-      await this.fetchWidgitData();
-       await this.getCartCountData();
-      this.props.updateCartCount();
-      await this.setState({ ShoppingCartType: '',apiCallInProgress: false });
+    // if(this.state.apiCallInProgress == false){
+    await this.setState({ apiCallInProgress: true });
+    this.UpdateWishlistandAddToCartData();
+
+
+    this.setState({ ShoppingCartType: 'Wishlist' });
+
+    await this.fetchWidgitData();
+    await this.getCartCountData();
+    this.props.updateCartCount();
+    await this.setState({ ShoppingCartType: '', apiCallInProgress: false });
     // }
   };
 
@@ -645,14 +710,14 @@ class Home extends Component {
   };
 
   UpdateWishlistandAddToCartData = async (data) => {
-    let jdata ={
+    let jdata = {
       "additionalProp1": "string",
       "additionalProp2": "string",
       "additionalProp3": "string"
     }
     console.log('wishlistItem........................', data);
     let Service = {
-      apiUrl: Api.AddToCart + '?productId=' +  data.Id + '&shoppingCartTypeId=2',
+      apiUrl: Api.AddToCart + '?productId=' + data.Id + '&shoppingCartTypeId=2',
       methodType: 'POST',
       headerData: { 'Content-Type': 'application/json' },
       bodyData: JSON.stringify({
@@ -703,19 +768,21 @@ class Home extends Component {
   getCartCountData = async () => {
 
     let authToken = await AsyncStorage.getItem('custToken');
-    if(authToken != null){
+    if (global.splashToShow != true) {
+      if (authToken != null) {
 
-    let Service = {
-      apiUrl: Api.getShoppingCount,
-      methodType: 'GET',
-      headerData: { 'Content-Type': 'application/json' },
-      onSuccessCall: this.onSuccessGetCountCall,
-      onFailureAPI: this.onFailureAPI,
-      onPromiseFailure: this.onPromiseFailure,
-      onOffline: this.onOffline,
-    };
-    const serviceResponse = await ServiceCall(Service);
-  }
+        let Service = {
+          apiUrl: Api.getShoppingCount,
+          methodType: 'GET',
+          headerData: { 'Content-Type': 'application/json' },
+          onSuccessCall: this.onSuccessGetCountCall,
+          onFailureAPI: this.onFailureAPI,
+          onPromiseFailure: this.onPromiseFailure,
+          onOffline: this.onOffline,
+        };
+        const serviceResponse = await ServiceCall(Service);
+      }
+    }
   };
   onSuccessGetCountCall = async (data) => {
     console.log('onSuccessGetCountCall..........', data);
@@ -731,10 +798,10 @@ class Home extends Component {
     if ((await AsyncStorage.getItem('loginStatus')) == 'false') {
       await AsyncStorage.setItem('custToken', '');
     }
-    
+
   };
 
-  OnBanerclick = async(item)=>{
+  OnBanerclick = async (item) => {
     let URL = item.Link;
     var matchProtocolDomainHost = /^.*\/\/[^\/]+:?[0-9]?\//i;
     var myNewUrl = URL.replace(matchProtocolDomainHost, '');
@@ -749,8 +816,8 @@ class Home extends Component {
 
   OnViewAllPress = async (item) => {
     console.log('OnViewAllPress...', item);
-    
-   // console.log("////////////////////////////",myNewUrl);
+
+    // console.log("////////////////////////////",myNewUrl);
     if (item.CustomProperties) {
       var navigationData = item.CustomProperties.UrlRecord;
       if (navigationData) {
@@ -888,7 +955,7 @@ class Home extends Component {
     this.props.navigation.navigate('ShipToPage');
   }
 
-  getTopMenu = async() =>{
+  getTopMenu = async () => {
     let Service = {
       apiUrl: Api.Categories + "?customerSiteId=0",
       methodType: 'GET',
@@ -901,7 +968,7 @@ class Home extends Component {
     const serviceResponse = await ServiceCall(Service);
   }
 
-  onSuccessTopMenuCall = async(data) =>{
+  onSuccessTopMenuCall = async (data) => {
     if (this.props.MenuData.length == 0) {
       this.props.addCategoryMenu({ MenuData: data.model.Categories });
     }
@@ -935,6 +1002,7 @@ class Home extends Component {
                 burgerMenuClick={(data) => {
                   this.props.navigation.toggleDrawer();
                   this.props.navigation.navigate('Drawer')
+
                 }}
                 countryModel={this.state.currentCountryModel}
                 shipToEnabled={this.state.shipToEnabled}
@@ -1010,12 +1078,12 @@ class Home extends Component {
                           : 100000
                       }
                       onSlideClick={(data) =>
-                       
+
                         // this.props.navigation.push('FilterProductList', { passData: { pageName: 'Home', data: data }, })
                         this.OnBanerclick(data)
                       }
                     />
-                    
+
                   )}
 
                 {this.state.topBanner && this.state.topBanner.length > 0 ? (
@@ -1037,167 +1105,93 @@ class Home extends Component {
 
                 {/* Top Widget */}
                 <>
-                <Text style={styles.CTitles}>FETURED CATEGORIES</Text>
-                  
+                  <Text style={styles.CTitles}>{tittle1}</Text>
+
                   <ProductCategory
-                  //showAllButton={false}
-                  //ViewAllClick={() => this.OnViewAllPress(this.state.productData)}
-                  listViewContainerStyle={{
-                    borderTopWidth: 0,
-                    marginTop: 0,
-                  }}
-                  ListTitleTextStyle={{}}
-                  imgTopRtIcon={Icons.heartClear}
-                  isBottomRightIcon={false}
-                  listData={this.state.CatagoryData}
-                  bottomRightIcon={Icons.cartBtn}
-                  oncatClick ={(data)=>
-                    this.props.navigation.push('SearchFilterProductList', {
-                      passData: { pageName: 'Home', data: {slugUrl:data.Name} },
-                    })
-                  }
-                  oncatImageClick={(data) =>
-                    this.props.navigation.push('SearchFilterProductList', {
-                      passData: { pageName: 'Home', data: { slugUrl: data.Name } },
-                    })
-                  }
-                    />
+                    //showAllButton={false}
+                    //ViewAllClick={() => this.OnViewAllPress(this.state.productData)}
+                    listViewContainerStyle={{
+                      borderTopWidth: 0,
+                      marginTop: 0,
+                    }}
+                    ListTitleTextStyle={{}}
+                    imgTopRtIcon={Icons.heartClear}
+                    isBottomRightIcon={false}
+                    listData={this.state.CatagoryData}
+                    bottomRightIcon={Icons.cartBtn}
+                    oncatClick={(data) =>
+                      this.props.navigation.push('SearchFilterProductList', {
+                        passData: { pageName: 'Home', data: { slugUrl: data.Name } },
+                      })
+                    }
+                    oncatImageClick={(data) =>
+                      this.props.navigation.push('SearchFilterProductList', {
+                        passData: { pageName: 'Home', data: { slugUrl: data.Name } },
+                      })
+                    }
+                  />
                 </>
-              
-                
+
+
                 {this.state.productData.length > 0 && (
                   <>
-                    {/* {this.state.productData.map((item, i) => ( */}
+
+                    <>
+
                       <>
-                        {/* {item.LayoutType == 'Grid_WithTimer' ? (
-                          <>
-                            <FleashDealsCount
-                              key={i}
-                              IconPictureURL={item.DefaultPictureModel.ImageUrl}
-                              FromDate={new Date()}
-                              ToDate={getCurrentDateStamp(item.ToDate)}
-                              blockStyle={{
-                                //backgroundColor: item.BackgroundColor,
-                              }}
-                              LayoutTypeId={2}
-                              Title={item.Title}
-                              titleStyle={{ fontSize: 14 }}
-                              SubTitle={'Ending In'}
-                            />
-                            <ProductGridListView
-                              onImageClickTestId={"selectProductFromHomeBtn"}
-                              key={i}
-                              showAllButton={item.ViewAllURL}
-                              ViewAllClick={() => this.OnViewAllPress(item)}
-                              listViewContainerStyle={{
-                                borderTopWidth: 0,
-                                marginTop: 0,
-                              }}
-                              ListTitleTextStyle={{}}
-                              imgTopRtIcon={Icons.heartClear}
-                              isBottomRightIcon={false}
-                              listData={item}
-                              bottomRightIcon={Icons.cartBtn}
-                              onProductClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onImageClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onTitleClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onImgTopRtIcon={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onCartClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              OnWishlistClick={(data) =>
-                                this.UpdateWishlistData(data)
-                              }
-                            />
-                          </>
-                        ) : ( */}
-                          <>
-                            {/* <FleashDealsCount
-                              key={i}
-                              IconPictureURL={item.DefaultPictureModel.ImageUrl}
-                              blockStyle={{
-                                backgroundColor: item.BackgroundColor,
-                              }}
-                              LayoutTypeId={1}
-                              Title={item.Name}
-                              titleStyle={{ fontSize: 14 }}
-                              
-                            /> */}
-                            <Text style={styles.PTitle}>FETURED PRODUCTS</Text>
-                            <ProductGridListView
-                              //key={i}
-                              showAllButton={true}
-                              ViewAllClick={() => this.OnViewAllPress(this.state.productData)}
-                              listViewContainerStyle={{
-                                borderTopWidth: 0,
-                                marginTop: 0,
-                              }}
-                              ListTitleTextStyle={{}}
-                              imgTopRtIcon={Icons.heartClear}
-                              isBottomRightIcon={false}
-                              listData={this.state.productData}
-                              bottomRightIcon={Icons.cartBtn}
-                              onProductClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onImageClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onTitleClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onImgTopRtIcon={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onCartClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              OnWishlistClick={(data) =>
-                                this.UpdateWishlistData(data)
-                                
-                              }
-                            />
-                          </>
-                        {/* )} */}
+
+                        <Text style={styles.PTitle}>{tittle2}</Text>
+                        <ProductGridListView
+                          //key={i}
+                          showAllButton={true}
+                          ViewAllClick={() => this.OnViewAllPress(this.state.productData)}
+                          listViewContainerStyle={{
+                            borderTopWidth: 0,
+                            marginTop: 0,
+                          }}
+                          ListTitleTextStyle={{}}
+                          imgTopRtIcon={Icons.heartClear}
+                          isBottomRightIcon={false}
+                          listData={this.state.productData}
+                          bottomRightIcon={Icons.cartBtn}
+                          onProductClick={(data) =>
+                            this.props.navigation.navigate(
+                              'ProductDetails',
+                              { passData: data },
+                            )
+                          }
+                          onImageClick={(data) =>
+                            this.props.navigation.navigate(
+                              'ProductDetails',
+                              { passData: data },
+                            )
+                          }
+                          onTitleClick={(data) =>
+                            this.props.navigation.navigate(
+                              'ProductDetails',
+                              { passData: data },
+                            )
+                          }
+                          onImgTopRtIcon={(data) =>
+                            this.props.navigation.navigate(
+                              'ProductDetails',
+                              { passData: data },
+                            )
+                          }
+                          onCartClick={(data) =>
+                            this.props.navigation.navigate(
+                              'ProductDetails',
+                              { passData: data },
+                            )
+                          }
+                          OnWishlistClick={(data) =>
+                            this.UpdateWishlistData(data)
+
+                          }
+                        />
                       </>
+                      {/* )} */}
+                    </>
                     {/* ))} */}
                   </>
                 )}
@@ -1794,8 +1788,8 @@ class Home extends Component {
   }
 }
 
-const getCurrentDateStamp = (string) =>{
-  var gmtString = new Date().toTimeString().split(" ")[1].replace("GMT","");
+const getCurrentDateStamp = (string) => {
+  var gmtString = new Date().toTimeString().split(" ")[1].replace("GMT", "");
   return string + gmtString.slice(0, gmtString.length - 2) + ":" + gmtString.slice(-2);
 }
 

@@ -62,14 +62,15 @@ export default StyleSheet.create({
     HeaderText: {
         justifyContent: 'flex-start',
         fontSize: 20,
-        alignSelf: 'flex-start',
+        //alignSelf: 'flex-start',
+        textAlign:'center',
         ...Platform.select({
             ios: {
                 fontWeight: '800',
                 fontFamily: 'verdana',
             },
             android: {
-                fontWeight: 'normal',
+                fontWeight: 'bold',
                 fontFamily: 'verdanab',
             },
         }),
@@ -139,6 +140,7 @@ export default StyleSheet.create({
     prizeText: {
         fontSize: 19,
         textAlign: 'justify',
+        
         ...Platform.select({
             ios: {
                 fontWeight: '800',

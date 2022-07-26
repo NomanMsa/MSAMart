@@ -14,6 +14,9 @@ import { default as ButtonWithIcon } from '../ButtonWithIcon/ButtonWithIcon.tsx'
 
 const styles = require('./AddToWishListStyle');
 const { width, height } = Dimensions.get('window');
+import { ServiceCall } from '@utils';
+import { Api ,EventTags,EmarsysEvents} from '@config';
+
 
 export default class extends Component {
   static defaultProps = {
@@ -58,8 +61,20 @@ export default class extends Component {
   // }
 
   cartclick(data) {
-    this.props.AddToCartClick(data)
-    console.log(data);
+    console.log("**/**/***/",data);
+    this.props.onAddToCartClick(data);
+    // let Service = {
+    //   apiUrl: Api.AddItemsToCartFromWishlist,
+    //   methodType: 'POST',
+    //   headerData: { 'Content-Type': 'application/json' },
+    //   bodyData: JSON.stringify({
+    //     addtocart:data.Id
+    //   }),
+    //   onSuccessCall: this.props.AddToCartClick,
+     
+    // };
+    // const serviceResponse =  ServiceCall(Service);
+    
 
   }
   

@@ -88,7 +88,8 @@ class WishListPage extends Component {
     this.renderTotalPrize = this.renderTotalPrize.bind(this);
     this.onSuccessUpdatedWishlistCall = this.onSuccessUpdatedWishlistCall.bind(this);
     this.onAddToCartClick = this.onAddToCartClick.bind(this);
-
+    this.getCartCountData=this.getCartCountData.bind(this);
+    this.onSuccessGetCountCall=this.onSuccessGetCountCall.bind(this);
   }
   async componentDidMount() {
     await this.setState({ loading: true })
@@ -122,7 +123,7 @@ class WishListPage extends Component {
 
       await this.fetchWishlistData();
       await this.fetchWidgitData();
-      // await this.getCartCountData();
+      await this.getCartCountData();
     });
   }
 
@@ -237,16 +238,19 @@ class WishListPage extends Component {
         currentCountryModel: data.model.CommonShipToModel.CurrentCountryModel,
       });
     }
+    this.getCartCountData();
     this.props.updateWishlist();
+
 
   }
 
   onSuccessUpdatedWishlistCall = async (data) => {
 
     console.log("onSuccessUpdatedWishlistCall...................", data);
-    if (data.errorlist > 0) {
+    if (data.status ==true) {
       await this.setState({ loading: false });
-      Alert.alert('DragonMart', data.errorlist[0])
+      this.fetchWishlistData();
+      //Alert.alert('MsaMart', data.errorlist[0])
     } else {
       this.props.UpdateWishlistData({ WishlistData: data.model })
 
@@ -261,7 +265,7 @@ class WishListPage extends Component {
       });
 
       await this.fetchWidgitData();
-      //await this.getCartCountData()
+      await this.getCartCountData()
       await this.props.updateCartCount();
       if( data.message!=null && data.message.length > 0 ){
         await Toast.showWithGravity(data.message, Toast.LONG, Toast.BOTTOM);
@@ -271,26 +275,30 @@ class WishListPage extends Component {
 
 
   onSuccessupdateCartCall = async (data) => {
+console.log("*/*/*sucessjdjbd*/**/*-/*-/-/-",data);
 
-    if (data.status == true) {
-      this.props.UpdateWishlistData({ WishlistData: data })
-      console.log("onSuccessupdateCartCall........................", data)
+    if (data.status == false) {
+     // this.props.UpdateWishlistData({ WishlistData: data })
+      this.fetchWishlistData()
+      //await this.getCartCountData()
+      this.getCartCountData();
+      //console.log("onSuccessupdateCartCall........................", data)
       //let DATA = data
-      await this.setState({
-        // wishlistResponce:data.model,
-        wishListData: data.model.Items,
-        UpdatedQuentityItemData: '', 
-        loading: false ,
-      });
+      // await this.setState({
+      //   // wishlistResponce:data.model,
+      //   wishListData: data.model.Items,
+      //   UpdatedQuentityItemData: '', 
+      //   loading: false ,
+      // });
 
-      await this.props.updateCartCount()
-      await this.getCartCountData()
+      //await this.props.updateCartCount()
+      
       if( data.message!=null && data.message.length > 0 ){
         await Toast.showWithGravity(data.message, Toast.LONG, Toast.BOTTOM);
       }
     } else {
       if (data.errorlist.length > 0) {
-        Alert.alert('DragonMart', data.errorlist[0],
+        Alert.alert('MsaMart', data.errorlist[0],
         [
           {text: 'OK', onPress: ()=>{
             this.setState({loading: false});
@@ -380,7 +388,11 @@ class WishListPage extends Component {
     await this.UpdateWishlistData(data.Id)
   }
 
-
+  addToCartClick(data){
+    console.log("*/*/*//*//**/*/*/*//**/click/*/*");
+    
+     this.UpdateCartData(data); 
+  }
   onAddToCartClick = async (data) => {
     console.log("After item added to cart", data)
 
@@ -453,13 +465,13 @@ console.log("/////",UpdatedQuentityItemData);
     const serviceResponse = await ServiceCall(Service);
   };
 
-  UpdateCartData = async () => {
+  UpdateCartData = async (data) => {
     let Service = {
-      apiUrl: Api.AddToCart,
+      apiUrl: Api.AddItemsToCartFromWishlist,
       methodType: 'POST',
       headerData: { 'Content-Type': 'application/json' },
       bodyData: JSON.stringify({
-        allIdsToAdd: this.state.UpdatedQuentityItemData
+        addtocart:data.Id
       }),
       onSuccessCall: this.onSuccessupdateCartCall,
       onFailureAPI: this.onFailureAPI,
@@ -470,6 +482,8 @@ console.log("/////",UpdatedQuentityItemData);
   };
 
   getCartCountData = async () => {
+    console.log("///***/**//*/*/*/contb");
+    
     let authToken = await AsyncStorage.getItem('custToken');
 		if(authToken != null){
     let Service = {
@@ -487,21 +501,19 @@ console.log("/////",UpdatedQuentityItemData);
   };
 
   onSuccessGetCountCall = (data) => {
-
-
     this.setState({
-      CartCount: data.model.cartCount,
+      CartCount:data.model.Items.length,
       //wishListCount: data.wishListCount
     })
 
-    this.props.addCountToCart({ cartCount: data.model.cartCount})
+    this.props.addCountToCart({ cartCount: data.model.Items.length})
 
   }
 
   onWishIconClick = async () => {
     this.props.updateWishlist()
     await this.setState({ loading: true })
-    // this.props.UpdateWishlistData({ WishlistData: data })
+     this.props.UpdateWishlistData({ WishlistData: data })
 
     await this.fetchWishlistData();
     await this.fetchWidgitData();
@@ -705,8 +717,8 @@ console.log("/////",UpdatedQuentityItemData);
                     // onCartClick={(data) => console.log('common   ' + data.text)}
                     UpdateWishlistClick={(data) => console.log('common   ' + data)}
                     EmailClick={(data) => this.props.navigation.navigate('EmailFriend')}
-                    AddToCartClick={(data) => this.onAddToCartClick(data)}
-                    onAddToCartClick={(data) => this.onAddToCartClick(data)}
+                    AddToCartClick={(data) => this.onSuccessupdateCartCall(data)}
+                    onAddToCartClick={(data) => this.addToCartClick(data)}
                     onRemoveClick={(data) => this.onDeleteWishListItem(data)}
                     QuentityUpdate={(data) => this.onQuentityUpdateShoppingItem(data)}
                     onItemClick={(data) => this.props.navigation.push('ProductDetails', { passData: { Id: data.ProductId } })}
@@ -879,9 +891,9 @@ console.log("/////",UpdatedQuentityItemData);
 const mapDispatchToProps = (dispatch) => {
   return {
     addCountToCart: (newCount) => dispatch({ type: 'CART_COUNT_CHANGE', paylod: newCount }),
-    UpdateWishlistData: (newCount) => dispatch({ type: 'ADD_WISHLIST_DATA', paylod: newCount }),
+    //UpdateWishlistData: (newCount) => dispatch({ type: 'ADD_WISHLIST_DATA', paylod: newCount }),
 
-    updateWishlist: () => dispatch({ type: 'WISHLIST_CALL' }),
+    //updateWishlist: () => dispatch({ type: 'WISHLIST_CALL' }),
     updateCartCount: () => dispatch({ type: 'COUNT_CALL' })
 
 

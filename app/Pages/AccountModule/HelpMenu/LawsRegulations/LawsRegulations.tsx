@@ -26,6 +26,7 @@ import styles from './LawsRegulationsStyles';
 import { Colors } from '@theme';
 import { connect } from 'react-redux';
 import { RenderHTML } from 'react-native-render-html';
+import AsyncStorage from '@react-native-community/async-storage';
 var html;
 
 class LawsRegulations extends Component {
@@ -38,6 +39,7 @@ class LawsRegulations extends Component {
       subject: '',
       enquiry: '',
       emailFormat: true,
+      sEmail:'',
       QuestionaryData: [
         {
           "QuestionTitle": "Laws and Regulations",
@@ -87,6 +89,12 @@ class LawsRegulations extends Component {
       ]
 
     };
+    AsyncStorage.getItem("semail").then(response => {
+      this.setState({
+          sEmail:response
+        });
+
+      });
     this.onSuccessSubmit = this.onSuccessSubmit.bind(this);
     this.onFailureAPI = this.onFailureAPI.bind(this);
     this.onPromiseFailure = this.onPromiseFailure.bind(this);
@@ -120,7 +128,7 @@ class LawsRegulations extends Component {
     });
   };
   handleSupportClick = () => {
-    Linking.openURL('mailto:support@msainfotech.in')
+    Linking.openURL('mailto:'+this.state.sEmail)
   };
 
   fetchHelpData = async () => {
@@ -299,7 +307,7 @@ class LawsRegulations extends Component {
                     style={{ ...styles.internalItemContainer, flexDirection: 'row', marginRight: 20, }}>
 
                     <Text>For any queries please contact us at  <Text style={[styles.HyperlinkText, this.props.HyperlinkTextStyles]} onPress={() => this.handleSupportClick()}>
-                      support@msainfotech.in
+                      {this.state.sEmail}
         </Text>
                     </Text>
 

@@ -285,7 +285,7 @@ class ProductDetails extends Component {
       easyReturnAvailable: data.IsEasyReturnAvailable,
       serviceableByVendor: data.IsServiceableByVendor,
       nonReturnable: data.NotReturnable,
-      noOfReturnRequestAvailable: (data.NumberOfDaysReturnRequestAvailable !=undefined) ? data.NumberOfDaysReturnRequestAvailable:7,
+      noOfReturnRequestAvailable: data.NumberOfDaysReturnRequestAvailable,
       deliveryDate: data.DeliveryDate,
       // pBreadcrumb: data.Breadcrumb.CategoryBreadcrumb
       htmlData: {html: data.FullDescription}
@@ -580,14 +580,19 @@ class ProductDetails extends Component {
 
   UpdateWishlistData = async (data) => {
     console.log("////////test123256",data);
+    let jdata ={
+      "additionalProp1": "string",
+      "additionalProp2": "string",
+      "additionalProp3": "string"
+    }
     
     let Service = {
-      apiUrl: Api.widgetProductAddWishlist + '?productId=' +data.Id +'&shoppingCartTypeId=2' +'&quantity=1',
+      apiUrl: Api.widgetProductAddWishlist + '?productId=' +data.Id +'&shoppingCartTypeId=2',
       methodType: 'POST',
       headerData: { 'Content-Type': 'application/json' },
-      // bodyData: JSON.stringify({
-      
-      // }),
+      bodyData: JSON.stringify({
+        jdata
+      }),
       onSuccessCall: this.onSuccesswidgetWishlistCall,
       onFailureAPI: this.onFailureAPI,
       onPromiseFailure: this.onPromiseFailure,
@@ -771,12 +776,12 @@ class ProductDetails extends Component {
       apiUrl: Api.UpdateAttributeAPI + '?productId='+this.state.pData.Id + '&validateAttributeConditions=true&loadPicture=true',
       methodType: 'POST',
       headerData: { 'Content-Type': 'application/json' },
-      bodyData: JSON.stringify({
-        form
+      bodyData: a,
+        
         //productId: this.state.pData.Id,
         //attribute: this.state.AttributeValueArray,
         //quantity: this.state.QuantitySelectorText,
-      }),
+      
       onSuccessCall: this.onSuccessAttributeUpdate,
       onFailureAPI: this.onFailureAPI,
       onPromiseFailure: this.onPromiseFailure,
@@ -946,7 +951,7 @@ var addcart = 2;
     }
 
     }
-    var keysName ="addtocart_"+this.state.pData.Id
+    var keysName ="addtocart_"+this.state.pData.Id+".EnteredQuantity"
     if(a =="{"){
       a = a + '"' + keysName +'"'+ ":" +'"'+ this.state.QuantitySelectorText+'"';
     }else{
@@ -1078,7 +1083,7 @@ var addcart = 2;
     }
 
     }
-    var keysName ="addtocart_"+this.state.pData.Id
+    var keysName ="addtocart_"+this.state.pData.Id+".EnteredQuantity"
     if(a =="{"){
       a = a + '"' + keysName +'"'+ ":" +'"'+ this.state.QuantitySelectorText+'"';
     }else{
@@ -1851,7 +1856,7 @@ var addcart = 2;
                 marginTop: 0,
               }}
             />
-            {!this.state.nonReturnable ? (
+            {this.state.nonReturnable ? (
              <ButtonWithIcon
               imageAvtarStyle={{
                 tintColor: Colors.GRAY_TEXT,

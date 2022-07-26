@@ -204,8 +204,8 @@ export default class extends Component {
                           Quantity={item.Quantity.toString()}
                           //Quantity="2"
                           onTextChange={(text) => this.QuentityChange(text, item, index)}
-                          maxProductQuantity={2}
-                          ProductLimitIndicatorCount={5}
+                          maxProductQuantity={item.ProductStockQuantity}
+                          ProductLimitIndicatorCount={item.ProductLeftLimit}
                         />
                       </View>
                       {/* } */}

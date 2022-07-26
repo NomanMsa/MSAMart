@@ -19,8 +19,7 @@ const Constants = {
   // HOST_URL: 'https://dm-preprod.dpworld.com/',
   // BASE_URL: 'https://dm-preprod.dpworld.com/api/v1/',
 
-  HOST_URL: 'https://dm-dev.dpworld.com/',
-  BASE_URL: 'https://dm-dev.dpworld.com/api/v1/',
+  
 
   HOSTs_URL:'https://mobcms.msainfotech.in/',
   BASEs_URL: 'https://mobcms.msainfotech.in/api/v1/',

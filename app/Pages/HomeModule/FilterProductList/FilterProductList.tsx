@@ -260,11 +260,18 @@ class FilterProductList extends Component {
 
 
   UpdateWishlistData = async (data) => {
+    let jdata ={
+      "additionalProp1": "string",
+      "additionalProp2": "string",
+      "additionalProp3": "string"
+    }
     let Service = {
       apiUrl: Api.widgetProductAddWishlist + '?productId=' +data.Id +'&shoppingCartTypeId=2' +'&quantity=1',
       methodType: 'POST',
       headerData: { 'Content-Type': 'application/json' },
-      
+      bodyData: JSON.stringify({
+        jdata
+      }),
       onSuccessCall: this.onSuccesswidgetWishlistCall,
       onFailureAPI: this.onFailureAPI,
       onPromiseFailure: this.onPromiseFailure,

@@ -27,7 +27,7 @@ export default StyleSheet.create({
   },
   PTitle:{
     
-    fontSize: 15,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#0069d1',
     textAlign:'center',
@@ -36,7 +36,7 @@ export default StyleSheet.create({
   },
   CTitles:{
     marginTop: 20,
-    fontSize: 15,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#0069d1',
     textAlign:'center',

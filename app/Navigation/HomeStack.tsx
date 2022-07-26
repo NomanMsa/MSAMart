@@ -71,12 +71,14 @@ import {
 import { Icons, Images, Loaders } from '@assets';
 import { Colors } from "@theme";
 
-
+import { ServiceCall } from '@utils';
+import { Api } from '@config';
 import { enableScreens } from 'react-native-screens';
 enableScreens();
 const Stack = createStackNavigator();
-
+var appimage='';
 function splashScreen({ navigation }) {
+GetConfiguration();
   setTimeout(() => {
     navigation.replace('Home')
   }, 2000);
@@ -95,12 +97,27 @@ function splashScreen({ navigation }) {
         aspectRatio: 350 / 177,
         //backgroundColor:'#fff',
         tintColor: Colors.PRIMARY
-      }} source={Icons.logo} />
+      }} source={{uri:appimage}} />
     </View>
   )
 }
+function GetConfiguration(){
+  let Service = {
+    apiUrl:'https://localhost:44328/api/v1/AppConfiguration/AppConfiguration?clientId=1',
+    methodType: 'GET',
+    headerData: { 'Content-Type': 'application/json' },
+    onSuccessCall: Success
+  }
+   ServiceCall(Service);
+}
+function Success(data){
+console.log("configurationsuccess---------------===//*//*///*/**/");
+var appdata = data.model.AppImageConfiguration[0];
+appimage =appdata.ImgBinary;
+appimage=  "data:image/png;base64,"+appimage
+console.log(appimage);
 
-
+}
 export default class HomeStack extends Component {
   constructor(props) {
     super(props);

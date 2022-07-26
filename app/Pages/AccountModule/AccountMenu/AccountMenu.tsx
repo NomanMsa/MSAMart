@@ -34,6 +34,12 @@ class MenuContainer extends Component {
       CustomerName: '',
       isShipToEnable: '',
       LogoutText: 'Log out',
+      navarr:[],
+      orderTitle:'',
+      wishlistTitle:'',
+      acDetailTitle:'',
+      saddTitle:'',
+      returrTitle:'',
       LogoutImage: Icons.logout,
       listData: [
         {
@@ -89,6 +95,41 @@ class MenuContainer extends Component {
         // },
       ],
     };
+    AsyncStorage.getItem("navmodel").then(response=>{
+      this.setState({
+        navarr:JSON.parse(response)
+      })
+      this.state.navarr.map((nav,i)=>{
+        if(nav.LinkName=="wishlist"){
+          this.setState({
+            wishlistTitle:nav.Link
+          })
+        }
+        if(nav.LinkName=="order"){
+          this.setState({
+            orderTitle:nav.Link
+          })
+        }
+        if(nav.LinkName=="accountdetail"){
+          this.setState({
+            acDetailTitle:nav.Link
+          })
+        }
+        if(nav.LinkName=="savedaddress"){
+          this.setState({
+            saddTitle:nav.Link
+          })
+        }
+        if(nav.LinkName=="returnrequest"){
+          this.setState({
+            returrTitle:nav.Link
+          })
+        }
+        
+      })
+    
+      
+    })
     this.renderHeader = this.renderHeader.bind(this);
     this.OrderDetailsItems = this.OrderDetailsItems.bind(this);
     this.renderTitle = this.renderTitle.bind(this);
@@ -163,28 +204,28 @@ class MenuContainer extends Component {
         listData: [
           {
             id: 1,
-            Listitem: 'Purchases',
+            Listitem: this.state.orderTitle,
             page: 'Purchases',
           },
           {
             id: 1,
-            Listitem: 'Wishlist',
+            Listitem: this.state.wishlistTitle,
             page: 'WishListPage',
           },
           {
             id: 1,
-            Listitem: 'Account Details',
+            Listitem: this.state.acDetailTitle,
             page: 'CustomerInfo',
           },
           {
             id: 1,
-            Listitem: 'Saved addresses',
+            Listitem:  this.state.saddTitle,
             page: 'Address',
           },
 
           {
             id: 1,
-            Listitem: 'Return requests',
+            Listitem: this.state.returrTitle,
             page: 'ReturnOrderList',
           },
         ],

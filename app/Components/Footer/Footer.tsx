@@ -3,7 +3,7 @@ import { Text, View, Image, TouchableOpacity, Dimensions, FlatList } from 'react
 import { Images, Icons, Loaders } from '@assets';
 const styles = require('./FooterStyles');
 const { width, height } = Dimensions.get('window')
-
+import AsyncStorage from '@react-native-community/async-storage';
 export default class extends Component {
 	static defaultProps = {
 		onNavLink: () => { },
@@ -11,9 +11,15 @@ export default class extends Component {
 	}
 	constructor(props) {
 		super(props)
-		this.state = {
-
+		this.state={
+			imageUri:null
 		}
+		
+		AsyncStorage.getItem("footerlogo").then(response => {
+			this.setState({
+			  imageUri:response
+			});
+		  });
 		this.renderFooterRows = this.renderFooterRows.bind(this);
 		this.renderFooterCols = this.renderFooterCols.bind(this);
 		this.renderSocialMediaListCols = this.renderSocialMediaListCols.bind(this);
@@ -46,7 +52,7 @@ export default class extends Component {
 			<View style={styles.footerContainer}>
 
 				<View>
-					<Image style={styles.footerLogoStyle} source={Icons.dpwLogo} />
+					<Image style={styles.footerLogoStyle} source={{uri:this.state.imageUri}} />
 				</View>
 				{this.props && this.props.footerLinksList && <View style={styles.footerLinksBox}>
 					<FlatList

@@ -74,7 +74,7 @@ export default class SplashScreen extends Component {
               />
               <View
                 style={{ width: width, height: height, backgroundColor: '#fff' }}>
-                <Image style={styles.splashImg} source={Loaders.splash}></Image>
+                <Image style={styles.splashImg} source={Loaders.splash}></Image> 
               </View>
             </>
             ) :
