@@ -23,7 +23,7 @@ const Api = {
   /////ProductDetail API List/////////////////////
   ProductDetail: Constants.BASEs_URL + 'product/productdetails',
   UpdateAttributeAPI:
-    Constants.BASEs_URL + '/ShoppingCart/ProductDetails_AttributeChange',
+    Constants.BASEs_URL + 'ShoppingCart/ProductDetails_AttributeChange',
   notifyMeAPI: Constants.BASEs_URL + 'backinstocksubscription/subscribepopup?productId=',
   notifyMeSubscriptionAPI:
   Constants.BASEs_URL + 'backinstocksubscription/subscribepopup?productId=',

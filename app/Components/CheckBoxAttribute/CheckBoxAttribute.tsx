@@ -147,13 +147,14 @@ export default class extends Component {
       //     })
       //   }>
       <View key={index} style={[styles.ItemContainer, this.props.ItemContainerStyles]}>
-
+        
         <View
           style={[styles.listItemContainer, this.props.listItemContainerStyle]}>
           {/* <View style={{height:20, width:20, borderWidth: 1,borderRadius: 4,}}></View> */}
 
 
           {/* {this.renderSwitch(item.FilterItemState, item, index)} */}
+
           <Checkbox
             status={item.IsPreSelected ? 'checked' : 'unchecked'}
             onPress={() => {
@@ -187,7 +188,7 @@ export default class extends Component {
             this.state.dataSource ?
               <>
                 <Text style={[styles.normalText, this.props.normalTextStyles]}>
-                  title
+                  {this.props.title}
             </Text>
 
 

@@ -321,7 +321,7 @@ class ProductDetails extends Component {
         ImageSquares.push(this.state.pProductAttributes[i]);
       }
     }
-
+    
     await this.setState({
       DropDownData: DropDownData,
       radioButton: radioButton,
@@ -329,11 +329,71 @@ class ProductDetails extends Component {
       ColorSquares: ColorSquares,
       ImageSquares: ImageSquares,
     });
+    var attribute=[];
+    
+    if (radioButton.length > 0) {
+      for (var i = 0; i < radioButton.length; i++) {
+        for (k = 0; k < radioButton[i].Values.length; k++) {
+          if (radioButton[i].Values[k].IsPreSelected == true) {
+            attribute.push({ id: radioButton[i].Id, value: radioButton[i].Values[k].Id })
+            //this.onRadioAttributeSelected(radioButton[i].Values[k], radioButton[i].Id)
+          }
+        }
+      }
+    }
+    if (DropDownData.length > 0) {
+      for (var i = 0; i < DropDownData.length; i++) {
+        console.log("*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/dropdownddata",DropDownData[i].Id);
+        
+        for (var k = 0; k < DropDownData[i].Values.length; k++) {
+          if (DropDownData[i].Values[k].IsPreSelected == true) {
+            console.log("*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/innerdropdownddata",DropDownData[i].Id);
+            attribute.push({ id: DropDownData[i].Id, value: DropDownData[i].Values[k].Id })
+            //this.onDropdownAttributeSelected(DropDownData[i].Values[k], DropDownData[i].Values[k].Id)
+          }
+        }
+      }
+    }
+    if (CheckBox.length > 0) {
+      for (var i = 0; i < CheckBox.length; i++) {
+        for (var k = 0; k < CheckBox[i].Values.length; k++) {
+          if (CheckBox[i].Values[k].IsPreSelected == true) {
+            attribute.push({ id: CheckBox[i].Id, value: CheckBox[i].Values[k].Id })
+            //this.onCheckBoxAttributeSelected(CheckBox[i].Values[k],CheckBox[i].Values[k].Id)
+          }
+        }
+      }
+    }
+    if (ColorSquares.length > 0) {
+      for (var i = 0; i < ColorSquares.length; i++) {
+        for (var k = 0; k < ColorSquares[i].Values.length; k++) {
+          if (ColorSquares[i].Values[k].IsPreSelected == true) {
+            attribute.push({ id: ColorSquares[i].Id, value: ColorSquares[i].Values[k].Id })
+            //this.onColorAttributeSelected(ColorSquares[i].Values[k],ColorSquares[i].Values[k].Id)
+          }
+        }
+      }
+    }
+    if (ImageSquares.length > 0) {
+      for (var i = 0; i < ImageSquares.length; i++) {
+        for (var k = 0; k < ImageSquares[i].Values.length; k++) {
+          if (ImageSquares[i].Values[k].IsPreSelected == true) {
+            attribute.push({ id: ImageSquares[i].Id, value: ImageSquares[i].Values[k].Id })
+            //this.onImageAttributeSelected(ImageSquares[i].Values[k],ImageSquares[i].Values[k].Id)
+          }
+        }
+      }
+    }
+
+    console.log("productarray//*/**/*/*/**/*/*/*/*/*/*/*/*/*/",attribute);
+    
+    this.setState({ AttributeValueArray: attribute });
     let eventParams = {
       currency: this.state.currency,
       item_id: data.Id,
       value: this.state.pNewPrice,
     };
+ 
 
     await analytics().logEvent('view_item', eventParams);
     AppEventsLogger.logEvent(EventTags.VIEW_ITEM, eventParams);
@@ -579,6 +639,7 @@ class ProductDetails extends Component {
   }
 
   UpdateWishlistData = async (data) => {
+   
     console.log("////////test123256",data);
     let jdata ={
       "additionalProp1": "string",
@@ -660,6 +721,8 @@ class ProductDetails extends Component {
   };
 
   onImageAttributeSelected = (data, Id) => {
+    
+    
     var attributeArry = [];
     attributeArry = this.state.AttributeValueArray;
     attributeArry.push({ id: Id, value: data.Id });
@@ -685,16 +748,21 @@ class ProductDetails extends Component {
 
   onRadioAttributeSelected = (data, Id) => {
     // console.log("data--", data,"------->", Id);
+    console.log("/*/*/-*-*/*/--/-/-*--/-*-*--*-*-*-*-/-/-/*",Id);
     var attributeArry = [];
     attributeArry = this.state.AttributeValueArray;
     attributeArry.push({ id: Id, value: data.Id });
+    console.log("/*/*/-*-*/*/--/-/-*--/-*-*--*-*-*-*-/-/-/id1*",attributeArry[0].id );
     for (let i = 0; attributeArry.length > i; i++) {
       if (attributeArry[i].id == Id) {
         attributeArry[i].id = attributeArry[i].id;
         attributeArry[i].value = data.Id;
+        console.log("**//*///****/*/////*/*/*/*/*/*/*/*/*/*/*/----*-/*oid",attributeArry);
+        
       } else {
         attributeArry[i].id = attributeArry[i].id;
         attributeArry[i].value = attributeArry[i].value;
+        console.log("**//*///****/*/////*/*/*/*/*/*/*/*/*/*/*/----*-/*oid1",attributeArry);
       }
     }
     let newArray = Array.from(new Set(attributeArry.map((a) => a.id))).map(
@@ -711,6 +779,7 @@ class ProductDetails extends Component {
     // console.log('DROP DOWN IS WORKED');
     var attributeArry = [];
     attributeArry = this.state.AttributeValueArray;
+    
     attributeArry.push({ id: Id, value: data });
 
     for (let i = 0; attributeArry.length > i; i++) {
@@ -732,20 +801,47 @@ class ProductDetails extends Component {
     this.UpdateAttributes();
   };
   onCheckBoxAttributeSelected = (data, Id) => {
+    console.log("**/*/*/*/*/**/*/*/*/*/*/*/*/*/*checkboxdata",data);
+    var x=0;
     var attributeArry = [];
-    attributeArry = data;
-    for (let i = 0; data.length > i; i++) {
-      if (data[i].IsPreSelected == true) {
-        // console.log("attribute--", Id, "------", data[i].Id);
-        attributeArry.push({ id: Id, value: data[i].Id });
+    var attr= this.state.AttributeValueArray;
+    //attributeArry = data;
+   // for (var j = 0; j < attr.length; j++) {
+      for (let i = 0; data.length > i; i++) {
+        if (data[i].IsPreSelected == true) {
+          if(i>0){
+            if(attributeArry[x].id == Id){
+            attributeArry[x].id =Id
+            attributeArry[x].value =attributeArry[x].value+','+data[i].Id
+            //attributeArry.push({ id: Id, value: data[i].Id });
+            }
+          }else{
+            attributeArry.push({ id: Id, value: data[i].Id });
+            x=i
+          }
       }
     }
+      attr.map((item,index)=>{
+        attributeArry.map((item1,i)=>{
+          if(item.id ==item1.id){
+            item.value= item1.value
+          }
+        })
+      })
+    
+   
+      console.log("/*/*/*/-***--*/*/*/*/*/*/*//*/maparrrrrra*/*/****/*/",attr);
+      //attr.push({attributeArry})
+	
+	
+   
     // console.log("checkbox attributearray - ", attributeArry);
-    this.setState({ AttributeValueArray: attributeArry });
+   //this.setState({ AttributeValueArray: attributeArry });
     this.UpdateAttributes();
   };
 
   UpdateAttributes = async () => {
+    
     // console.log("AttributeValueArray---", this.state.AttributeValueArray);
     let a ='{'
     let attributearay =this.state.AttributeValueArray;
@@ -793,10 +889,8 @@ class ProductDetails extends Component {
   };
   onSuccessAttributeUpdate = (data) => {
     console.log('onSuccessAttributeUpdate', data);
-    if (data.errorlist) {
-      setTimeout(() => {
-        Alert.alert('MsaMart', data.errorlist[0]);
-      }, 300);
+    if (data.errorlist>0) {
+      
     } else {
       //gtin,
       //     mpn,
@@ -827,10 +921,10 @@ class ProductDetails extends Component {
         // pName: data.Name,
         //shareMessageData: Constants.HOST_URL+data.SeName,
         //pOldPrice: data.ProductPrice.OldPrice,
-        pStockAvailability: data.StockAvailability,
-        pNewPrice: data.totalPrice,
-        pInstock: data.inStock,
-        pAttributeSelected: data.attributeSelected,
+        //pStockAvailability: data.StockAvailability,
+        pNewPrice: data.model.totalPrice,
+        pInstock: data.model.StockAvailability,
+        pAttributeSelected: data.model.attributeSelected,
         // pImgs: data.PictureModels,
         //pMinQuantity: data.OrderMinimumQuantity,
         //pCustomeProperties:data.CustomProperties,
@@ -939,8 +1033,11 @@ var addcart = 2;
   };
 
   AddtoCart = async (cart) => {
+    console.log("productarray//*/**/*/*/**/*/*/*/*/*/*/*/*/*/",this.state.DropDownData);
     let a ='{'
     let attributearay =this.state.AttributeValueArray;
+    console.log(attributearay);
+    
     var customProperties = [];
     for (let key = 0; key < attributearay.length; key++) {
       var keyName = "product_attribute_" + attributearay[key].id;
@@ -1696,6 +1793,7 @@ var addcart = 2;
                     <View key={i} style={{ flex: 1 }}>
                       <RadioAttribute
                         //listData={[{FilterItemState:0,Name:"fdfdsf"},{FilterItemState:0,Name:"fdfdsf"},{FilterItemState:0,Name:"fdfdsf"}]}
+                        title={item.Name}
                         Id={this.state.radioButton[i].Id}
                         userClick={(data, Id) =>
                           this.onRadioAttributeSelected(
@@ -1738,6 +1836,7 @@ var addcart = 2;
                   {this.state.CheckBox.map((item, i) => (
                     <View key={i} style={{ flex: 1 }}>
                       <CheckBoxAttribute
+                      title={item.Name}
                         // listData={[{FilterItemState:0,Name:"fdfdsf"},{FilterItemState:0,Name:"fdfdsf"},{FilterItemState:0,Name:"fdfdsf"}]}
                         Id={this.state.CheckBox[i].Id}
                         userClick={(data, Id) =>

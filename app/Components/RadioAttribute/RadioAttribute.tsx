@@ -134,8 +134,8 @@ export default class extends Component {
     return (
 
       <View key={index} style={[styles.ItemContainer, this.props.ItemContainerStyles]}>
-
         <View
+        
           style={[styles.listItemContainer, this.props.listItemContainerStyle]}>
           { Platform.OS == "android" ? 
             <RadioButton
@@ -175,7 +175,7 @@ export default class extends Component {
             this.state.dataSource ?
               <>
                 <Text style={[styles.normalText, this.props.normalTextStyles]}>
-                  title
+                 {this.props.title}
             </Text>
 
 
