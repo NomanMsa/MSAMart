@@ -705,7 +705,7 @@ export default class TextField extends PureComponent {
     return (
       <View {...containerProps}>
         <Animated.View {...inputContainerProps}>
-          {this.renderLine(lineProps)}
+          {/* {this.renderLine(lineProps)} */}
           {this.renderAccessory('renderLeftAccessory')}
 
           <View style={styles.stack}>

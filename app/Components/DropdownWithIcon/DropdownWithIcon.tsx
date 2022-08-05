@@ -82,14 +82,21 @@ export default class extends Component {
             {Platform.OS == "android" ?
 
               <View style={[styles.dropdownContainer, this.props.ddStyles]}>
+                
 
                 {this.props && newArrayOfObjTemp && <Picker
                   selectedValue={this.state.selectedService}
                   style={[styles.dropdownContainerInner]}
                   onValueChange={(service, index) => this.onDropDownSelection(service, index)}
                 >
+                 
                   {newArrayOfObjTemp.map((item, index) => {
-                    return <Picker.Item key={index} value={item.Id} label={item.Name} />
+                      var a=item.PriceAdjustment;
+                      if(a==null){
+                        return <Picker.Item key={index} value={item.Id} label={item.Name } />
+                      }else{
+                        return <Picker.Item key={index} value={item.Id} label={item.Name+'['+a+']'} />
+                      }
                   })}
                 </Picker>}
               </View>

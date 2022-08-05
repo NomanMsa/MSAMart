@@ -162,17 +162,15 @@ export default class extends Component {
             }}
             color={Colors.PRIMARY}
           />
+          {item.PriceAdjustment == null ?
+            <Text style={[styles.normalText, this.props.normalTextStyles]}>
+              {item.Name}
+            </Text> :
+            <Text style={[styles.normalText, this.props.normalTextStyles]}>
 
-          <Text style={[styles.normalText, this.props.normalTextStyles]}>
-            {item.Name}
-          </Text>
-          {/* <Text
-              style={[styles.categoryText, this.props.categoryTextStyles]}
-              // numberOfLines={1}
-              // ellipsizeMode={'tail'}
-              >
-              {item.category}
-            </Text> */}
+              {item.Name + '[' + item.PriceAdjustment + ']'}
+            </Text>
+          }
         </View>
       </View>
 

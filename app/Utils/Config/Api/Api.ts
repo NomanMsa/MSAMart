@@ -55,7 +55,8 @@ const Api = {
 
   /////AddToWishlist API List/////////////////////
  
-
+GetReview:Constants.BASEs_URL+'Product/ProductReviews',
+AddReview:Constants.BASEs_URL+'Product/ProductReviewsAdd',
   ////////////// wish list page/////////////////
   getWishlist: Constants.BASEs_URL + 'shoppingcart/wishlist',
   getuserWishlist: Constants.BASEs_URL + 'shoppingcart/wishlist',
@@ -102,7 +103,7 @@ const Api = {
   orderHistory: Constants.BASEs_URL + 'order/customerorders',
   orderDetails: Constants.BASEs_URL + 'order/details',
  
-
+fetchOrderEcist:Constants.BASEs_URL + 'Order/IsOrderExistForCustomer',
   ordreTotal: Constants.BASEs_URL + 'ordertotals/invoke',
 
   CancelReasonCall: Constants.BASEs_URL + 'orders/CancelOrder',

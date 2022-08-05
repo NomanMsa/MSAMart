@@ -7,17 +7,26 @@ import {
   Dimensions,
   FlatList,
   ScrollView,
+  Modal
 } from 'react-native';
 import { Images, Loaders } from '@assets';
 import { default as Star } from '../StarRatings/Star.tsx';
 import { default as TapRating } from '../StarRatings/TapRating.tsx';
 import { default as FeedbackProgressBar } from '../FeedbackProgressBar/FeedbackProgressBar.tsx';
 import { default as Button } from '../Button/Button.tsx';
+import{ProductReview}from '../ProductReview/ProductReview.tsx';
 import { Colors } from '@theme';
+import { ServiceCall } from '@utils';
+import { Api, Constants } from '@config';
 
 const styles = require('./UserFeedbackStyle');
 const { width, height } = Dimensions.get('window');
-
+var prdata=[];
+var FiveStarRating;
+var FourStarRating;
+var ThreeStarRating;
+var TwoStarRating;
+var OneStarRating;
 export default class extends Component {
   static defaultProps = {
     onNavLink: () => { },
@@ -27,21 +36,80 @@ export default class extends Component {
 
   constructor(props) {
     super(props);
+    this.GetReview();
+   
+    //this.calculaterating();
     this.state = {
       dataLimitIncrementBy: 1,
       dataLimit: 1,
-      data: this.props.data.slice(0, 2),
+      data:[],
       showIndex: 0,
       reviewCommentLimit: 150,
       isReadMore: false,
     };
+    
+    this.GetReview = this.GetReview.bind(this);
+    //this.calculaterating = this.calculaterating.bind(this);
     this.renderTopLeft = this.renderTopLeft.bind(this);
     this.renderReviewItem = this.renderReviewItem.bind(this);
     this.renderImageGallary = this.renderImageGallary.bind(this);
     this.renderSubmitRating = this.renderSubmitRating.bind(this);
     this.renderBotton = this.renderBotton.bind(this);
   }
+  
+  GetReview= async () => {
+    let Service = {
+      apiUrl: Api.GetReview +'?productId='+this.props.Id,
+      methodType: 'GET',
+      headerData: { 'Content-Type': 'application/json' },
+      onSuccessCall:function(data){
+        console.log("success*/*/**/*/*/*/*",data);
+        prdata = data.model.Items;
+       
+        var five=[]
+        var four=[]
+        var three=[]
+        var two=[]
+        var one=[]
+        var total = prdata.length;
+       if(total>0){
+        for(var i=0;i<total;i++){
+          if(prdata[i].Rating==5){
+            five.push(prdata[i]);
+          }
+          if(prdata[i].Rating==4){
+            four.push(prdata[i])
+          }
+          if(prdata[i].Rating==3){
+            three.push(prdata[i])
+          }
+          if(prdata[i].Rating==2){
+            two.push(prdata[i])
+          }
+          if(prdata[i].Rating==1){
+            one.push(prdata[i])
+          }
+        }
+       var fnum = five.length * 100 / total
+       var fonum =four.length * 100 / total;
+       var trnum = three.length * 100 / total;
+       var twnum = two.length * 100 / total;
+       var onum = one.length * 100 / total;
+      FiveStarRating = fnum.toFixed(2); 
+      FourStarRating = fonum.toFixed(2);
+      ThreeStarRating = trnum.toFixed(2);
+      TwoStarRating = twnum.toFixed(2)
+      OneStarRating = onum.toFixed(2);
+       }
+      },
+     
+  };
+  const serviceResponse = await ServiceCall(Service);
+}
 
+  
+    
+  
   renderTopLeft = () => {
     return (
       <View
@@ -52,13 +120,13 @@ export default class extends Component {
             styles.bottomRightContainer,
             this.props.bottomRightContainerStyle,
           ]}
-          onPress={() => console.log(this.props)}>
+          onPress={() => console.log("")}>
           <Text style={[styles.bottomLeftText, this.props.bottomLeftTextStyle]}>
-            {this.props.OverallProductReview}{' '}
+            {this.state.data}{' '}
           </Text>
           <Star
-            count={this.props.totalStars}
-            defaultRating={this.props.ratedStars}
+            count={5}
+            defaultRating={5}
             showRating={true}
             isDisabled={true}
             showTitle={false}
@@ -70,7 +138,7 @@ export default class extends Component {
           />
 
           <Text style={[styles.TopCenterText, this.props.TopCenterTexttyle]}>
-            {'  '} {this.props.totalReviews} {this.props.reviewText}
+            {'  '} {prdata.length} {"Reviews"}
           </Text>
         </View>
       </View>
@@ -86,7 +154,7 @@ export default class extends Component {
         <View style={[styles.StarContainer, this.props.StarContainer]}>
           <TapRating
             count={5}
-            defaultRating={item.item.rating}
+            defaultRating={item.item.Rating}
             showRating={false}
             isDisabled={true}
             showTitle={false}
@@ -96,26 +164,22 @@ export default class extends Component {
           />
         </View>
         <Text style={[styles.ListTitleText, this.props.ListTitleText]}>
-          {item.item.reviewTitle}
+          {item.item.Title}
         </Text>
         <Text style={[styles.readMore, this.props.readMore]}>
           {this.state.isReadMore ? (
-            item.item.reiviewComment
+            item.item.ReviewText
           ) : (
               <Text style={[styles.readMore, this.props.readMore]}>
-                {item.item.reiviewComment.length < this.state.reviewCommentLimit
-                  ? item.item.reiviewComment
-                  : item.item.reiviewComment.substring(
+                {item.item.ReviewText.length < this.state.reviewCommentLimit
+                  ? item.item.ReviewText
+                  : item.item.ReviewText.substring(
                     0,
                     this.state.reviewCommentLimit,
                   )}{' '}
               </Text>
             )}
-          <TouchableOpacity
-          // onPress={() =>
-          //   this.setState({isReadMore: this.state.isReadMore ? true : false})
-          //}
-          >
+          <TouchableOpacity>
             <Text
               style={[styles.middleRightText, this.props.middleRightTextStyle]}>
               Read more
@@ -123,7 +187,7 @@ export default class extends Component {
           </TouchableOpacity>
         </Text>
 
-        {item.item.product_img.length ? (
+        {/* {item.item.product_img.length ? (
           <ScrollView horizontal={true}>
             {item.item.product_img.map((item, i) => (
               <View key={i} >
@@ -138,11 +202,11 @@ export default class extends Component {
           </ScrollView>
         ) : (
             <View></View>
-          )}
+          )} */}
 
         <Text style={[styles.bottomRightText, this.props.bottomRightTextStyle]}>
-          {'Publish'} {item.item.reviewPeriod} {item.item.reivewPeriodStamp}{' '}
-          {'ago by'} {item.item.customerName}
+          {/* {'Publish'} {item.item.reviewPeriod} {item.item.reivewPeriodStamp}{' '} */}
+          {'ago by'} {item.item.CustomerName}
         </Text>
       </View>
     );
@@ -163,13 +227,14 @@ export default class extends Component {
   renderCustomerReviewList = () => {
     return (
       <FlatList
-        data={this.stete.data}
-        extraData={this.state}
+        data={this.state.data.Items}
+        //extraData={this.state}
         keyExtractor={this._keyExtractor}
-        renderItem={(item) => this.renderReviewItem(item)}
+        renderItem={(item) => this.renderReviewItems(item)}
       />
     );
   };
+ 
 
   renderSubmitRating = () => {
     return (
@@ -177,7 +242,7 @@ export default class extends Component {
         <TapRating
           count={5}
           reviews={['Terrible', 'Bad', 'Meh', 'OK', 'Good']}
-          defaultRating={3}
+          defaultRating={5}
           showRating={false}
           isDisabled={false}
           showTitle={true}
@@ -191,16 +256,20 @@ export default class extends Component {
           size={40}
         />
         <View style={[styles.bottomRow, this.props.bottomRowStyle]}>
+          <TouchableOpacity>
           <Text style={[styles.bottomText, this.props.bottomTextStyle]}>
             Submit Rating
           </Text>
+          </TouchableOpacity>
           <Text style={[styles.bottomsText, this.props.bottomsTextTextStyle]}>
             {' '}
             l{' '}
           </Text>
+          <TouchableOpacity>
           <Text style={[styles.bottomText, this.props.bottomTextStyle]}>
             Write a Review
           </Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -245,27 +314,30 @@ export default class extends Component {
       </View>
     );
   };
-
+ 
   render() {
+    
     return (
       <View>
         <View style={styles.container}>
-          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{this.props.title}</Text>
+          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Product Review</Text>
           {this.renderTopLeft()}
           <FeedbackProgressBar
-            FiveStarRating={this.props.FiveStarRating}
-            FourStarRating={this.props.FourStarRating}
-            ThreeStarRating={this.props.ThreeStarRating}
-            TwoStarRating={this.props.TwoStarRating}
-            OneStarRating={this.props.OneStarRating}
+            FiveStarRating={FiveStarRating}
+            FourStarRating={FourStarRating}
+            ThreeStarRating={ThreeStarRating}
+            TwoStarRating={TwoStarRating}
+            OneStarRating={OneStarRating}
           />
           <View style={{ paddingBottom: 25 }}>
+         {/* {this.renderReviewItem()} */}
+          
             <FlatList
-              data={this.props.data.slice(0, this.state.dataLimit)}
+              data={prdata}
               renderItem={this.renderReviewItem}
               keyExtractor={(item, index) => index}
             />
-            {this.props.data.length != this.state.dataLimit ? (
+            {prdata.length != this.state.dataLimit ? (
               <TouchableOpacity
                 onPress={() =>
                   this.setState({
@@ -280,9 +352,10 @@ export default class extends Component {
               )}
           </View>
 
-          {this.renderSubmitRating()}
+          {/* {this.renderSubmitRating()} */}
         </View>
-        {this.renderBotton()}
+        
+        {/* {this.renderBotton()} */}
       </View>
     );
   }

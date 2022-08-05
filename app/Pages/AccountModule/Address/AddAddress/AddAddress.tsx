@@ -208,7 +208,7 @@ console.log("-----------------------------------------**-");
         email:  passData.Email,
         address1: passData.Address1,
         address2: passData.Address2,
-        state:"",// (passData.StateProvinceId).toString(),
+        state: passData.StateProvinceId.toString(),
         city: passData.City,// (passData.CityId).toString(),
         area:"",// (passData.AddressAreaId).toString(),
         zip: passData.ZipPostalCode,

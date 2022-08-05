@@ -60,6 +60,7 @@ export {default as ButtonWithIcon} from './ButtonWithIcon/ButtonWithIcon.tsx';
 export {default as ProductList} from './ProductList/ProductList.tsx';
 export {default as ProductCartBtn} from './ProductCartBtn/ProductCartBtn.tsx';
 export {default as ProductReview} from './ProductReview/ProductReview.tsx';
+export {default as Reviewnull} from './ProductReview/Reviewnull.tsx';
 export {default as ProductDetails} from './ProductDetails/ProductDetails.tsx';
 export {default as OrderDetails} from './OrderDetails/OrderDetails.tsx';
 export {default as OrderProcess} from './OrderProcess/OrderProcess.tsx';

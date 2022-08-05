@@ -120,7 +120,7 @@ export default class ThankYou extends Component {
     let Service = {
       apiUrl: Api.orderHistory,
       methodType: 'GET',
-      //bodyData: JSON.stringify({ "orderStatus": "0", "selectedTime": this.state.filterSelection, "orderBy": this.state.statusSelection }),
+     
       headerData: { 'Content-Type': 'application/json' },
       onSuccessCall: this.onSuccessfetchPurchases,
       onFailureAPI: this.onFailureAPI,

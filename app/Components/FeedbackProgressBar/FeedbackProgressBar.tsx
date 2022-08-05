@@ -32,7 +32,7 @@ export default class FeedbackProgressBar extends PureComponent {
         <View style={styles.ProgressBarContainer}>
           <Text>5 Stars</Text>
           <Progress.Bar
-            progress={this.props.FiveStarRating / 100}
+            progress={this.props.FiveStarRating}
             width={width - this.state.progressWidh}
             color={this.state.selectedColor}
             unfilledColor={this.state.unfilledColors}
@@ -44,7 +44,7 @@ export default class FeedbackProgressBar extends PureComponent {
         <View style={styles.ProgressBarContainer}>
           <Text>4 Stars</Text>
           <Progress.Bar
-            progress={this.props.FourStarRating / 100}
+            progress={this.props.FourStarRating}
             width={width - this.state.progressWidh}
             color={this.state.selectedColor}
             unfilledColor={this.state.unfilledColors}
@@ -56,7 +56,7 @@ export default class FeedbackProgressBar extends PureComponent {
         <View style={styles.ProgressBarContainer}>
           <Text>3 Stars</Text>
           <Progress.Bar
-            progress={this.props.ThreeStarRating / 100}
+            progress={this.props.ThreeStarRating}
             width={width - this.state.progressWidh}
             color={this.state.selectedColor}
             unfilledColor={this.state.unfilledColors}
@@ -68,7 +68,7 @@ export default class FeedbackProgressBar extends PureComponent {
         <View style={styles.ProgressBarContainer}>
           <Text>2 Stars</Text>
           <Progress.Bar
-            progress={this.props.TwoStarRating / 100}
+            progress={this.props.TwoStarRating}
             width={width - this.state.progressWidh}
             color={this.state.selectedColor}
             unfilledColor={this.state.unfilledColors}
@@ -80,7 +80,7 @@ export default class FeedbackProgressBar extends PureComponent {
         <View style={styles.ProgressBarContainer}>
           <Text>1 Stars</Text>
           <Progress.Bar
-            progress={this.props.OneStarRating / 100}
+            progress={this.props.OneStarRating}
             width={width - this.state.progressWidh}
             color={this.state.selectedColor}
             unfilledColor={this.state.unfilledColors}

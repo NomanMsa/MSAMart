@@ -155,10 +155,15 @@ export default class extends Component {
               />
             </View>
           }
-
+          {item.PriceAdjustment  ==null? 
           <Text style={[styles.normalText, this.props.normalTextStyles]}>
-            {item.Name}
-          </Text>
+          {item.Name}      
+          </Text>:
+          <Text style={[styles.normalText, this.props.normalTextStyles]}>
+          
+          {item.Name + '['+item.PriceAdjustment+']'}
+        </Text>
+          }
 
         </View>
       </View>

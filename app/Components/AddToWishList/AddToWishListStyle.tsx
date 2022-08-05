@@ -72,15 +72,19 @@ module.exports = StyleSheet.create({
   },
   rowDirectionContianer: {
     flexDirection: "row",
-    justifyContent:'space-around'
+    justifyContent:'space-around',
+    alignSelf: 'flex-start',
   },
   imageStyle: {
     height: width / 4,
     width: width / 4,
-    margin: 15
+    margin: 5,
+    
+    
   },
   desContainer: {
     justifyContent: 'center',
+    
   },
 
   desTextStyle: {
@@ -90,12 +94,14 @@ module.exports = StyleSheet.create({
       fontFamily: 'verdana',
       },
       android: {
-      fontWeight: 'normal',
+      fontWeight: 'bold',
       fontFamily: 'verdana',
       },
     }),
     width: width / 2,
-    fontSize: 12
+    fontSize: 12,
+    alignSelf: 'center',
+    
   },
 
   bottomContianer: {
@@ -142,6 +148,21 @@ module.exports = StyleSheet.create({
 
   },
   prizeText: {
+    ...Platform.select({
+      ios: {
+        fontWeight: '800',
+        fontFamily: 'verdana',
+      },
+      android: {
+        fontWeight: 'normal',
+        fontFamily: 'verdanab',
+      },
+    }),
+    alignSelf: 'flex-start',
+    padding: 5,
+    color: Colors.BG_OVERLAY,
+  },
+  prizeText1: {
     ...Platform.select({
       ios: {
         fontWeight: '800',

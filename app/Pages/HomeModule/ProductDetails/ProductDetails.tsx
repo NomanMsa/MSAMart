@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+//import Modals from "react-native-modal";
+
 import {
   SafeAreaView,
   Dimensions,
@@ -40,7 +42,11 @@ import {
   DropdownWithIcon,
   CheckBoxAttribute,
   RadioAttribute,
-  BuyMoreAndSaveMore
+  BuyMoreAndSaveMore,
+  ProductReview,
+  UserFeedback,
+  TapRating,
+  Reviewnull
 } from '@components';
 
 
@@ -57,7 +63,7 @@ import { connect } from 'react-redux';
 import analytics from '@react-native-firebase/analytics';
 import RenderHtml from 'react-native-render-html';
 import { useWindowDimensions } from 'react-native';
-
+import Review from "react-native-customer-review-bars";
 const { width, height } = Dimensions.get('window');
 const SCREEN_WIDTH = Dimensions.get('window').width;
 let IS_SCREEN_SIZE_SMALL = false;
@@ -67,8 +73,11 @@ if (SCREEN_WIDTH <= 320) {
   IS_SCREEN_SIZE_SMALL = false;
 }
 
+
 class ProductDetails extends Component {
+  
   constructor(props) {
+    
     super(props);
     this.state = {
       loading: false,
@@ -129,7 +138,11 @@ class ProductDetails extends Component {
       currentCountryModel : null,
       deliveryDate : '',
       htmlData: {},
-      productId: null,
+      productId: 0,
+      userReviewdata:[],
+      modalVisible:false,
+      inorderExist: false,
+      inreviwexist: false,
     };
     this.fetchProductDetialsData = this.fetchProductDetialsData.bind(this);
     //this.addToWishList = this.addToWishList.bind(this);
@@ -138,12 +151,19 @@ class ProductDetails extends Component {
   }
 
   async componentDidMount() {
+    
     this.setState({ loading: true });
     const pdpTrace =  await perf().startTrace(
       'custom_trace_product_detail_screen',
     );
     let passData = this.props.route.params.passData;
+    this.fetchorderexist(passData.Id);
     await this.fetchProductDetialsData(passData.Id);
+    this.UpdateAttributes();
+    this.setState({
+      productId: passData.Id
+    });
+   // this.GetReview(passData.Id);
     pdpTrace.putAttribute('occurrence', 'firstVisit');
     await pdpTrace.stop();
     this.setState({ loading: false, productId:passData.Id});
@@ -159,7 +179,10 @@ class ProductDetails extends Component {
         const pdpTrace =  await perf().startTrace(
           'custom_trace_product_detail_screen',
         );
+        this.fetchorderexist(passData.Id);
         await this.fetchProductDetialsData(passData.Id);
+        this.UpdateAttributes();
+       // this.GetReview(passData.Id);
         pdpTrace.putAttribute('occurrence', 'reVisit');
         await pdpTrace.stop();
         //this.fetchWidgitData(passData.Id);
@@ -388,6 +411,7 @@ class ProductDetails extends Component {
     console.log("productarray//*/**/*/*/**/*/*/*/*/*/*/*/*/*/",attribute);
     
     this.setState({ AttributeValueArray: attribute });
+    
     let eventParams = {
       currency: this.state.currency,
       item_id: data.Id,
@@ -716,8 +740,10 @@ class ProductDetails extends Component {
     attributeArry = this.state.AttributeValueArray;
 
     attributeArry.push({ id: Id, value: data.Id });
-    this.setState({ AttributeValueArray: attributeArry });
+    this.setState({ AttributeValueArray: attributeArry});
+    this.setState({loading:true});
     this.UpdateAttributes();
+    this.setState({loading:false});
   };
 
   onImageAttributeSelected = (data, Id) => {
@@ -743,7 +769,9 @@ class ProductDetails extends Component {
     );
 
     this.setState({ AttributeValueArray: newArray });
+    this.setState({loading:true});
     this.UpdateAttributes();
+    this.setState({loading:false});
   };
 
   onRadioAttributeSelected = (data, Id) => {
@@ -772,7 +800,9 @@ class ProductDetails extends Component {
     );
     // console.log("radiobutoon - ", newArray)
     this.setState({ AttributeValueArray: newArray });
+    this.setState({loading:true});
     this.UpdateAttributes();
+    this.setState({loading:false});
   };
 
   onDropdownAttributeSelected = (data, Id) => {
@@ -798,7 +828,9 @@ class ProductDetails extends Component {
     );
     // console.log("dropdownattribute-----", newArray);
     this.setState({ AttributeValueArray: newArray });
+    this.setState({loading:true});
     this.UpdateAttributes();
+    this.setState({loading:false});
   };
   onCheckBoxAttributeSelected = (data, Id) => {
     console.log("**/*/*/*/*/**/*/*/*/*/*/*/*/*/*checkboxdata",data);
@@ -828,16 +860,9 @@ class ProductDetails extends Component {
           }
         })
       })
-    
-   
-      console.log("/*/*/*/-***--*/*/*/*/*/*/*//*/maparrrrrra*/*/****/*/",attr);
-      //attr.push({attributeArry})
-	
-	
-   
-    // console.log("checkbox attributearray - ", attributeArry);
-   //this.setState({ AttributeValueArray: attributeArry });
+      this.setState({loading:true});
     this.UpdateAttributes();
+    this.setState({loading:false});
   };
 
   UpdateAttributes = async () => {
@@ -935,12 +960,15 @@ class ProductDetails extends Component {
         //pBreadcrumb:data.Breadcrumb.CategoryBreadcrumb
       });
     }
+    this.setState({loading:false});
   };
 
   onQuantitySelector = async (text) => {
     console.log("Changing quantity into ",text);
     await this.setState({ QuantitySelectorText: text });
+    this.setState({loading:true});
     this.UpdateAttributes();
+    this.setState({loading:false});
   };
 
   onAddToWishList = async () => {
@@ -1351,8 +1379,43 @@ var addcart = 2;
       }, 500);
     }
   };
-
+ 
+  
+  
+  Testpopup() {
+    this.fetchorderexist(this.state.productId)
+    console.log("testttttt",this.state.inorderExist);
+    return (
+      this.setState({modalVisible:true})
+    );
+  }
+  fetchorderexist = async (Id)=>{
+    let Service = {
+      apiUrl: Api.fetchOrderEcist +'?productId='+Id,
+      methodType: 'GET',
+      headerData: { 'Content-Type': 'application/json' },
+      onSuccessCall:this.Successfetchorderexist,
+      onFailureAPI: this.onFailureAPI,
+      onPromiseFailure: this.onPromiseFailure,
+      onOffline: this.onOffline,
+  };
+  const serviceResponse = await ServiceCall(Service);
+}
+Successfetchorderexist=(data)=>{
+  console.log(data);
+  
+  var edata = data.model[0];
+  var reviewdata = data.model[1];
+  this.setState({
+    inorderExist: edata.inorderExist,
+    inreviwexist: edata.inreviwexist,
+    reviewdata: reviewdata
+  });
+}
+  
   render() {
+   
+   
     console.log('STOCK AVAILIBILITY', this.state.pStockAvailability);
     console.log('DPW QUANTITY ', this.state.pData.DPWStockQuantity);
     console.log('INSTOCK ', this.state.pInstock);
@@ -2046,7 +2109,72 @@ var addcart = 2;
             ) : (
               <></>
             )}
-            
+        
+           <UserFeedback 
+           Id={this.props.route.params.passData.Id}
+           />
+            <View style={[styles.submitRating, this.props.submitRatingStyle]}>
+        <TapRating
+          count={5}
+          reviews={['Terrible', 'Bad', 'Meh', 'OK', 'Good']}
+          defaultRating={this.state.reviewdata != null ? this.state.reviewdata.Rating:5}
+          showRating={false}
+          isDisabled={false}
+          showTitle={true}
+          title={'Rate this product'}
+          titleStyle={{
+            fontSize: 16,
+            color: 'gray',
+            fontWeight: "400",
+            marginBottom: 20,
+          }}
+          size={40}
+        />
+              <View style={[styles.bottomRow, this.props.bottomRowStyle]}>
+                {this.state.inorderExist == true ?
+                  <TouchableOpacity onPress={this.Testpopup.bind(this)}>
+                    {this.state.modalVisible === true &&
+                      <ProductReview
+                        Id={this.state.productId}
+                        modalVisible={this.state.modalVisible}
+                        data={this.state.reviewdata}
+                        oncancel={() => { this.setState({ modalVisible: false }); console.log(this.state.modalVisible)}} 
+                        onsubmit={()=>{this.fetchProductDetialsData(this.state.productId)}}    
+                    />}
+                        
+
+                      {this.state.inreviwexist != true ? 
+                    <Text style={[styles.bottomText, this.props.bottomTextStyle]}>
+                      Submit Rating
+                    </Text>
+                    :
+                    <Text style={[styles.bottomText, this.props.bottomTextStyle]}>
+                      Edit Rating
+                    </Text>
+                      }
+                  </TouchableOpacity>
+                  :
+                  <TouchableOpacity onPress={this.Testpopup.bind(this)}>
+                    {this.state.modalVisible === true &&
+                      <Reviewnull
+                        modalVisible={this.state.modalVisible}
+                        oncancel={() => { this.setState({ modalVisible: false }); console.log(this.state.inorderExist) }} />}
+                    <Text style={[styles.bottomText, this.props.bottomTextStyle]}>
+                      Submit Rating
+                    </Text>
+                  </TouchableOpacity>
+                }
+
+          {/* <TouchableOpacity onPress={this.Testpopup.bind(this)}>
+          Reviewnull
+            {this.state.modalVisible ===true && <ProductReview modalVisible={this.state.modalVisible}/>}
+          <Text style={[styles.bottomText, this.props.bottomTextStyle]}>
+            Write a Review
+          </Text>
+          </TouchableOpacity> */}
+        </View>
+      </View>
+           
             {(this.state.pData?.TierPrices != '' && this.state.pData?.TierPrices != undefined) ?
 
               <BuyMoreAndSaveMore title={'Buy More Save More'} pId={this.state.pData.Id} data={this.state.pData} pQuantity={this.state.QuantitySelectorText} pMiniQuantity={this.state.pMinQuantity} pPrice={this.state.pNewPrice} 

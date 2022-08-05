@@ -261,5 +261,58 @@ export default StyleSheet.create({
     marginHorizontal:10,
     color: Colors.GRAY_TEXT,
   },
+  container: {
+    flex: 1,
+    backgroundColor: "#F5F8FF",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  reviewContainer: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 10,
+    paddingHorizontal: 30,
+    paddingVertical: 40,
+    minWidth: "80%",
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 1.0,
+    shadowRadius: 2,
+    shadowColor: "rgba(193, 211, 251, 0.5)",
+    elevation: 5,
+  },
+  title: {
+    fontWeight: "bold",
+    fontSize: 20,
+    color: "#323357",
+    textAlign: "center",
+  },
 
+  submitRating: {
+    justifyContent: 'center',
+    alignSelf: 'center',
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+   bottomRow: {
+    width: width - 30,
+    marginTop: 10,
+    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    //backgroundColor:Colors.RED,
+  },
+
+bottomText: {
+    fontSize: 16,
+    fontWeight: "800",
+    color: Colors.PRIMARY,
+    textDecorationLine: 'underline',
+    justifyContent: 'center',
+  },
+   bottomsText: {
+    fontSize: 16,
+    fontWeight: "800",
+    color: Colors.GRAY_TEXT,
+    justifyContent: 'center',
+  },
 });

@@ -11,7 +11,7 @@ import {
 import { Icons } from '@assets';
 import { Colors } from '@theme';
 import { default as ButtonWithIcon } from '../ButtonWithIcon/ButtonWithIcon.tsx';
-
+import { RenderHTML } from 'react-native-render-html'
 const styles = require('./AddToWishListStyle');
 const { width, height } = Dimensions.get('window');
 import { ServiceCall } from '@utils';
@@ -110,6 +110,7 @@ export default class extends Component {
   }
 
   renderProductList = ({ item, index }) => {
+    var html=item.AttributeInfo
     return (
       <TouchableOpacity key={index} style={styles.itemContainer} onPress={() => this.props.onItemClick(item)}
         testID="wishListItems"
@@ -125,17 +126,21 @@ export default class extends Component {
           </View>
           <View style={{ justifyContent: 'space-between', }}>
             <Text style={styles.desTextStyle}>{""}</Text>
-
+            
             <View style={styles.desContainer}>
               <Text style={styles.desTextStyle}
                 testID="productDetail"
                 accessibilityLabel="productDetail"
               >{item.ProductName}</Text>
-
+              
             </View>
+            
+            <Text style={styles.prizeText}>Price: {item.UnitPrice}</Text>
+            
 
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 10, }}>
               <View>
+                
               <TouchableOpacity onPress={() => this.cartclick(item)}>
                 <Text style={styles.radioText}
                   testID="addToCartBtn"
@@ -162,12 +167,12 @@ export default class extends Component {
         <View style={styles.bottomContianer}>
 
           <View style={styles.BottonContentContainer}>
-
+          <RenderHTML source={{html}} baseStyle={styles.prizeText1} />
           </View>
-          <View style={styles.bottomRightContainer}>
+          {/* <View style={styles.bottomRightContainer}>
             <Text style={styles.prizeText}>Price: {item.UnitPrice}</Text>
-
-          </View>
+              
+          </View> */}
 
         </View>
       </TouchableOpacity>
