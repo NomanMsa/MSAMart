@@ -124,8 +124,8 @@ fetchOrderEcist:Constants.BASEs_URL + 'Order/IsOrderExistForCustomer',
   HelpCenterAllInOneAPI: Constants.BASEs_URL + 'topic/topicdetailspopup',
 
   /////////////////////// Email a friend //////////////////////////
-  userEmailDetailAPI: Constants.BASEs_URL + 'shoppingcart/emailwishlist',
-  sendEmailAPI: Constants.BASEs_URL + 'shoppingcart/emailwishlistsend',
+  userEmailDetailAPI: Constants.BASEs_URL + 'shoppingcart/EmailWishlist',
+  sendEmailAPI: Constants.BASEs_URL + 'shoppingcart/EmailWishlistSend',
 
   reOrder: Constants.BASEs_URL + 'order/reorder',
   cancelOrder: Constants.BASEs_URL + 'orders/cancel',

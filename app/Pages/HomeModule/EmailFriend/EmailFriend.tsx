@@ -93,26 +93,26 @@ class ThankYou extends Component {
 
   handleFriendEmailChange = (friendEmail: string) => {
     this.setState({ friendEmail: friendEmail });
-    let reg = Constants.IS_VALID_EMAIL_REGEX;//^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
-    if (reg.test(friendEmail) === false) {
-      this.setState({ FriendsEmailFormat: false })
-      return false;
-    }
-    else {
+    // let reg = Constants.IS_VALID_EMAIL_REGEX;//^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
+    // if (reg.test(friendEmail) === false) {
+    //   this.setState({ FriendsEmailFormat: false })
+    //   return false;
+    // }
+    // else {
       this.setState({ FriendsEmailFormat: true })
-    }
+    // }
   };
 
   handleUserEmailChange = (userEmail: string) => {
-    this.setState({ userEmail: userEmail });
-    let reg = Constants.IS_VALID_EMAIL_REGEX;//^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
-    if (reg.test(userEmail) === false) {
-      this.setState({ UserEmailFormat: false })
-      return false;
-    }
-    else {
+     this.setState({ userEmail: userEmail });
+    // let reg = Constants.IS_VALID_EMAIL_REGEX;//^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
+    // if (reg.test(userEmail) === false) {
+    //   this.setState({ UserEmailFormat: false })
+    //   return false;
+    // }
+    // else {
       this.setState({ UserEmailFormat: true })
-    }
+    // }
   };
 
   handleFriendEmailSubmitPress = () => {
@@ -331,23 +331,23 @@ class ThankYou extends Component {
       confirmPasswordMatch,
     } = this.state;
 
-    var FriendEmailError = undefined;
-    if (!friendEmail && friendEmailTouched) {
-      FriendEmailError = Strings.EMAIL_REQUIRED;
-    } else if (friendEmailTouched && !FriendsEmailFormat) {
-      FriendEmailError = Strings.EMAIL_WRONG_FORMAT;
-    } else {
-      FriendEmailError = undefined;
-    }
+    // var FriendEmailError = undefined;
+    // if (!friendEmail && friendEmailTouched) {
+    //   FriendEmailError = Strings.EMAIL_REQUIRED;
+    // } else if (friendEmailTouched && !FriendsEmailFormat) {
+    //   FriendEmailError = Strings.EMAIL_WRONG_FORMAT;
+    // } else {
+    //   FriendEmailError = undefined;
+    // }
 
-    var UserEmailError = undefined;
-    if (!UserEmail && userEmailTouched) {
-      UserEmailError = Strings.EMAIL_REQUIRED;
-    } else if (userEmailTouched && !emailFormat) {
-      UserEmailError = Strings.EMAIL_WRONG_FORMAT;
-    } else {
-      UserEmailError = undefined;
-    }
+    // var UserEmailError = undefined;
+    // if (!UserEmail && userEmailTouched) {
+    //   UserEmailError = Strings.EMAIL_REQUIRED;
+    // } else if (userEmailTouched && !emailFormat) {
+    //   UserEmailError = Strings.EMAIL_WRONG_FORMAT;
+    // } else {
+    //   UserEmailError = undefined;
+    // }
 
 
     return (
@@ -410,7 +410,7 @@ class ThankYou extends Component {
                   leftIcon={false}
                   withBorder={true}
                   onBlur={this.handleFriendEmailBlur}
-                  error={FriendEmailError}
+                  //error={FriendEmailError}
                   blurOnSubmit={Constants.IS_IOS}
                 />
 
@@ -433,7 +433,7 @@ class ThankYou extends Component {
                   leftIcon={false}
                   withBorder={true}
                   onBlur={this.handleUserEmailBlur}
-                  error={UserEmailError}
+                  //error={UserEmailError}
                   blurOnSubmit={Constants.IS_IOS}
                 />
 

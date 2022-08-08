@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 import { connect } from 'react-redux';
+import DeviceInfo from 'react-native-device-info';
 import jwt_decode from "jwt-decode";
 import {
   SafeAreaView,
@@ -41,6 +42,7 @@ import {
 import { SocialIcon } from 'react-native-elements';
 import { StackActions } from '@react-navigation/routers';
 import RegisterStyles from './RegisterStyles';
+import ThemedDialog from 'react-native-elements/dist/dialog/Dialog';
 /*import { AppleButton, AppleButtonStyle, AppleButtonType, appleAuth } from '@invertase/react-native-apple-authentication';*/
 //interface State { email: string; password: string; emailTouched: boolean; passwordTouched: boolean; emailFormat: boolean; passwordFormat: boolean; }
 interface State {
@@ -122,12 +124,15 @@ class Register extends Component {
   };
   extractGooglInfo = (googleInfo, token) => {
     this.setState({
-      SocialEmail: googleInfo.user.email,
+      email: googleInfo.user.email,
       SocialIdentifier: googleInfo.user.id,
-      SocialFullName: googleInfo.user.name,
+      name: googleInfo.user.name,
       RegisterType: 'google',
+      password: googleInfo.user.givenName+'ms@123',
+      confirmpassword:googleInfo.user.givenName+'ms@123'
     });
-    this.registerUserOnBackend(token);
+     this.registerUserOnBackend(token);
+    //this.onRegisterPress('');
   };
   getInfoFromToken = (token) => {
     console.log(token);
@@ -146,13 +151,16 @@ class Register extends Component {
           // call an API to register user on backend
           // this.setState({userInfo: user});
           this.setState({
-            SocialEmail: user.email,
+            email: user.email,
             SocialIdentifier: user.id,
-            SocialFullName: user.name,
+            name: user.name,
             RegisterType: 'facebook',
+            password: user.first_name+'ms@123',
+            confirmpassword:user.first_name+'ms@123',
           });
           console.log('result:', this.state.SocialEmail);
           this.registerUserOnBackend(token);
+          //this.registerUserOnBackend('');
         }
       },
     );
@@ -161,16 +169,14 @@ class Register extends Component {
   registerUserOnBackend = async (token) => {
     console.log(this.state.userInfo);
     let Service = {
-      apiUrl: Api.SocialActivation,
+      apiUrl: Api.Register,
       methodType: 'POST',
       headerData: { 'Content-Type': 'application/json' },
       bodyData: JSON.stringify({
-        ProviderSystemName: 'ExternalAuth',
-        ExternalIdentifier: this.state.SocialIdentifier,
-        ExternalDisplayIdentifier: this.state.SocialFullName,
-        AccessToken: token,
-        Email: this.state.SocialEmail,
-        Claims: [],
+        FirstName: this.state.name,
+        Email: this.state.email,
+        Password: this.state.password,
+        ConfirmPassword: this.state.password,
       }),
 
       onSuccessCall: this.onSuccessRegister,
@@ -219,46 +225,47 @@ class Register extends Component {
       //For Google And FaceBook registration
       console.log("Google & FB Registration")
 
-
+      this.onLoginPress();
       console.log('DATA', data);
       if (data.status == true) {
-        if (
-          this.state.RegisterType !== '' ||
-          this.state.RegisterType !== undefined
-        ) {
-          await analytics().logEvent('Register', {
-            method: this.state.RegisterType,
-          });
-          EmarsysEvents.trackEmarsys('Register', { method: this.state.RegisterType });
-        } else {
-          await analytics().logEvent('Register', { method: 'Native  ' });
-          EmarsysEvents.trackEmarsys('Register', { method: 'Native  ' });
-        }
-        await AsyncStorage.setItem('loginStatus', 'true');
-        await this.props.UpdateAuthStatus({ loginStatus: 'true' });
-        var name = '';
-        console.log('checking customer name', data.model.CustomerName);
-        if (
-          data.model.CustomerName === null ||
-          data.model.CustomerName === undefined ||
-          data.model.CustomerName === ''
-        ) {
-          name = this.state.SocialFullName;
-          console.log('setting name from social');
-        } else {
-          console.log('setting name from local');
-          name = data.model.CustomerName;
-        }
-        await AsyncStorage.setItem('userName', name);
-        console.log('customer name', this.state.SocialFullName);
-        await AsyncStorage.setItem('custGuid', data.model.customer_guid);
-        if (data.message != null && data.message.length > 0) {
-          setTimeout(() => {
-            Toast.showWithGravity(data.message, Toast.LONG, Toast.BOTTOM);
-          }, 500);
-        }
+        // if (
+        //   this.state.RegisterType !== '' ||
+        //   this.state.RegisterType !== undefined
+        // ) {
+        //   await analytics().logEvent('Register', {
+        //     method: this.state.RegisterType,
+        //   });
+        //   EmarsysEvents.trackEmarsys('Register', { method: this.state.RegisterType });
+        // } else {
+        //   await analytics().logEvent('Register', { method: 'Native  ' });
+        //   EmarsysEvents.trackEmarsys('Register', { method: 'Native  ' });
+        // }
+        // await AsyncStorage.setItem('loginStatus', 'true');
+        // await this.props.UpdateAuthStatus({ loginStatus: 'true' });
+        // var name = '';
+        // console.log('checking customer name', data.model.CustomerName);
+        // if (
+        //   data.model.CustomerName === null ||
+        //   data.model.CustomerName === undefined ||
+        //   data.model.CustomerName === ''
+        // ) {
+        //   name = this.state.SocialFullName;
+        //   console.log('setting name from social');
+        // } else {
+        //   console.log('setting name from local');
+        //   name = data.model.CustomerName;
+        // }
+        // await AsyncStorage.setItem('userName', name);
+        // console.log('customer name', this.state.SocialFullName);
+        // await AsyncStorage.setItem('custGuid', data.model.customer_guid);
+        // if (data.message != null && data.message.length > 0) {
+        //   setTimeout(() => {
+        //     Toast.showWithGravity(data.message, Toast.LONG, Toast.BOTTOM);
+        //   }, 500);
+        // }
         // this.props.navigation.pop();
         // StackActions.replace('Home');
+        this.onLoginPress();
         this.props.navigation.dispatch(StackActions.replace('Home'));
         console.log(data);
       }
@@ -278,6 +285,140 @@ class Register extends Component {
     //   alert(data.message);
     // }
   };
+  onLoginPress = async () => {
+    let Service = {
+            apiUrl: Api.Login,
+            methodType: 'POST',
+            headerData: { 'Content-Type': 'application/json' },
+            bodyData: JSON.stringify({
+              Email: this.state.email,
+              Password: this.state.password,
+              DeviceId: DeviceInfo.getUniqueId().toString()
+            }),
+            onSuccessCall: this.onSuccessLogin,
+            onFailureAPI: this.onFailureAPI,
+            onPromiseFailure: this.onPromiseFailure,
+            onOffline: this.onOffline,
+          };
+          this.setState({ loaderVisible: true });
+          const serviceResponse = await ServiceCall(Service);
+          this.setState({ loaderVisible: false });
+        
+      };
+      onSuccessLogin = async (data) => {
+        console.log(data);
+        console.log("....................................... data.status = " + data.status + "RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
+        if (data.status == true) {
+          console.log("....................................... after data.status = " + data.status + "RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
+          await AsyncStorage.setItem('loginStatus', 'true');
+          
+    
+          var name = '';
+          console.log('checking customer name', data.model.CustomerName);
+          if (
+            data.model.CustomerName === null ||
+            data.model.CustomerName === undefined ||
+            data.model.CustomerName === ''
+          ) {
+            name = this.state.SocialFullName;
+            console.log('setting name from social');
+          } else {
+            console.log('setting name from local');
+            name = data.model.CustomerName;
+          }
+          //this.initEmarsysSDK(data.model.id);
+          await AsyncStorage.setItem('userName', data.model.Username);
+          await AsyncStorage.setItem('custGuid', "data.model.customer_guid");
+          if(data.model.Token){
+            await AsyncStorage.setItem('custToken', data.model.Token);
+          }
+          console.log("-------------------------------------------"+data.model.Token+"////////////////////////////////////////////");
+          let token1 = await AsyncStorage.getItem('custToken');
+          console.log("-------------------------------------------Token1"+token1 +"////////////////////////////////////////////");
+          //Toast.showWithGravity(data.message, Toast.LONG, Toast.BOTTOM);
+          await this.props.UpdateAuthStatus({ loginStatus: 'true' });
+          if (data.message) {
+            // Alert.alert(data.message);
+            this.props.UpdateAuthStatus({ loginStatus: 'true' });
+            setTimeout(async () => {
+              /*Alert.alert(
+                'MsaMart',
+                data.message, [{
+                  text: 'Ok',
+                  onPress: async () => {
+                    this.setState({
+                      loaderVisible: false
+                    });
+                    await analytics().logEvent('login', { 'method': "Native" });
+    
+                    this.props.navigation.pop();
+                  }
+                },], {
+                cancelable: false
+              }
+              )*/
+              if (data.message != null && data.message.length > 0) {
+                Toast.showWithGravity(data.message, Toast.LONG, Toast.BOTTOM);
+              }
+            }, 500);
+            if (
+              this.state.SignInType !== '' ||
+              this.state.SignInType !== undefined
+            ) {
+              await analytics().logEvent('login', { method: this.state.SignInType });
+              AppEventsLogger.logEvent(EventTags.LOGIN, { method: this.state.SignInType });
+              EmarsysEvents.trackEmarsys(EventTags.LOGIN, { method: this.state.SignInType });
+            } else {
+              await analytics().logEvent('login', { method: 'Native' });
+              EmarsysEvents.trackEmarsys(EventTags.LOGIN, { method: 'Native' });
+              AppEventsLogger.logEvent(EventTags.LOGIN, { method: 'Native' });
+            }
+            if (this.props.route.params == undefined ||
+              !this.props.route.params.passData ||
+              !this.props.route.params.passData.screen ||
+              this.props.route.params.passData.screen == undefined ||
+              this.props.route.params.passData.screen == 'undefined' ||
+              this.props.route.params.passData.screen == null ||
+              this.props.route.params.passData.screen == 'null'
+            ) {
+              this.props.navigation.pop();
+            } else {
+              console.log('screen name', this.props.route.params.passData.screen);
+              var passParams = this.props.route.params.passData;
+              if (this.props.route.params.passData.screen === 'PayNow') {
+                /*passParams = data.model.customer_guid;*/
+                passParams = data.model.Token;
+              }
+              this.props.navigation.dispatch(
+                StackActions.replace(this.props.route.params.passData.screen, { passData: passParams }),
+              );
+            }
+        
+          }
+          let durationM = new Date().getTime() - this.state.startTime
+    
+          let loginTime = {
+            item_id: durationM.toString(),
+            slug_url: '',
+            entity_name: 'Login',
+          };
+          await analytics().logEvent('loginTime', loginTime);
+          AppEventsLogger.logEvent(EventTags.loginTime, loginTime);
+    
+        } else {
+          this.setState({
+            email: '',
+            password: '',
+          });
+          //Toast.showWithGravity(data.errorlist[0], Toast.LONG, Toast.BOTTOM);
+    
+          if (data.errorlist && data.errorlist.length > 0) {
+            setTimeout(() => {
+              Alert.alert(data.errorlist[0]);
+            }, 500);
+          }
+        }
+      };
   onAppleButtonPressed = async () => {
     // Toast.showWithGravity('Apple button pressed',Toast.LONG,Toast.BOTTOM);
     const appleAuthRequestResponse =""; /*await appleAuth.performRequest({
@@ -346,7 +487,6 @@ class Register extends Component {
 
     try {
       const result = await LoginManager.logInWithPermissions([
-        'public_profile',
         'email',
       ]).then((login) => {
         //if (login.isCancelled) {

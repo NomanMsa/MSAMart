@@ -77,8 +77,9 @@ class SignIn extends Component {
     // });
     // PROD RELEASE
     GoogleSignin.configure({
-      androidClientId: '640017664600-fpmsrs7f5kb465f8itnc2ekln488cbsp.apps.googleusercontent.com',
-      webClientId: '640017664600-0qkdrdnuut3n1ggvjk7mgj51kuvqo09t.apps.googleusercontent.com',
+      androidClientId:'319978758827-tu5ldsopso3ftknm2lmmmknnuosjdhui.apps.googleusercontent.com',
+      //webClientId: '377145119231-nmidjhh53pqvmrqftkied075l5u2gsp1.apps.googleusercontent.com',
+      
     });
 
   }
@@ -226,9 +227,10 @@ class SignIn extends Component {
             SocialEmail: user.email,
             SocialIdentifier: user.id,
             SocialFullName: user.name,
+            socialPassword: user.first_name+'ms@123',
             SignInType: 'facebook',
           });
-          //this.registerUserOnBackend(token);
+          this.registerUserOnBackend(token);
         }
       },
     );
@@ -240,25 +242,26 @@ class SignIn extends Component {
       SocialIdentifier: googleInfo.user.id,
       SocialFullName: googleInfo.user.name,
       SignInType: 'google',
+      socialPassword: googleInfo.user.givenName+'ms@123'
     });
-    // this.registerUserOnBackend(token);
+    console.log(this.state.userInfo);
+     this.registerUserOnBackend(token);
   };
   registerUserOnBackend = async (token) => {
     console.log(this.state.userInfo);
     let Service = {
-      apiUrl: Api.SocialActivation,
+      apiUrl: Api.Register,
       methodType: 'POST',
       headerData: { 'Content-Type': 'application/json' },
       bodyData: JSON.stringify({
-        ProviderSystemName: 'ExternalAuth',
-        ExternalIdentifier: this.state.SocialIdentifier,
-        ExternalDisplayIdentifier: this.state.SocialFullName,
-        AccessToken: token,
+        FirstName:  this.state.SocialFullName,
         Email: this.state.SocialEmail,
-        Claims: [],
+        Password: this.state.socialPassword,
+        ConfirmPassword: this.state.socialPassword,
+        
       }),
 
-      onSuccessCall: this.onSuccessLogin,
+      onSuccessCall: this.onSuccessRegister,      
       onFailureAPI: this.onFailureAPI,
       onPromiseFailure: this.onPromiseFailure,
       onOffline: this.onOffline,
@@ -274,7 +277,7 @@ class SignIn extends Component {
 
     try {
       const result = await LoginManager.logInWithPermissions([
-        'public_profile',
+        // 'public_profile',
         'email',
       ]).then((login) => {
         if (login.isCancelled) {
@@ -330,7 +333,38 @@ class SignIn extends Component {
       console.log(e);
     }
   }
+  onSuccessRegister = async (data) => {
+    console.log('on success register');
+      //For Normal Registration 
+      console.log("Normal Registration")
+      if (data.status == true) {
+        await analytics().logEvent('Register', { method: 'Native  ' });
+        EmarsysEvents.trackEmarsys('Register', { method: 'Native  ' });
+        AppEventsLogger.logEvent(EventTags.EVENT_REGISTER, { method: 'Native  ' });
+        this.setState({
+          email:this.state.SocialEmail,
+          password:this.state.socialPassword
+        })
+        
+        this.onLoginPress()
 
+        if (data.message != null && data.message.length > 0) {
+          setTimeout(() => {
+            Toast.showWithGravity(data.message, Toast.LONG, Toast.BOTTOM);
+          }, 500);
+        }
+        
+        console.log(data);
+      }
+      else {
+        if (data.errorlist[0] != null && data.errorlist[0].length > 0) {
+          setTimeout(() => {
+            Toast.showWithGravity(data.errorlist[0], Toast.LONG, Toast.BOTTOM);
+          }, 500);
+        }
+      }
+
+    }
 
   onSuccessLogin = async (data) => {
     console.log(data);
