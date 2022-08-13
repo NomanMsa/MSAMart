@@ -21,6 +21,7 @@ export {default as Footer} from './Footer/Footer.tsx';
 export {default as Header} from './Header/Header.tsx';
 
 import {exp} from 'react-native/Libraries/Animated/src/Easing';
+import { format } from 'url';
 import TextField from './TxtField/TxtFieldField/TxtFieldField.tsx';
 import FilledTextField from './TxtField/TxtFieldFieldFilled/TxtFieldFieldFilled.tsx';
 import OutlinedTextField from './TxtField/TxtFieldFieldOutlined/TxtFieldFieldOutlined.tsx';
@@ -56,6 +57,9 @@ export {default as ShoppingProductList} from './ShoppingProductList/ShoppingProd
 export {default as CartSummary} from './CartSummary/CartSummary.tsx';
 export {default as CartSummaryModel} from './CartSummaryModel/CartSummaryModel.tsx';
 export {default as ButtonWithIcon} from './ButtonWithIcon/ButtonWithIcon.tsx';
+export {default as AnyCategoryGrid}from './AnyProductGridListView/AnyCategoryGrid.tsx';
+export {default as AnyProductGrid}from './AnyProductGridListView/AnyProductGrid.tsx';
+export {default as ProductCategory}from './ProductGridListView/ProductCategory.tsx'
 
 export {default as ProductList} from './ProductList/ProductList.tsx';
 export {default as ProductCartBtn} from './ProductCartBtn/ProductCartBtn.tsx';

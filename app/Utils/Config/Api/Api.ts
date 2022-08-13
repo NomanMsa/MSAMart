@@ -17,7 +17,7 @@ const Api = {
   /////Home API List/////////////////////
   Home: Constants.BASEs_URL + 'home/homepage',
   Widgets: Constants.BASEs_URL + 'homepageproducts/invoke',
-  
+  AnyWhere: Constants.BASEs_URL +'AnyWhereProductWidget/GetAnyWhereProduct',
   removeWishlistItem:Constants.BASEs_URL + 'shoppingcart/wishlist/remove?productId=',
 
   /////ProductDetail API List/////////////////////

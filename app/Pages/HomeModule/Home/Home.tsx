@@ -28,6 +28,8 @@ import {
   ImageCards,
   OfflineNotice,
   DiscountBanner,
+  ProductCategory,
+  AnyCategoryGrid
 } from '@components';
 
 
@@ -58,9 +60,9 @@ import { RemotePushController } from '@utils';
 // import NetInfo from '@react-native-community/netinfo';
 //import SplashScreen from 'react-native-splash-screen'
 
-import CategoryMenuData from '../../../ReduxActions/Reducers/CategoryMenuData/CategoryMenuData';
-import ProductCategory from '../../../Components/ProductGridListView/ProductCategory';
-import ThemedDialog from 'react-native-elements/dist/dialog/Dialog';
+
+
+
 
 const Drawer = createDrawerNavigator();
 var tittle1 = '';
@@ -110,7 +112,7 @@ class Home extends Component {
     this.sendFCMToken = this.sendFCMToken.bind(this);
     this.onSuccessFCMToken = this.onSuccessFCMToken.bind(this);
     this.getDiscountTextByCountry = this.getDiscountTextByCountry.bind(this);
-    // this.getTopMenu = this.getTopMenu.bind(this);
+    this.fetchAnywhere = this.fetchAnywhere.bind(this);
     // this.onSuccessTopMenuCall = this.onSuccessTopMenuCall.bind(this);
   }
   onSuccessActivation = async (data) => {
@@ -269,6 +271,8 @@ class Home extends Component {
           this.props.navigation.navigate(data.screen, data.params);
         } else {
           const homeTrace = await perf().startTrace('custom_trace_home_screen');
+          this.GetConfiguration();
+          await this.fetchAnywhere();
           await this.fetchHomeData();
           await this.fetchWidgitData();
           //await this.fetchDiscountBanner();
@@ -277,6 +281,8 @@ class Home extends Component {
         }
       } else {
         const homeTrace = await perf().startTrace('custom_trace_home_screen');
+        this.GetConfiguration();
+        await this.fetchAnywhere();
         await this.fetchHomeData();
         await this.fetchWidgitData();
         //await this.fetchDiscountBanner();
@@ -427,7 +433,7 @@ class Home extends Component {
     var appdata1 = data.model.AppImageConfiguration;
     var textconfig = data.model.AppTextConfig
 
-AsyncStorage.setItem("navmodel",JSON.stringify(data.model.NavigationLink))
+    AsyncStorage.setItem("navmodel", JSON.stringify(data.model.NavigationLink))
     appdata1.map((element, index) => {
       if (element.ConfigKey == "headerlogo") {
         AsyncStorage.setItem("image", a + element.ImgBinary)
@@ -439,19 +445,19 @@ AsyncStorage.setItem("navmodel",JSON.stringify(data.model.NavigationLink))
     textconfig.forEach(element => {
       if (element.TextKey == "feturedcategory") {
 
-       tittle1 = element.Body
+        tittle1 = element.Body
       }
       if (element.TextKey == "feturedproduct") {
-       tittle2 = element.Body
+        tittle2 = element.Body
       }
-      if(element.TextKey == "phonenumber"){
-        AsyncStorage.setItem("mobieno",element.Body)
+      if (element.TextKey == "phonenumber") {
+        AsyncStorage.setItem("mobieno", element.Body)
       }
-      if(element.TextKey == "supportemail"){
-        AsyncStorage.setItem("semail",element.Body)
+      if (element.TextKey == "supportemail") {
+        AsyncStorage.setItem("semail", element.Body)
       }
     });
-    console.log("***/*/*/*/-*----/-/-/--/-/-/-/-/-/---/-/-//**/*/*/*/gvdsvdhbh",this.state.categorytitle);
+    console.log("***/*/*/*/-*----/-/-/--/-/-/-/-/-/---/-/-//**/*/*/*/gvdsvdhbh", this.state.categorytitle);
 
     // textconfig.map((text,index)=>{
     //   if(text.TextKey =="feturedproduct"){
@@ -593,7 +599,7 @@ AsyncStorage.setItem("navmodel",JSON.stringify(data.model.NavigationLink))
     //   if (data[i].WidgetZoneName == 'home_page_before_best_sellers') {
     //     beforeBestSellersWidget.push(data[i]);
     //   }
-    //   if (data[i].WidgetZoneName == 'home_page_before_products') {
+    //   if (data[i].Section == 'home_page_before_products') {
     //     beforeProductsWidget.push(data[i]);
     //   }
     //   if (data[i].WidgetZoneName == 'home_page_bottom') {
@@ -644,7 +650,35 @@ AsyncStorage.setItem("navmodel",JSON.stringify(data.model.NavigationLink))
       }
     }
   };
-
+  onSuccessAnywhere = async (data) => {
+    console.log("anywhwewevhd/*/**/*/*//**//*/*/*/*/*/", data);
+    var beforeProductsWidget = [];
+    var topWidget = [];
+    data.model.sections.map((item, i) => {
+      if (item.SectionName == 'home_page_before_products') {
+        beforeProductsWidget.push(item.anyWhereWidgets);
+      }
+      if (item.SectionName == 'home_page_after_products') {
+        topWidget.push(item.anyWhereWidgets);
+      }
+    })
+    this.setState({
+      beforeProductsWidget: data.model.sections,
+      topWidget: topWidget
+    })
+  }
+  fetchAnywhere = async () => {
+    let Service = {
+      apiUrl: Api.AnyWhere + '?pageName=Home',
+      methodType: 'GET',
+      headerData: { 'Content-Type': 'application/json' },
+      onSuccessCall: this.onSuccessAnywhere,
+      onFailureAPI: this.onFailureAPI,
+      onPromiseFailure: this.onPromiseFailure,
+      onOffline: this.onOffline
+    }
+    const serviceResponse = await ServiceCall(Service);
+  }
   fetchHomeData = async () => {
     let DeviceType = 1;
     let DeviceId = DeviceInfo.getUniqueId();
@@ -1135,615 +1169,64 @@ AsyncStorage.setItem("navmodel",JSON.stringify(data.model.NavigationLink))
 
                 {this.state.productData.length > 0 && (
                   <>
+                    <Text style={styles.PTitle}>{tittle2}</Text>
+                    <ProductGridListView
+                      //key={i}
+                      showAllButton={true}
+                      ViewAllClick={() => this.OnViewAllPress(this.state.productData)}
+                      listViewContainerStyle={{
+                        borderTopWidth: 0,
+                        marginTop: 0,
+                      }}
+                      ListTitleTextStyle={{}}
+                      imgTopRtIcon={Icons.heartClear}
+                      isBottomRightIcon={false}
+                      listData={this.state.productData}
+                      bottomRightIcon={Icons.cartBtn}
+                      onProductClick={(data) =>
+                        this.props.navigation.navigate(
+                          'ProductDetails',
+                          { passData: data },
+                        )
+                      }
+                      onImageClick={(data) =>
+                        this.props.navigation.navigate(
+                          'ProductDetails',
+                          { passData: data },
+                        )
+                      }
+                      onTitleClick={(data) =>
+                        this.props.navigation.navigate(
+                          'ProductDetails',
+                          { passData: data },
+                        )
+                      }
+                      onImgTopRtIcon={(data) =>
+                        this.props.navigation.navigate(
+                          'ProductDetails',
+                          { passData: data },
+                        )
+                      }
+                      onCartClick={(data) =>
+                        this.props.navigation.navigate(
+                          'ProductDetails',
+                          { passData: data },
+                        )
+                      }
+                      OnWishlistClick={(data) =>
+                        this.UpdateWishlistData(data)
 
-                    <>
+                      }
+                    />
 
-                      <>
-
-                        <Text style={styles.PTitle}>{tittle2}</Text>
-                        <ProductGridListView
-                          //key={i}
-                          showAllButton={true}
-                          ViewAllClick={() => this.OnViewAllPress(this.state.productData)}
-                          listViewContainerStyle={{
-                            borderTopWidth: 0,
-                            marginTop: 0,
-                          }}
-                          ListTitleTextStyle={{}}
-                          imgTopRtIcon={Icons.heartClear}
-                          isBottomRightIcon={false}
-                          listData={this.state.productData}
-                          bottomRightIcon={Icons.cartBtn}
-                          onProductClick={(data) =>
-                            this.props.navigation.navigate(
-                              'ProductDetails',
-                              { passData: data },
-                            )
-                          }
-                          onImageClick={(data) =>
-                            this.props.navigation.navigate(
-                              'ProductDetails',
-                              { passData: data },
-                            )
-                          }
-                          onTitleClick={(data) =>
-                            this.props.navigation.navigate(
-                              'ProductDetails',
-                              { passData: data },
-                            )
-                          }
-                          onImgTopRtIcon={(data) =>
-                            this.props.navigation.navigate(
-                              'ProductDetails',
-                              { passData: data },
-                            )
-                          }
-                          onCartClick={(data) =>
-                            this.props.navigation.navigate(
-                              'ProductDetails',
-                              { passData: data },
-                            )
-                          }
-                          OnWishlistClick={(data) =>
-                            this.UpdateWishlistData(data)
-
-                          }
-                        />
-                      </>
-                      {/* )} */}
-                    </>
-                    {/* ))} */}
                   </>
                 )}
 
-                {/* before news Widget */}
-                {/* {this.state.beforeNewsWidget.length > 0 && (
-                  <>
-                    {this.state.beforeNewsWidget.map((item, i) => (
-                      <>
-                        {item.LayoutType == 'Grid_WithTimer' ? (
-                          <>
-                            <FleashDealsCount
-                              key={i}
-                              IconPictureURL={item.IconPictureURL}
-                              FromDate={new Date()}
-                              ToDate={getCurrentDateStamp(item.ToDate)}
-                              blockStyle={{
-                                backgroundColor: item.BackgroundColor,
-                              }}
-                              LayoutTypeId={2}
-                              Title={item.Title}
-                              titleStyle={{ fontSize: 14 }}
-                              SubTitle={'Ending In'}
-                            />
-                            <ProductGridListView
-                              key={i}
-                              showAllButton={item.ViewAllURL}
-                              ViewAllClick={() => this.OnViewAllPress(item)}
-                              listViewContainerStyle={{
-                                borderTopWidth: 0,
-                                marginTop: 0,
-                              }}
-                              ListTitleTextStyle={{}}
-                              imgTopRtIcon={Icons.heartClear}
-                              isBottomRightIcon={false}
-                              listData={item.DPWProductOverviewModel}
-                              bottomRightIcon={Icons.cartBtn}
-                              onProductClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onImageClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onTitleClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onImgTopRtIcon={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onCartClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              OnWishlistClick={(data) =>
-                                this.UpdateWishlistData(data)
-                              }
-                            />
-                          </>
-                        ) : (
-                          <>
-                            <FleashDealsCount
-                              key={i}
-                              IconPictureURL={item.IconPictureURL}
-                              blockStyle={{
-                                backgroundColor: item.BackgroundColor,
-                              }}
-                              LayoutTypeId={1}
-                              Title={item.Title}
-                              titleStyle={{ fontSize: 14 }}
-                            />
-                            <ProductGridListView
-                              key={i}
-                              showAllButton={item.ViewAllURL}
-                              ViewAllClick={() => this.OnViewAllPress(item)}
-                              listViewContainerStyle={{
-                                borderTopWidth: 0,
-                                marginTop: 0,
-                              }}
-                              ListTitleTextStyle={{}}
-                              imgTopRtIcon={Icons.heartClear}
-                              isBottomRightIcon={false}
-                              listData={item.DPWProductOverviewModel}
-                              bottomRightIcon={Icons.cartBtn}
-                              onProductClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onImageClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onTitleClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onImgTopRtIcon={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onCartClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              OnWishlistClick={(data) =>
-                                this.UpdateWishlistData(data)
-                              }
-                            />
-                          </>
-                        )}
-                      </>
-                    ))}
-                  </>
-                )} */}
 
-                {/* {this.state.imgCardsData &&
-                  this.state.imgCardsData.sliderImages &&
-                  this.state.imgCardsData.sliderImages.length > 0 && (
-                    <ImageCards
-                      data={this.state.imgCardsData.sliderImages}
-                      btn={true}
-                      onSlideClick={
-                        (data) => this.OnViewAllPress(data)
-                        //this.props.navigation.push('FilterProductList', { passData: { pageName: 'Home', data: data }, })
-                      }
-                    />
-                  )} */}
 
-                {/* best seller Widget */}
-                {/* {this.state.beforeBestSellersWidget.length > 0 && (
-                  <>
-                    {this.state.beforeBestSellersWidget.map((item, i) => (
-                      <>
-                        {item.LayoutType == 'Grid_WithTimer' ? (
-                          <>
-                            <FleashDealsCount
-                              key={i}
-                              IconPictureURL={item.IconPictureURL}
-                              FromDate={new Date()}
-                              ToDate={getCurrentDateStamp(item.ToDate)}
-                              blockStyle={{
-                                backgroundColor: item.BackgroundColor,
-                              }}
-                              LayoutTypeId={2}
-                              Title={item.Title}
-                              titleStyle={{ fontSize: 14 }}
-                              SubTitle={'Ending In'}
-                            />
-                            <ProductGridListView
-                              key={i}
-                              showAllButton={item.ViewAllURL}
-                              ViewAllClick={() => this.OnViewAllPress(item)}
-                              listViewContainerStyle={{
-                                borderTopWidth: 0,
-                                marginTop: 0,
-                              }}
-                              ListTitleTextStyle={{}}
-                              imgTopRtIcon={Icons.heartClear}
-                              isBottomRightIcon={false}
-                              listData={item.DPWProductOverviewModel}
-                              bottomRightIcon={Icons.cartBtn}
-                              onProductClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onImageClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onTitleClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onImgTopRtIcon={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onCartClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              OnWishlistClick={(data) =>
-                                this.UpdateWishlistData(data)
-                              }
-                            />
-                          </>
-                        ) : (
-                          <>
-                            <FleashDealsCount
-                              key={i}
-                              IconPictureURL={item.IconPictureURL}
-                              blockStyle={{
-                                backgroundColor: item.BackgroundColor,
-                              }}
-                              LayoutTypeId={1}
-                              Title={item.Title}
-                              titleStyle={{ fontSize: 14 }}
-                            />
-                            <ProductGridListView
-                              key={i}
-                              showAllButton={item.ViewAllURL}
-                              ViewAllClick={() => this.OnViewAllPress(item)}
-                              listViewContainerStyle={{
-                                borderTopWidth: 0,
-                                marginTop: 0,
-                              }}
-                              ListTitleTextStyle={{}}
-                              imgTopRtIcon={Icons.heartClear}
-                              isBottomRightIcon={false}
-                              listData={item.DPWProductOverviewModel}
-                              bottomRightIcon={Icons.cartBtn}
-                              onProductClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onImageClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onTitleClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onImgTopRtIcon={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onCartClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              OnWishlistClick={(data) =>
-                                this.UpdateWishlistData(data)
-                              }
-                            />
-                          </>
-                        )}
-                      </>
-                    ))}
-                  </>
-                )} */}
+               
 
-                {/* before product Widget */}
-                {/* {this.state.beforeProductsWidget.length > 0 && (
-                  <>
-                    {this.state.beforeProductsWidget.map((item, i) => (
-                      <>
-                        {item.LayoutType == 'Grid_WithTimer' ? (
-                          <>
-                            <FleashDealsCount
-                              key={i}
-                              IconPictureURL={item.IconPictureURL}
-                              FromDate={new Date()}
-                              ToDate={getCurrentDateStamp(item.ToDate)}
-                              blockStyle={{
-                                backgroundColor: item.BackgroundColor,
-                              }}
-                              LayoutTypeId={2}
-                              Title={item.Title}
-                              titleStyle={{ fontSize: 14 }}
-                              SubTitle={'Ending In'}
-                            />
-                            <ProductGridListView
-                              key={i}
-                              showAllButton={item.ViewAllURL}
-                              ViewAllClick={() => this.OnViewAllPress(item)}
-                              listViewContainerStyle={{
-                                borderTopWidth: 0,
-                                marginTop: 0,
-                              }}
-                              ListTitleTextStyle={{}}
-                              imgTopRtIcon={Icons.heartClear}
-                              isBottomRightIcon={false}
-                              listData={item.DPWProductOverviewModel}
-                              bottomRightIcon={Icons.cartBtn}
-                              onProductClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onImageClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onTitleClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onImgTopRtIcon={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onCartClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              OnWishlistClick={(data) =>
-                                this.UpdateWishlistData(data)
-                              }
-                            />
-                          </>
-                        ) : (
-                          <>
-                            <FleashDealsCount
-                              key={i}
-                              IconPictureURL={item.IconPictureURL}
-                              blockStyle={{
-                                backgroundColor: item.BackgroundColor,
-                              }}
-                              LayoutTypeId={1}
-                              Title={item.Title}
-                              titleStyle={{ fontSize: 14 }}
-                            />
-                            <ProductGridListView
-                              key={i}
-                              showAllButton={item.ViewAllURL}
-                              ViewAllClick={() => this.OnViewAllPress(item)}
-                              listViewContainerStyle={{
-                                borderTopWidth: 0,
-                                marginTop: 0,
-                              }}
-                              ListTitleTextStyle={{}}
-                              imgTopRtIcon={Icons.heartClear}
-                              isBottomRightIcon={false}
-                              listData={item.DPWProductOverviewModel}
-                              bottomRightIcon={Icons.cartBtn}
-                              onProductClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onImageClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onTitleClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onImgTopRtIcon={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onCartClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              OnWishlistClick={(data) =>
-                                this.UpdateWishlistData(data)
-                              }
-                            />
-                          </>
-                        )}
-                      </>
-                    ))}
-                  </>
-                )} */}
 
-                {/* Bottom Widget */}
-                {/* {this.state.bottomWidget.length > 0 && (
-                  <>
-                    {this.state.bottomWidget.map((item, i) => (
-                      <>
-                        {item.LayoutType == 'Grid_WithTimer' ? (
-                          <>
-                            <FleashDealsCount
-                              key={i}
-                              IconPictureURL={item.IconPictureURL}
-                              FromDate={new Date()}
-                              ToDate={getCurrentDateStamp(item.ToDate)}
-                              blockStyle={{
-                                backgroundColor: item.BackgroundColor,
-                              }}
-                              LayoutTypeId={2}
-                              Title={item.Title}
-                              titleStyle={{ fontSize: 14 }}
-                              SubTitle={'Ending In'}
-                            />
-                            <ProductGridListView
-                              key={i}
-                              showAllButton={item.ViewAllURL}
-                              ViewAllClick={() => this.OnViewAllPress(item)}
-                              listViewContainerStyle={{
-                                borderTopWidth: 0,
-                                marginTop: 0,
-                              }}
-                              ListTitleTextStyle={{}}
-                              imgTopRtIcon={Icons.heartClear}
-                              isBottomRightIcon={false}
-                              listData={item.DPWProductOverviewModel}
-                              bottomRightIcon={Icons.cartBtn}
-                              onProductClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onImageClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onTitleClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onImgTopRtIcon={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onCartClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              OnWishlistClick={(data) =>
-                                this.UpdateWishlistData(data)
-                              }
-                            />
-                          </>
-                        ) : (
-                          <>
-                            <FleashDealsCount
-                              key={i}
-                              IconPictureURL={item.IconPictureURL}
-                              blockStyle={{
-                                backgroundColor: item.BackgroundColor,
-                              }}
-                              LayoutTypeId={1}
-                              Title={item.Title}
-                              titleStyle={{ fontSize: 14 }}
-                            />
-                            <ProductGridListView
-                              key={i}
-                              showAllButton={item.ViewAllURL}
-                              ViewAllClick={() => this.OnViewAllPress(item)}
-                              listViewContainerStyle={{
-                                borderTopWidth: 0,
-                                marginTop: 0,
-                              }}
-                              ListTitleTextStyle={{}}
-                              imgTopRtIcon={Icons.heartClear}
-                              isBottomRightIcon={false}
-                              listData={item.DPWProductOverviewModel}
-                              bottomRightIcon={Icons.cartBtn}
-                              onProductClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onImageClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onTitleClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onImgTopRtIcon={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              onCartClick={(data) =>
-                                this.props.navigation.navigate(
-                                  'ProductDetails',
-                                  { passData: data },
-                                )
-                              }
-                              OnWishlistClick={(data) =>
-                                this.UpdateWishlistData(data)
-                              }
-                            />
-                          </>
-                        )}
-                      </>
-                    ))}
-                  </>
-                )} */}
                 {this.state.bottomBanner &&
                   this.state.bottomBanner.length > 0 ? (
                   <>
