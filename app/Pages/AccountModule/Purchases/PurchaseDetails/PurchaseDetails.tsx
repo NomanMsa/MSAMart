@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { SafeAreaView, Dimensions, ScrollView, View, Text, StatusBar, Image, LogBox, TouchableOpacity, Linking, Alert, } from 'react-native';
+import { SafeAreaView, Dimensions, ScrollView, View, Text, StatusBar, Image, LogBox, TouchableOpacity, Linking, Alert,BackHandler  } from 'react-native';
 LogBox.ignoreAllLogs();
 
 const { width, height } = Dimensions.get('window')
@@ -8,7 +8,8 @@ import AnimatedLoader from "react-native-animated-loader";
 import AsyncStorage from '@react-native-community/async-storage';
 import { Header, Footer, SearchBar, OfflineNotice, Button, OrderItemList } from '@components';
 import { ServiceCall } from '@utils';
-import { Api } from '@config';
+import { Api,Constants } from '@config';
+
 import { Colors } from '@theme';
 import { FormatDate } from '@utils'
 import styles from './PurchaseDetailsStyles';
@@ -38,10 +39,12 @@ class PurchaseDetails extends Component {
     this.updateData = this.updateData.bind(this);
     this.reorderItem = this.reorderItem.bind(this);
     this.onSuccessReorder = this.onSuccessReorder.bind(this);
+    // this.handleBackButton = this.handleBackButton.bind(this);
   }
 
   async componentDidMount() {
-
+      
+    // BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
     if (this.props.route!=null && this.props.route.params!=null && this.props.route.params.guestFlow === true) {
       this.setState({
         orderId: (this.props.route.params).passData.data.Id,
@@ -69,11 +72,22 @@ class PurchaseDetails extends Component {
       });
     }
   }
+//   componentWillUnmount() {
+//     BackHandler.removeEventListener('hardwareBackPress',this.handleBackButton());
+//  }
 
-  handleShipToButtonClick = (data) => {
-    this.props.navigation.navigate('ShipToPage');
-  }
+//   componentWillMount() {
+//   BackHandler.addEventListener('hardwareBackPress',this.handleBackButton);
+// }
+//   handleBackButton = () => {
+//     const routes = this.props.navigation.getState()?.routes;
+//     const pre = routes[routes.length - 2];
+//     if(pre.name == 'Purchases'){
+//       this.props.navigation.push("Home")
 
+//     }
+    
+// }
   onSuccessfetchPurchaseDetails(data) {
     console.log("Fetch Purchase Data", data);
     if (data.status) {
@@ -234,7 +248,22 @@ class PurchaseDetails extends Component {
               this.props.navigation.dispatch(DrawerActions.openDrawer());
               //this.props.navigation.openDrawer()
             }}
-            backButtonClick={() => this.props.navigation.pop()}
+            backButtonClick={() =>{
+              
+              const routes = this.props.navigation.getState()?.routes;
+              const pre = routes[routes.length - 2];
+              if(pre.name == 'PayNow'){
+                this.props.navigation.push("Home")
+
+              }else{
+                this.props.navigation.pop()
+              }
+              
+                
+              
+            }}
+              
+              
             NavButton={true}
             countryModel={this.state.currentCountryModel}
             shipToEnabled={this.state.shipToEnabled}

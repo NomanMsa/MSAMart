@@ -57,6 +57,7 @@ import { Colors } from '@theme';
 const { width, height } = Dimensions.get('window');
 import { DeepLinkUrlOpn } from '@nav';
 import { RemotePushController } from '@utils';
+import AnyProductGrid from '../../../Components/AnyProductGridListView/AnyProductGrid';
 // import NetInfo from '@react-native-community/netinfo';
 //import SplashScreen from 'react-native-splash-screen'
 
@@ -651,19 +652,19 @@ class Home extends Component {
     }
   };
   onSuccessAnywhere = async (data) => {
-    console.log("anywhwewevhd/*/**/*/*//**//*/*/*/*/*/", data);
     var beforeProductsWidget = [];
     var topWidget = [];
-    data.model.sections.map((item, i) => {
-      if (item.SectionName == 'home_page_before_products') {
-        beforeProductsWidget.push(item.anyWhereWidgets);
+    for(var i =0;i<data.model.sections.length;i++){
+      if (data.model.sections[i].SectionName == 'home_page_before_products') {
+        beforeProductsWidget = data.model.sections[i].anyWhereWidgets;
       }
-      if (item.SectionName == 'home_page_after_products') {
-        topWidget.push(item.anyWhereWidgets);
+      if (data.model.sections[i].SectionName == 'home_page_after_products') {
+        topWidget = data.model.sections[i].anyWhereWidgets;
       }
-    })
+    }
+    
     this.setState({
-      beforeProductsWidget: data.model.sections,
+      beforeProductsWidget: beforeProductsWidget,
       topWidget: topWidget
     })
   }
@@ -1221,11 +1222,82 @@ class Home extends Component {
 
                   </>
                 )}
-
-
-
+                {this.state.topWidget.length > 0 &&(<>
+                <AnyCategoryGrid
+                 listViewContainerStyle={{
+                  borderTopWidth: 0,
+                  marginTop: 0,
+                }}
+                ListTitleTextStyle={{}}
+                imgTopRtIcon={Icons.heartClear}
+                isBottomRightIcon={false}
+                listData={this.state.topWidget}
+                bottomRightIcon={Icons.cartBtn}
+                oncatClick={(data) =>
+                  this.props.navigation.push('SearchFilterProductList', {
+                    passData: { pageName: 'Home', data: { slugUrl: data.Name } },
+                  })
+                }
+                oncatImageClick={(data) =>
+                  this.props.navigation.push('SearchFilterProductList', {
+                    passData: { pageName: 'Home', data: { slugUrl: data.Name } },
+                  })
+                }
+                />
+                </>)}
+                 
                
+                  {this.state.beforeProductsWidget.length > 0 &&(<>
+                    <Text style={styles.PTitle}>{tittle2}</Text>
+                    <AnyProductGrid
+                      //key={i}
+                      showAllButton={true}
+                      ViewAllClick={() => this.OnViewAllPress(this.state.beforeProductsWidget)}
+                      listViewContainerStyle={{
+                        borderTopWidth: 0,
+                        marginTop: 0,
+                      }}
+                      ListTitleTextStyle={{}}
+                      imgTopRtIcon={Icons.heartClear}
+                      isBottomRightIcon={false}
+                      listData={this.state.beforeProductsWidget}
+                      bottomRightIcon={Icons.cartBtn}
+                      onProductClick={(data) =>
+                        this.props.navigation.navigate(
+                          'ProductDetails',
+                          { passData: data },
+                        )
+                      }
+                      onImageClick={(data) =>
+                        this.props.navigation.navigate(
+                          'ProductDetails',
+                          { passData: data },
+                        )
+                      }
+                      onTitleClick={(data) =>
+                        this.props.navigation.navigate(
+                          'ProductDetails',
+                          { passData: data },
+                        )
+                      }
+                      onImgTopRtIcon={(data) =>
+                        this.props.navigation.navigate(
+                          'ProductDetails',
+                          { passData: data },
+                        )
+                      }
+                      onCartClick={(data) =>
+                        this.props.navigation.navigate(
+                          'ProductDetails',
+                          { passData: data },
+                        )
+                      }
+                      OnWishlistClick={(data) =>
+                        this.UpdateWishlistData(data)
 
+                      }
+                    />
+                    </>)}
 
                 {this.state.bottomBanner &&
                   this.state.bottomBanner.length > 0 ? (

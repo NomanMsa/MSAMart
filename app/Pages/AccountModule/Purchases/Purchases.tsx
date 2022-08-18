@@ -54,6 +54,7 @@ export default class ThankYou extends Component {
     this.setState({ loading: true });
     const purchaseTrace = await perf().startTrace('custom_trace_purchases_screen');
     await this.fetchPurchases();
+    this.fetchAnywhere();
     await purchaseTrace.stop();
   }
 
@@ -140,6 +141,35 @@ export default class ThankYou extends Component {
     await this.fetchPurchases();
     this.setState({ loading: false });
   };
+  fetchAnywhere = async () => {
+    let Service = {
+      apiUrl: Api.AnyWhere + '?pageName=Home',
+      methodType: 'GET',
+      headerData: { 'Content-Type': 'application/json' },
+      onSuccessCall: this.onSuccessAnywhere,
+      onFailureAPI: this.onFailureAPI,
+      onPromiseFailure: this.onPromiseFailure,
+      onOffline: this.onOffline
+    }
+    const serviceResponse = await ServiceCall(Service);
+  }
+  onSuccessAnywhere = async (data) => {
+    var beforeProductsWidget = [];
+    var topWidget = [];
+    for(var i =0;i<data.model.sections.length;i++){
+      if (data.model.sections[i].SectionName == 'home_page_before_products') {
+        beforeProductsWidget = data.model.sections[i].anyWhereWidgets;
+      }
+      if (data.model.sections[i].SectionName == 'home_page_after_products') {
+        topWidget = data.model.sections[i].anyWhereWidgets;
+      }
+    }
+    
+    this.setState({
+      beforeProductsWidget: beforeProductsWidget,
+      topWidget: topWidget
+    })
+  }
 
   render() {
     return (

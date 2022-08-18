@@ -113,16 +113,16 @@ export default class extends Component {
             let tempRoom = this.state.listData[i];
             console.log("onSuccessWishlistCall............", tempRoom)
 
-            if (this.state.listData[i].CustomProperties.IsProductInWishlist == false) {
-              tempRoom.CustomProperties.IsProductInWishlist = true
+            if (this.state.listData[i].IsProductInYourWishList == false) {
+              tempRoom.IsProductInYourWishList = true
               IdArray.push(this.state.listData[i]);
               let prizeDetails = tempRoom.ProductPrice
               AppEventsLogger.logEvent(EventTags.ADD_TO_WISHLIST, { 'currency': '', 'item_id': tempRoom.Id, 'value': prizeDetails.Price });
               analytics().logEvent('add_to_wishlist', { 'currency': '', 'item_id': tempRoom.Id, 'value': prizeDetails.Price });
               EmarsysEvents.trackEmarsys('add_to_wishlist', { 'currency': '', 'item_id': tempRoom.Id, 'value': prizeDetails.Price });
 
-            } else if (this.state.listData[i].CustomProperties.IsProductInWishlist == true) {
-              tempRoom.CustomProperties.IsProductInWishlist = false
+            } else if (this.state.listData[i].IsProductInYourWishList == true) {
+              tempRoom.IsProductInYourWishList = false
               IdArray.push(this.state.listData[i]);
             }
 
@@ -130,7 +130,7 @@ export default class extends Component {
           }
           else {
             let tempRoom = this.state.listData[i];
-            tempRoom.CustomProperties.IsProductInWishlist = tempRoom.CustomProperties.IsProductInWishlist
+            tempRoom.IsProductInYourWishList = tempRoom.IsProductInYourWishList
             tempRoom.ProductPrice.DisableWishlistButton = tempRoom.ProductPrice.DisableWishlistButton
             return tempRoom;
           }
@@ -188,12 +188,12 @@ export default class extends Component {
 
         if (i == this.state.index) {
           let tempRoom = this.state.listData[i];
-          if (this.state.listData[i].CustomProperties.IsProductInWishlist == false) {
-            tempRoom.CustomProperties.IsProductInWishlist = true
+          if (this.state.listData[i].IsProductInYourWishList == false) {
+            tempRoom.IsProductInYourWishList = true
             IdArray.push(this.state.listData[i]);
 
-          } else if (this.state.listData[i].CustomProperties.IsProductInWishlist == true) {
-            tempRoom.CustomProperties.IsProductInWishlist = false
+          } else if (this.state.listData[i].IsProductInYourWishList == true) {
+            tempRoom.IsProductInYourWishList = false
             IdArray.push(this.state.listData[i]);
           }
 
@@ -201,7 +201,7 @@ export default class extends Component {
         }
         else {
           let tempRoom = this.state.listData[i];
-          tempRoom.CustomProperties.IsProductInWishlist = tempRoom.CustomProperties.IsProductInWishlist
+          tempRoom.IsProductInYourWishList = tempRoom.IsProductInYourWishList
           tempRoom.ProductPrice.DisableWishlistButton = tempRoom.ProductPrice.DisableWishlistButton
           return tempRoom;
         }
@@ -247,7 +247,7 @@ export default class extends Component {
     let tempArray = []
     this.setState({ index: index })
     //this.UpdateWishlistandAddToCartData(item)
-    if (item.CustomProperties.IsProductInWishlist == false) {
+    if (item.IsProductInYourWishList == false) {
       this.UpdateWishlistandAddToCartData(item)
       this.props.OnWishlistClick()
 
@@ -288,7 +288,7 @@ export default class extends Component {
               testID={"selectProductFromHomeBtn"}
               accessibilityLabel="selectProductFromHomeBtn"
               style={styles.productImage}
-              source={{ uri: item.DefaultPictureModel.ImageUrl }}
+              source={{ uri: item.PictureModel.ImageUrl }}
 
             />
           </TouchableOpacity>
@@ -302,7 +302,7 @@ export default class extends Component {
 
           {item.ProductPrice.DisableWishlistButton == false && (
             <>
-              {item.CustomProperties.IsProductInWishlist == true && <TouchableOpacity
+              {item.IsProductInYourWishList == true && <TouchableOpacity
                 testID={"addedToWishListBtn"}
                 accessibilityLabel="addedToWishListBtn"
                 style={styles.rightTopIconContainer} onPress={() => this.onWishlist(item, index)}>
@@ -314,7 +314,7 @@ export default class extends Component {
                 />
               </TouchableOpacity>
               }
-              {item.CustomProperties.IsProductInWishlist == false && <TouchableOpacity
+              {item.IsProductInYourWishList == false && <TouchableOpacity
                 testID={"addtoWishListBtn"}
                 accessibilityLabel="addtoWishListBtn"
                 style={styles.rightTopIconContainer} onPress={() => this.onWishlist(item, index)}>

@@ -75,8 +75,8 @@ export default class extends Component {
 				showRating={true}
 				isDisabled={false}
 				showTitle={true}
-				//title={'Rate this product'}
-				//titleStyle={{ fontSize: 16, color: Colors.DARK_GRAY_TEXT, fontWeight: 'normal', marginTop: 50 }}
+				title={'Rate this product'}
+				titleStyle={{ fontSize: 16, color: Colors.DARK_GRAY_TEXT, fontWeight: 'normal', marginTop: 50 }}
 				size={24}
 				onFinishRating={this.ratingCompleted}
 			/>

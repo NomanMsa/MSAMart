@@ -64,7 +64,7 @@ class WishListPage extends Component {
       // totalValue: '16,576.91',
       totalValue: 'calculated during checkout',
 
-      totalCurrancy: 'AED',
+      totalCurrancy: '$',
       scrollMenuData: [],
       imgSliderData: [],
       imgCardsData: [],
@@ -94,6 +94,7 @@ class WishListPage extends Component {
   async componentDidMount() {
     await this.setState({ loading: true })
    this.fetchWishlistData();
+   await this.setState({ loading: false });
     await this.onSuccessWishlistCall(this.props.WishListData.WishlistData);
 
     // let data = ;
@@ -214,12 +215,46 @@ class WishListPage extends Component {
       }
     }
     await this.setState({
-      topWidget: topWidget,
       bottomWidget: bottomWidget,
       beforeNewsWidget: beforeNewsWidget,
-      beforeBestSellersWidget: beforeBestSellersWidget,
+    })
+    // await this.setState({
+    //   topWidget: topWidget,
+    //   bottomWidget: bottomWidget,
+    //   beforeNewsWidget: beforeNewsWidget,
+    //   beforeBestSellersWidget: beforeBestSellersWidget,
+    //   beforeProductsWidget: beforeProductsWidget,
+    // });
+  }
+
+  fetchAnywhere = async () => {
+    let Service = {
+      apiUrl: Api.AnyWhere + '?pageName=Home',
+      methodType: 'GET',
+      headerData: { 'Content-Type': 'application/json' },
+      onSuccessCall: this.onSuccessAnywhere,
+      onFailureAPI: this.onFailureAPI,
+      onPromiseFailure: this.onPromiseFailure,
+      onOffline: this.onOffline
+    }
+    const serviceResponse = await ServiceCall(Service);
+  }
+  onSuccessAnywhere = async (data) => {
+    var beforeProductsWidget = [];
+    var topWidget = [];
+    for(var i =0;i<data.model.sections.length;i++){
+      if (data.model.sections[i].SectionName == 'home_page_before_products') {
+        beforeProductsWidget = data.model.sections[i].anyWhereWidgets;
+      }
+      if (data.model.sections[i].SectionName == 'home_page_after_products') {
+        topWidget = data.model.sections[i].anyWhereWidgets;
+      }
+    }
+    
+    this.setState({
       beforeProductsWidget: beforeProductsWidget,
-    });
+      topWidget: topWidget
+    })
   }
 
   onSuccessWishlistCall = async (data) => {

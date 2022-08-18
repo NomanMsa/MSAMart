@@ -458,6 +458,36 @@ class ProductDetails extends Component {
       // beforeProductsWidget: beforeProductsWidget,
     });
   }
+  fetchAnywhere = async () => {
+    let Service = {
+      apiUrl: Api.AnyWhere + '?pageName=Home',
+      methodType: 'GET',
+      headerData: { 'Content-Type': 'application/json' },
+      onSuccessCall: this.onSuccessAnywhere,
+      onFailureAPI: this.onFailureAPI,
+      onPromiseFailure: this.onPromiseFailure,
+      onOffline: this.onOffline
+    }
+    const serviceResponse = await ServiceCall(Service);
+  }
+  onSuccessAnywhere = async (data) => {
+    var beforeProductsWidget = [];
+    var topWidget = [];
+    for(var i =0;i<data.model.sections.length;i++){
+      if (data.model.sections[i].SectionName == 'home_page_before_products') {
+        beforeProductsWidget = data.model.sections[i].anyWhereWidgets;
+      }
+      if (data.model.sections[i].SectionName == 'home_page_after_products') {
+        topWidget = data.model.sections[i].anyWhereWidgets;
+      }
+    }
+    
+    this.setState({
+      beforeProductsWidget: beforeProductsWidget,
+      topWidget: topWidget
+    })
+  }
+
   onSuccessWishlistCall(data) {
     if (data.errorlist) {
       setTimeout(() => {

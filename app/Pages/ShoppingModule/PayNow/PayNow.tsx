@@ -9,6 +9,7 @@ import {
   BackHandler,
   Platform,
   Alert,
+  Linking,
 } from 'react-native';
 import {
   OfflineNotice,
@@ -185,7 +186,14 @@ export default class PayNow extends Component {
       </View>
     );
   };
+  
   render() {
+   //const js='var a=JSON.stringify({ele1:document.getElementsByTagName("img")[3].attributes.id.textContent,ele2:document.getElementsByClassName("productimages")[0].attributes.href.textContent}); window.ReactNativeWebView.postMessage(a);$(document).ready(function(){var a ="#"+document.getElementsByClassName("productimages")[0].attributes.href.textContent; document.getElementsByClassName("productimages")[0].attributes.href.textContent=a})'
+   const js ='var da=[];var arr= document.getElementsByClassName("productimages");for(var i=0;i<arr.length;i++){var hl= arr[i].getAttribute("href");if(!arr[i].getAttribute("href").includes("#")){arr[i].setAttribute("href","#"+hl);$(document.getElementsByClassName("product-name")[i]).attr("href","#"+hl);da.push({"key":$(document.getElementsByClassName("product-name")[i]).attr("href") ,"value":arr[i].children[0].getAttribute("id")})}else{da.push({"id":$(document.getElementsByClassName("product-name")[i]).attr("href") ,"value":arr[i].children[0].getAttribute("id")})}}window.ReactNativeWebView.postMessage(JSON.stringify(da))';
+    var eventdta ;
+    var Id = '';
+    var urlid='';
+    
     return (
       <>
         <AnimatedLoader
@@ -209,7 +217,11 @@ export default class PayNow extends Component {
               noInternetTextStyle={{}}
             />
 
-            {this.state.session && <WebView source={{
+            {this.state.session && <WebView
+             ref={(ref) => (this.webview = ref)}
+              javaScriptEnabled={true}
+              injectedJavaScript={js}
+             source={{
               uri: this.state.newurl,
               headers: {
                 'Content-Type': 'application/json',
@@ -217,11 +229,19 @@ export default class PayNow extends Component {
                 //'DeviceInfo': PushNotificationLogModels,
               },
             }}
+           
+            onMessage={(event) => {
+              eventdta = JSON.parse(event.nativeEvent.data);
+              // if(eventdta != undefined){
+              //   Id = eventdta.ele1;
+              //   if(urlid == '')
+              //   urlid = "#"+eventdta.ele2 //.replace("/","")
+              // }
+              console.log("////////////////////*/*/*/*eventnuncujdujcbdbjcbjhd",eventdta);
+            }}
               originWhitelist={['*']}
-              onMessage={(event) => {
-                console.log(event.nativeEvent.data);
-              }}
-              ref={(ref) => (this.webview = ref)}
+             
+             
               androidHardwareAccelerationDisabled={true}
               onLoadStart={() => this.setState({ loaderVisible: false })}
               // onLoadStart={(navState) =>
@@ -230,6 +250,7 @@ export default class PayNow extends Component {
               onNavigationStateChange={(webViewState) => {
                 console.log("pay now -- ", webViewState)
                 console.log("pay now url-- ", webViewState.url)//https://dmtest.dpworld.com/checkout/RosoomResponse
+               
                 if (((webViewState.url).split('?')[0]).includes(Constants.HOSTs_URL + 'checkout/RosoomResponse')) {
                   console.log('into rosoom response')
                   let urlstatus = this.getParameterByName('status', webViewState.url)
@@ -240,16 +261,39 @@ export default class PayNow extends Component {
                     this.props.navigation.navigate('ShoppingCart');
                   }
                 }
+                console.log("/////////////////--",webViewState.url);
+                let lastItem = webViewState.url.substring(webViewState.url.lastIndexOf('/') + 1)
                 if (webViewState.url.includes(Constants.HOSTs_URL + 'checkout/completed/')) {
                   console.log("/////////////////--",webViewState.url);
-                  let lastItem = webViewState.url.substring(webViewState.url.lastIndexOf('/') + 1)
                   this.fetchOrderCompleteDetails(lastItem);
-                  
-                  //this.props.navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'ThankYou', params: { productId: lastItem }, }] }));
-                  //this.props.navigation.navigate('ThankYou', { productId: lastItem });
-                }else if(webViewState.url.includes(Constants.HOSTs_URL +'')){
-
                 }
+               if(eventdta != undefined)
+               for(var i=0; i<eventdta.length;i++){
+                var url = eventdta[i].key;
+                var pid = eventdta[i].value;
+
+                if (webViewState.url == Constants.HOSTs_URL+"onepagecheckout"+url){
+                  if(pid != '')
+                  this.props.navigation.navigate('ProductDetails', { passData: { Id: pid } });
+                  this.webview.reload();
+                }
+               }
+
+                
+                if (webViewState.url == Constants.HOSTs_URL) {
+                  this.props.navigation.navigate('Home');
+                }
+                // else if(webViewState.title != 'Your store. Checkout'){
+                //   var val = webViewState.title;
+                //   val= val.substring(val.indexOf(","));
+                //   val = val.replace(",","")
+                //   if(val != ''){
+                //     this.props.navigation.push("ProductDetails",{ passData: { data: { Id: val} } })
+                //   }
+                // }
+                
+                 //this.props.navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'ThankYou', params: { productId: lastItem }, }] }));
+                  //this.props.navigation.navigate('ThankYou', { productId: lastItem });
                 // if (webViewState.url.includes('https://rosoomuat.dubaitrade.ae/rosoom/cancelTransaction')) {
                 //for DMTest environment
                 // if (webViewState.url.includes('https://rosoom.dubaitrade.ae/rosoom/cancelTransaction')) {
@@ -269,9 +313,7 @@ export default class PayNow extends Component {
                 //   this.props.navigation.navigate('ShoppingCart');
                 // }
 
-                if (webViewState.url == Constants.HOSTs_URL) {
-                  this.props.navigation.navigate('Home');
-                }
+              
 
               }
               }

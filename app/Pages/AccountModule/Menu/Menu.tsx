@@ -265,7 +265,10 @@ class Menu extends Component {
     await analytics().logEvent('navigation_menu', { 'item_id': node.Id, 'item_list_name': node.Name });
     AppEventsLogger.logEvent(EventTags.HAMBURGER_MENU_NAVIGATION, { 'item_id': node.Id, 'item_list_name': node.Name });
     EmarsysEvents.trackEmarsys(EventTags.HAMBURGER_MENU_NAVIGATION, { 'item_id': node.Id, 'item_list_name': node.Name });
-    await this.props.navigation.push('FilterProductList', { passData: { pageName: 'menu', data: node }, })
+    // await this.props.navigation.push('Search', { passData: { pageName: 'menu', data: node }, })
+    this.props.navigation.push('SearchFilterProductList', {
+      passData: { pageName: 'menu', data: { slugUrl: node.SeName } },
+    })
 
   }
 
