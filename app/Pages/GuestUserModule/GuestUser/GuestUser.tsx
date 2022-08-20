@@ -199,6 +199,7 @@ class GuestUser extends Component {
     }
 
     async componentDidMount() {
+        this.setState({ loading: false });
         const authStatus = await messaging().requestPermission();
         const enabled =
             authStatus === messaging.AuthorizationStatus.AUTHORIZED ||

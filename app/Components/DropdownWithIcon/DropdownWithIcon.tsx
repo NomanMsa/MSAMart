@@ -95,7 +95,7 @@ export default class extends Component {
                       if(a==null){
                         return <Picker.Item key={index} value={item.Id} label={item.Name } />
                       }else{
-                        return <Picker.Item key={index} value={item.Id} label={item.Name+'['+a+']'} />
+                        return <Picker.Item key={index} value={item.Id} label={'['+a+']'+item.Name} />
                       }
                   })}
                 </Picker>}

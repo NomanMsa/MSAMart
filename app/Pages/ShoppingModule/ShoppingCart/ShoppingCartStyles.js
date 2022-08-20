@@ -162,5 +162,13 @@ export default StyleSheet.create({
         width: 30,
         height: 30,
     },
-
+    PTitle:{
+    
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#0069d1',
+        textAlign:'center',
+        fontFamily: 'verdana',
+        
+      },
 });

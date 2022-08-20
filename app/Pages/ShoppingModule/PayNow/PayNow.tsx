@@ -232,21 +232,10 @@ export default class PayNow extends Component {
            
             onMessage={(event) => {
               eventdta = JSON.parse(event.nativeEvent.data);
-              // if(eventdta != undefined){
-              //   Id = eventdta.ele1;
-              //   if(urlid == '')
-              //   urlid = "#"+eventdta.ele2 //.replace("/","")
-              // }
-              console.log("////////////////////*/*/*/*eventnuncujdujcbdbjcbjhd",eventdta);
             }}
               originWhitelist={['*']}
-             
-             
               androidHardwareAccelerationDisabled={true}
               onLoadStart={() => this.setState({ loaderVisible: false })}
-              // onLoadStart={(navState) =>
-              //   this.setState({ newurl: navState.nativeEvent.url })
-              // }
               onNavigationStateChange={(webViewState) => {
                 console.log("pay now -- ", webViewState)
                 console.log("pay now url-- ", webViewState.url)//https://dmtest.dpworld.com/checkout/RosoomResponse
@@ -257,14 +246,13 @@ export default class PayNow extends Component {
                   console.log(urlstatus)
                   if (urlstatus == 0 || urlstatus == '0') {
                     Alert.alert('Payment was unsuccessfull');
-                    //Toast.showWithGravity('Payment was unsuccessfull', Toast.LONG, Toast.BOTTOM);
                     this.props.navigation.navigate('ShoppingCart');
                   }
                 }
-                console.log("/////////////////--",webViewState.url);
                 let lastItem = webViewState.url.substring(webViewState.url.lastIndexOf('/') + 1)
+
                 if (webViewState.url.includes(Constants.HOSTs_URL + 'checkout/completed/')) {
-                  console.log("/////////////////--",webViewState.url);
+                  webViewState.loading = false;
                   this.fetchOrderCompleteDetails(lastItem);
                 }
                if(eventdta != undefined)
@@ -283,38 +271,6 @@ export default class PayNow extends Component {
                 if (webViewState.url == Constants.HOSTs_URL) {
                   this.props.navigation.navigate('Home');
                 }
-                // else if(webViewState.title != 'Your store. Checkout'){
-                //   var val = webViewState.title;
-                //   val= val.substring(val.indexOf(","));
-                //   val = val.replace(",","")
-                //   if(val != ''){
-                //     this.props.navigation.push("ProductDetails",{ passData: { data: { Id: val} } })
-                //   }
-                // }
-                
-                 //this.props.navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'ThankYou', params: { productId: lastItem }, }] }));
-                  //this.props.navigation.navigate('ThankYou', { productId: lastItem });
-                // if (webViewState.url.includes('https://rosoomuat.dubaitrade.ae/rosoom/cancelTransaction')) {
-                //for DMTest environment
-                // if (webViewState.url.includes('https://rosoom.dubaitrade.ae/rosoom/cancelTransaction')) {
-                //   //for Production environment
-                //   let lastItem = webViewState.url.substring(webViewState.url.lastIndexOf('/') + 1)
-                //   Alert.alert('Payment was unsuccessfull');
-                //   //Toast.showWithGravity('Payment was unsuccessfull', Toast.LONG, Toast.BOTTOM);
-                //   this.props.navigation.navigate('ShoppingCart');
-                // }
-                // if (webViewState.url.includes('https://testsecureacceptance.cybersource.com/canceled')) {
-                //for DMTest environment
-                // if (webViewState.url.includes('https://secureacceptance.cybersource.com/canceled')) {
-                //   //for Production environment
-                //   let lastItem = webViewState.url.substring(webViewState.url.lastIndexOf('/') + 1)
-                //   Alert.alert('Payment was unsuccessfull');
-                //   //Toast.showWithGravity('Payment was unsuccessfull', Toast.LONG, Toast.BOTTOM);
-                //   this.props.navigation.navigate('ShoppingCart');
-                // }
-
-              
-
               }
               }
               style={styles.WebContainer}

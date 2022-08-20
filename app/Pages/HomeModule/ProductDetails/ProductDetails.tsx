@@ -81,6 +81,7 @@ class ProductDetails extends Component {
     super(props);
     this.state = {
       loading: false,
+      carttype:'',
       pData: {},
       pManufacutrerName: '',
       pName: '',
@@ -1082,6 +1083,8 @@ var addcart = 2;
   onAddToCart = async () => {
     await this.setState({ loading: true, ShoppingCartType: 'ShoppingCart' });
     var cart =1;
+      
+      this.setState({carttype:'cart'})
     await this.AddtoCart(cart);
     await this.setState({ loading: false });
     
@@ -1136,6 +1139,9 @@ var addcart = 2;
   };
 
   onSuccessAddtoCartUpdate = async (datas) => {
+    if(this.state.carttype == 'Buy'){
+      this.onSuccessonBuyNowClick(datas);
+    }else{
     if (datas.errorlist.length > 0) {
       var messeageString = '';
       for (let i = 0; datas.errorlist.length > i; i++) {
@@ -1164,6 +1170,7 @@ var addcart = 2;
         );
       }, 300);
     } else {
+      
       await this.setState({ loading: false });
 
       if (datas.message != null && datas.message.length > 0) {
@@ -1212,7 +1219,7 @@ var addcart = 2;
       await analytics().logEvent('add_to_cart', addToCartEventParams);
       AppEventsLogger.logEvent(EventTags.ADD_TO_CART, addToCartFbParams);
       EmarsysEvents.trackEmarsys(EventTags.ADD_TO_CART, addToCartFbParams);
-
+    }
 
     }
   };
@@ -1221,13 +1228,16 @@ var addcart = 2;
     var attributeArry = [];
 
     this.setState({ loading: true, ShoppingCartType: 'ShoppingCart' });
-    await this.AddtoCart();
-    this.setState({ loading: false });
+    this.setState({carttype:'Buy'});
+    await this.AddtoCart(1);
+    // this.setState({ loading: false });
   };
 
   onBuyNowClick = async () => {
     let a ='{'
     let attributearay =this.state.AttributeValueArray;
+    console.log(attributearay);
+    
     var customProperties = [];
     for (let key = 0; key < attributearay.length; key++) {
       var keyName = "product_attribute_" + attributearay[key].id;
@@ -1244,7 +1254,6 @@ var addcart = 2;
     }else{
       a = a+"," + '"' + keysName +'"'+ ":" +'"'+ this.state.QuantitySelectorText+'"';
     }
-    
     a = a + '}';
     let form = JSON.parse(a);
     let Service = {
@@ -2642,7 +2651,7 @@ Successfetchorderexist=(data)=>{
                         }),
                         alignSelf: 'center',
                       }}
-                      userClick={(data) => this.onBuyNowClick()}
+                      userClick={(data) => this.onBuyNow()}
                     />
                   </View>
                 </>

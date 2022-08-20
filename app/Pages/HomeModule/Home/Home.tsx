@@ -117,6 +117,7 @@ class Home extends Component {
     // this.onSuccessTopMenuCall = this.onSuccessTopMenuCall.bind(this);
   }
   onSuccessActivation = async (data) => {
+    this.GetConfiguration();
     this.getCartCountData();
     // this.setState({ loading: false });
     // console.log('recieved data of activation', data);
@@ -217,7 +218,7 @@ class Home extends Component {
   }
 
   async componentDidMount() {
-
+    this.GetConfiguration();
     // NetInfo.fetch().then(state  => {
     //   console.log('netinfo ip add ****--- ', state.details.ipAddress);
     // })
@@ -654,18 +655,28 @@ class Home extends Component {
   onSuccessAnywhere = async (data) => {
     var beforeProductsWidget = [];
     var topWidget = [];
+    var  beforeNewsWidget=[];
+  var beforeBestSellersWidget=[];
     for(var i =0;i<data.model.sections.length;i++){
-      if (data.model.sections[i].SectionName == 'home_page_before_products') {
-        beforeProductsWidget = data.model.sections[i].anyWhereWidgets;
+      if (data.model.sections[i].Section == 'home_page_before_products') {
+        beforeProductsWidget = data.model.sections[i];
       }
-      if (data.model.sections[i].SectionName == 'home_page_after_products') {
-        topWidget = data.model.sections[i].anyWhereWidgets;
+      if (data.model.sections[i].Section == 'home_page_after_products') {
+        topWidget = data.model.sections[i];
       }
+      if (data.model.sections[i].Section == 'home_page_before_news') {
+        beforeNewsWidget =data.model.sections[i];
+    }
+    if (data.model.sections[i].Section == 'home_page_before_best_sellers') {
+      beforeBestSellersWidget =data.model.sections[i];
+    }
     }
     
     this.setState({
       beforeProductsWidget: beforeProductsWidget,
-      topWidget: topWidget
+      topWidget: topWidget,
+      beforeNewsWidget:beforeNewsWidget,
+      beforeBestSellersWidget:beforeBestSellersWidget
     })
   }
   fetchAnywhere = async () => {
@@ -1010,6 +1021,7 @@ class Home extends Component {
   }
 
   render() {
+    this.GetConfiguration();
     // console.log("mapStateToProps:.................. ", this.props.loginStatus)
     return (
       <>
@@ -1222,7 +1234,8 @@ class Home extends Component {
 
                   </>
                 )}
-                {this.state.topWidget.length > 0 &&(<>
+                {this.state.topWidget != null  &&(<>
+                  <Text style={styles.PTitle}>{this.state.topWidget.SectionName}</Text>
                 <AnyCategoryGrid
                  listViewContainerStyle={{
                   borderTopWidth: 0,
@@ -1231,7 +1244,7 @@ class Home extends Component {
                 ListTitleTextStyle={{}}
                 imgTopRtIcon={Icons.heartClear}
                 isBottomRightIcon={false}
-                listData={this.state.topWidget}
+                listData={this.state.topWidget.anyWhereWidgets}
                 bottomRightIcon={Icons.cartBtn}
                 oncatClick={(data) =>
                   this.props.navigation.push('SearchFilterProductList', {
@@ -1247,12 +1260,12 @@ class Home extends Component {
                 </>)}
                  
                
-                  {this.state.beforeProductsWidget.length > 0 &&(<>
-                    <Text style={styles.PTitle}>{tittle2}</Text>
+                  {this.state.beforeProductsWidget != null  &&(<>
+                    <Text style={styles.PTitle}>{this.state.beforeProductsWidget.SectionName}</Text>
                     <AnyProductGrid
                       //key={i}
                       showAllButton={true}
-                      ViewAllClick={() => this.OnViewAllPress(this.state.beforeProductsWidget)}
+                      ViewAllClick={() => this.OnViewAllPress(this.state.beforeProductsWidget.anyWhereWidgets)}
                       listViewContainerStyle={{
                         borderTopWidth: 0,
                         marginTop: 0,
@@ -1260,7 +1273,7 @@ class Home extends Component {
                       ListTitleTextStyle={{}}
                       imgTopRtIcon={Icons.heartClear}
                       isBottomRightIcon={false}
-                      listData={this.state.beforeProductsWidget}
+                      listData={this.state.beforeProductsWidget.anyWhereWidgets}
                       bottomRightIcon={Icons.cartBtn}
                       onProductClick={(data) =>
                         this.props.navigation.navigate(
@@ -1298,6 +1311,54 @@ class Home extends Component {
                       }
                     />
                     </>)}
+                {this.state.beforeNewsWidget != null  && (<>
+                  <Text style={styles.PTitle}>{this.state.beforeNewsWidget.SectionName}</Text>
+                  <AnyCategoryGrid
+                    listViewContainerStyle={{
+                      borderTopWidth: 0,
+                      marginTop: 0,
+                    }}
+                    ListTitleTextStyle={{}}
+                    imgTopRtIcon={Icons.heartClear}
+                    isBottomRightIcon={false}
+                    listData={this.state.beforeNewsWidget.anyWhereWidgets}
+                    bottomRightIcon={Icons.cartBtn}
+                    oncatClick={(data) =>
+                      this.props.navigation.push('SearchFilterProductList', {
+                        passData: { pageName: 'Home', data: { slugUrl: data.Name } },
+                      })
+                    }
+                    oncatImageClick={(data) =>
+                      this.props.navigation.push('SearchFilterProductList', {
+                        passData: { pageName: 'Home', data: { slugUrl: data.Name } },
+                      })
+                    }
+                  />
+                </>)}
+                {this.state.beforeBestSellersWidget != null && (<>
+                  <Text style={styles.PTitle}>{this.state.beforeBestSellersWidget.SectionName}</Text>
+                  <AnyCategoryGrid
+                    listViewContainerStyle={{
+                      borderTopWidth: 0,
+                      marginTop: 0,
+                    }}
+                    ListTitleTextStyle={{}}
+                    imgTopRtIcon={Icons.heartClear}
+                    isBottomRightIcon={false}
+                    listData={this.state.beforeBestSellersWidget.anyWhereWidgets}
+                    bottomRightIcon={Icons.cartBtn}
+                    oncatClick={(data) =>
+                      this.props.navigation.push('SearchFilterProductList', {
+                        passData: { pageName: 'Home', data: { slugUrl: data.Name } },
+                      })
+                    }
+                    oncatImageClick={(data) =>
+                      this.props.navigation.push('SearchFilterProductList', {
+                        passData: { pageName: 'Home', data: { slugUrl: data.Name } },
+                      })
+                    }
+                  />
+                </>)}
 
                 {this.state.bottomBanner &&
                   this.state.bottomBanner.length > 0 ? (

@@ -10,6 +10,9 @@ import {DeepLinkUrlOpn} from '@nav';
 import styles from './SplashScreenStyles';
 import App from '../../app/App'
 import {Settings} from "react-native-fbsdk-next";
+import AsyncStorage from '@react-native-community/async-storage';
+import { ServiceCall } from '@utils';
+import { Api, EventTags, EmarsysEvents } from '@config';
 /*import { AdSettings } from 'react-native-fbads';*/
 
 export default class SplashScreen extends Component {
@@ -28,7 +31,7 @@ export default class SplashScreen extends Component {
   }
 
   async componentDidMount () {
-    
+    this.GetConfiguration();
     setTimeout(() => {
       this.Hide_Splash_Screen();
     }, 5000);
@@ -46,7 +49,43 @@ export default class SplashScreen extends Component {
         this.props.navigation.navigate(data.screen, data.params);
       }
   }
+  async GetConfiguration() {
+    let Service = {
+      apiUrl: Api.AppConfig,
+      methodType: 'GET',
+      headerData: { 'Content-Type': 'application/json' },
+      onSuccessCall: this.Success
+    }
+    await ServiceCall(Service);
+  }
+  async Success(data) {
+    var a = "data:image/png;base64,"
+    // await  AsyncStorage.setItem("image",i)
+    AsyncStorage.setItem("image", '')
+    var appdata1 = data.model.AppImageConfiguration;
+    var textconfig = data.model.AppTextConfig
 
+    AsyncStorage.setItem("navmodel", JSON.stringify(data.model.NavigationLink))
+    appdata1.map((element, index) => {
+      if (element.ConfigKey == "headerlogo") {
+        AsyncStorage.setItem("image", a + element.ImgBinary)
+      }
+      if (element.ConfigKey == "footerlogo") {
+        AsyncStorage.setItem("footerlogo", a + element.ImgBinary)
+      }
+    });
+    textconfig.forEach(element => {
+      if (element.TextKey == "phonenumber") {
+        AsyncStorage.setItem("mobieno", element.Body)
+      }
+      if (element.TextKey == "supportemail") {
+        AsyncStorage.setItem("semail", element.Body)
+      }
+    });
+    console.log("***/*/*/*/-*----/-/-/--/-/-/-/-/-/---/-/-//**/*/*/*/gvdsvdhbh", this.state.categorytitle)
+
+
+  }
   checkUserTrackingPermission = async () => {
     Settings.initializeSDK();
     /*if(Platform.OS === 'ios'){

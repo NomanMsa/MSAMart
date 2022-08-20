@@ -43,8 +43,7 @@ class PurchaseDetails extends Component {
   }
 
   async componentDidMount() {
-      
-    // BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+
     if (this.props.route!=null && this.props.route.params!=null && this.props.route.params.guestFlow === true) {
       this.setState({
         orderId: (this.props.route.params).passData.data.Id,
@@ -71,23 +70,23 @@ class PurchaseDetails extends Component {
         await purchasedetailsTrace.stop();
       });
     }
+    BackHandler.addEventListener('hardwareBackPress',this.handleBackButton.bind(this));
   }
 //   componentWillUnmount() {
-//     BackHandler.removeEventListener('hardwareBackPress',this.handleBackButton());
+//     BackHandler.removeEventListener('hardwareBackPress');
 //  }
 
-//   componentWillMount() {
-//   BackHandler.addEventListener('hardwareBackPress',this.handleBackButton);
-// }
-//   handleBackButton = () => {
-//     const routes = this.props.navigation.getState()?.routes;
-//     const pre = routes[routes.length - 2];
-//     if(pre.name == 'Purchases'){
-//       this.props.navigation.push("Home")
-
-//     }
+  componentWillMount() {
     
-// }
+  BackHandler.addEventListener('hardwareBackPress',()=>{return true});
+}
+  handleBackButton = () => {
+    const routes = this.props.navigation.getState()?.routes;
+    const pre = routes[routes.length - 2];
+    if(pre.name == 'PayNow'){
+      this.props.navigation.push("Home")
+    }    
+}
   onSuccessfetchPurchaseDetails(data) {
     console.log("Fetch Purchase Data", data);
     if (data.status) {

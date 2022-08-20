@@ -295,7 +295,7 @@ export default class extends Component {
       <View style={[styles.listviewContainer, this.props.listViewContainerStyle]}>
         <FlatList
           data={this.props.listData}
-          numColumns={3}
+          numColumns={2}
           columnWrapperStyle={{ flex: 1, justifyContent: 'flex-start' }}
           renderItem={this.renderProductList}
           keyExtractor={(item, index) => index}

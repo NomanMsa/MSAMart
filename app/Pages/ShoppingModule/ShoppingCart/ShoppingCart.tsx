@@ -29,7 +29,8 @@ import {
   OfflineNotice,
   FleashDealsCount,
   EmptyShoppingCart,
-  ButtonWithIcon
+  ButtonWithIcon,
+  AnyProductGrid
 } from '@components';
 
 import styles from './ShoppingCartStyles';
@@ -85,6 +86,7 @@ class ShoppingCart extends Component {
       beforeNewsWidget: [],
       beforeBestSellersWidget: [],
       beforeProductsWidget: [],
+      afterProductsWidget:[],
       productData:[],
       shoppingCartData: '',
       shoppingCartList: [],
@@ -112,10 +114,11 @@ class ShoppingCart extends Component {
     this.onSuccessWidgetCall = this.onSuccessWidgetCall.bind(this);
     this.renderTotalPrize = this.renderTotalPrize.bind(this);
     this.onSuccessgetOrderTotal = this.onSuccessgetOrderTotal.bind(this);
-    
+    this.fetchAnywhere = this.fetchAnywhere.bind(this);
   }
   async componentDidMount() {
     const shoppingcartTrace = await perf().startTrace('custom_trace_shoppingcart_screen');
+    this.fetchAnywhere();
     this.props.updateCartCount()
     this.setState({ loading: true });
      this.getCartCountData();
@@ -123,6 +126,7 @@ class ShoppingCart extends Component {
     
     this.setState({ loading: false });
     await this.fetchShoppingData();
+    this.fetchAnywhere();
     this.fetchordreTotal();
   this.onSuccessgetOrderTotal();
     //this.fetchWidgitData();
@@ -199,7 +203,7 @@ class ShoppingCart extends Component {
   }
   fetchAnywhere = async () => {
     let Service = {
-      apiUrl: Api.AnyWhere + '?pageName=Home',
+      apiUrl: Api.AnyWhere + '?pageName=Cart',
       methodType: 'GET',
       headerData: { 'Content-Type': 'application/json' },
       onSuccessCall: this.onSuccessAnywhere,
@@ -210,20 +214,16 @@ class ShoppingCart extends Component {
     const serviceResponse = await ServiceCall(Service);
   }
   onSuccessAnywhere = async (data) => {
-    var beforeProductsWidget = [];
-    var topWidget = [];
+    var afterProductsWidget = [];
     for(var i =0;i<data.model.sections.length;i++){
-      if (data.model.sections[i].SectionName == 'home_page_before_products') {
-        beforeProductsWidget = data.model.sections[i].anyWhereWidgets;
+      if (data.model.sections[i].Section == 'cart_page_after_product') {
+        afterProductsWidget = data.model.sections[i]
       }
-      if (data.model.sections[i].SectionName == 'home_page_after_products') {
-        topWidget = data.model.sections[i].anyWhereWidgets;
-      }
+     
     }
     
     this.setState({
-      beforeProductsWidget: beforeProductsWidget,
-      topWidget: topWidget
+      afterProductsWidget: afterProductsWidget,
     })
   }
 
@@ -1124,9 +1124,7 @@ let jdata ={
                     }
                   />
                 }</>
-
-
-
+                
               {this.state.shoppingCartList.length > 0 && <CartSummary
                 error_Gift_Card_TestId={"wrongCouponAppliedMesg"}
                 success_Gift_Card_TestId={"couponAppliedSuccessMessage"}
@@ -1180,6 +1178,8 @@ let jdata ={
                 OnGiftCartCancel={(data) => this.OnGiftCartCancel(data)}
                 OnAddressChange={() => this.props.navigation.navigate('Address')}
               />}
+
+             
 
 
               {/* beforeNewsWidget Widget */}
@@ -1255,7 +1255,7 @@ let jdata ={
 
 
               {/* beforeNewsWidget Widget */}
-              { this.state.shoppingCartList.length < 1 && (
+              { this.state.afterProductsWidget != null && (
                 <>
                   {/* {this.state.bottomWidget.map((item, i) => ( */}
                     <>
@@ -1301,16 +1301,18 @@ let jdata ={
                             titleStyle={{ fontSize: 14 }}
 
                           /> */}
-                          <ProductGridListView 
+                      <Text style={styles.PTitle}>{this.state.afterProductsWidget.SectionName}</Text>
+
+                          <AnyProductGrid 
                           //key={i}
                             showAllButton={this.state.isShowallbutton}
-                            ViewAllClick={() => this.OnViewAllPress(this.state.productData)}
+                            ViewAllClick={() => this.OnViewAllPress(this.state.afterProductsWidget.SectionName)}
                             listViewContainerStyle={{ borderTopWidth: 0, marginTop: 0, }}
 
                             ListTitleTextStyle={{}}
                             imgTopRtIcon={Icons.heartClear}
                             isBottomRightIcon={true}
-                            listData={this.state.productData}
+                            listData={this.state.afterProductsWidget.anyWhereWidgets}
                             bottomRightIcon={Icons.cartBtn}
                             onProductClick={(data) => this.props.navigation.push('ProductDetails', { passData: data, })}
                             onImageClick={(data) => this.props.navigation.push('ProductDetails', { passData: data, })}
