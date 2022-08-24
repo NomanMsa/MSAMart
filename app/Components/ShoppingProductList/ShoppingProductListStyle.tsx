@@ -21,6 +21,7 @@ module.exports = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
    
   },
+ 
   productImageBox: {
     //width: (width - 30) / 2.5,
     width: width / 4,
@@ -248,6 +249,28 @@ flex:1,
 				fontFamily: 'verdana',
 			},
 		}),
+  },
+  prizeText1: {
+    ...Platform.select({
+      ios: {
+        fontWeight: '800',
+        fontFamily: 'verdana',
+      },
+      android: {
+        fontWeight: 'normal',
+        fontFamily: 'verdanab',
+      },
+    }),
+    alignSelf: 'flex-start',
+    padding: 2,
+    color: Colors.BG_OVERLAY,
+  },
+  BottonContentContainer: {
+    flexDirection: 'row',
+    width: width - ((width - 30) / 2.5 + 46),
+    alignItems: 'flex-start',
+    padding: -2,
+    flex: 10,
   },
   bottomRow: {
     // flexDirection: 'row',

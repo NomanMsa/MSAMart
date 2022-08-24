@@ -21,8 +21,8 @@ export default class SplashScreen extends Component {
     super(props);
     this.state = {
       isVisible: true,
-
     }
+    this.GetConfiguration = this.GetConfiguration.bind(this);
   }
   Hide_Splash_Screen = () => {
     this.setState({

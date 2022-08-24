@@ -19,14 +19,14 @@ const ApiCall = async function (Service) {
 	} catch(error){
 		 console.error(error);
 	}
-	//try {
-		/*await NetInfo.fetch().then(async state => {
+	try {
+		await NetInfo.fetch().then(async state => {
 			if (state.isConnected == true) {
 				return await fetch(Service.apiUrl, data)
 					.then(async (response) => {
 						console.log(response);
 						const statusCode = response.status;
-						//crashlytics().log(response.status);
+						crashlytics().log(response.status);
 						if (statusCode == 200) {
 							const data = response.json();
 							return Promise.resolve(data);
@@ -39,7 +39,7 @@ const ApiCall = async function (Service) {
 							return data;
 						}
 					})
-					//.then((response) => response.json())
+					.then((response) => response.json())
 					.then(async(responseJson) => {
 						console.log(responseJson)
 						crashlytics().log(JSON.stringify(responseJson));
@@ -59,10 +59,10 @@ const ApiCall = async function (Service) {
 				crashlytics().log('NotConnected');
 				return 'NotConnected'
 			}
-		})*/
-	//} catch (e) {
-	//	console.log(e)
-	//	return e
-	//}
+		})
+	} catch (e) {
+		console.log(e)
+		return e
+	}
 }
 export default ApiCall;

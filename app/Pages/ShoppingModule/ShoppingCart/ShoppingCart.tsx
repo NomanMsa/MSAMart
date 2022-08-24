@@ -320,6 +320,7 @@ class ShoppingCart extends Component {
   }
 
   onUpdateSuccessCall = async (datas) => {
+    this.setState({ loading: false });
     console.log("sucessss**/*/*//**/*///**//***",datas.model);
     
     if (datas.errorlist > 0) {
@@ -337,7 +338,7 @@ class ShoppingCart extends Component {
       this.props.updateShoppingCall()
       var data = datas.model
       await this.setState({
-        shoppingCartData: data,
+        // shoppingCartData: data,
         shoppingCartList: data.Items,
        // summuryData: data.CustomProperties.OrderTotals,
         summuryCustomData: data.CustomProperties,
@@ -352,16 +353,17 @@ class ShoppingCart extends Component {
   }
 
   onFailureAPI(data) {
-    console.log("onFailureAPI", data);
     this.setState({ loading: false });
+    console.log("onFailureAPI", data);
+    
   }
   onPromiseFailure(data) {
-    console.log("onPromiseFailure", data);
     this.setState({ loading: false });
+    console.log("onPromiseFailure", data);
   }
   onOffline(data) {
-    console.log("onOffline", data);
     this.setState({ loading: false });
+    console.log("onOffline", data);
   }
 
   fetchWidgitData = async () => {
@@ -481,8 +483,8 @@ console.log("//**////*//////*/*/*///****/*/**/",this.state.UpdatedQuentityItemDa
   }
 
   AddToWishlistChange = (data) => {
-    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", data)
-    this.onAddToWishList(data.ProductId);
+    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", data);
+    this.onAddToWishList(data.Id);
   }
 
 
@@ -517,18 +519,14 @@ console.log("//**////*//////*/*/*///****/*/**/",this.state.UpdatedQuentityItemDa
   onAddToWishList = async (catId) => {
     
     await this.setState({ loading: true });
-let jdata ={
-      "additionalProp1": "string",
-      "additionalProp2": "string",
-      "additionalProp3": "string"
-    }
+
     let Service = {
-      apiUrl: Api.AddToCart + '?productId=' + catId + '&shoppingCartTypeId=2',
+      apiUrl: Api.AddToWishlistFromCart,
       methodType: 'POST',
       headerData: { 'Content-Type': 'application/json' },
-      bodyData:JSON.stringify(
-        jdata
-      ),
+      bodyData:JSON.stringify({
+        addtowishlist:catId
+    }),
       onSuccessCall: this.onSuccessonAddToWishList,
       onFailureAPI: this.onFailureAPI,
       onPromiseFailure: this.onPromiseFailure,
@@ -612,9 +610,9 @@ let jdata ={
       await this.setState({ loading: true })
       let Service = {
         apiUrl: Api.ApplyCoupen + this.state.CoupenCode,
-        methodType: 'GET',
+        methodType: 'POST',
         headerData: { 'Content-Type': 'application/json' },
-
+      
         onSuccessCall: this.onSuccessOnApplyCoupenCall,
         onFailureAPI: this.onFailureAPI,
         onPromiseFailure: this.onPromiseFailure,
@@ -638,6 +636,7 @@ let jdata ={
 
 
   onSuccessOnApplyCoupenCall = async (datas) => {
+    this.setState({ loading: false });
     console.log('onSuccessOnApplyCoupenCall...............', datas)
     let data = datas.model
     let discountBox = data.DiscountBox
@@ -645,9 +644,9 @@ let jdata ={
     // var responceMsg = discountBox.Messages[0]
 
     await this.setState({
-      summuryCustomData: customData,
+      // summuryCustomData: customData,
       //summuryData: customData.OrderTotals,
-      summuryDataCustomProperties: customData.OrderTotals.CustomProperties,
+      // summuryDataCustomProperties: customData.OrderTotals.CustomProperties,
       isDisplayCoupenResponce: discountBox.Display,
       IsCoupenApplied: discountBox.IsApplied,
       CoupenCode: '',
@@ -672,11 +671,16 @@ let jdata ={
 
   OnCoupenCancel = async (data) => {
     this.setState({ loading: true })
+    var key ='removediscount-'
+    var id=data.Id
+   var ks = '{'+'"'+key+id+'"' +':'+ '"'+id+'"'+'}'
     let Service = {
-      apiUrl: Api.CancelCoupen + data.Id,
-      methodType: 'GET',
+      apiUrl: Api.CancelCoupen,
+      methodType: 'POST',
       headerData: { 'Content-Type': 'application/json' },
-
+      bodyData:ks,
+          
+   
       onSuccessCall: this.onSuccessOnCoupenCancelCall,
       onFailureAPI: this.onFailureAPI,
       onPromiseFailure: this.onPromiseFailure,
@@ -690,6 +694,7 @@ let jdata ={
 
   onSuccessOnCoupenCancelCall = async (datas) => {
     console.log("onSuccessOnCoupenCancelCall...", datas)
+
     //  if (!datas.errorlist) {
     let data = datas.model
 
@@ -698,16 +703,24 @@ let jdata ={
     var responceMsg = discountBox.Messages[0]
     let customData = data.CustomProperties
     await this.setState({
-      summuryCustomData: customData,
+      // summuryCustomData: customData,
       //summuryData: customData.OrderTotals,
-      summuryDataCustomProperties: customData.OrderTotals.CustomProperties,
+      // summuryDataCustomProperties: customData.OrderTotals.CustomProperties,
       isDisplayCoupenResponce: discountBox.Display,
       IsCoupenApplied: discountBox.IsApplied,
-      coupenResponceMessage: responceMsg,
+      // coupenResponceMessage: responceMsg,
       coupenAppliedList: discountBox.AppliedDiscountsWithCodes
 
     })
     this.fetchordreTotal();
+    if (discountBox.Messages !== null && discountBox.Messages !== []) {
+      let responceMsg = discountBox.Messages[0]
+
+      await this.setState({
+        coupenResponceMessage: responceMsg,
+
+      })
+    }
   }
 
 
@@ -1141,7 +1154,7 @@ let jdata ={
                 coupenButton={'Apply'}
                 addressTitle={'Delivery to'}
                 addressButton={'Change'}
-                showAddress={this.props.AuthStatus}
+                showAddress={'true'}
                 cart_sub_testId={"orderSubTotal"}
                 listOfCharges={[
                   { title: 'Sub-Total (Incl VAT)', value: this.state.summuryData.SubTotal, testId: 'subOrderTotal' },
@@ -1160,7 +1173,7 @@ let jdata ={
                 addressList={[
                   {
                     placeTitle: '',
-                    address: this.state.summuryCustomData.CartShippingAddress,
+                    address: this.state.shoppingCartData.OrderReviewData.ShippingAddress,
                   },
                 ]}
 
@@ -1509,7 +1522,7 @@ let jdata ={
                       addressList={[
                         {
                           placeTitle: '',
-                          address: this.state.summuryCustomData.CartShippingAddress,
+                          address: this.state.shoppingCartData.OrderReviewData.ShippingAddress,
                         },
                       ]}
                       OnCoupenCodeUpdate={(text => this.setState({ CoupenCode: text }))}

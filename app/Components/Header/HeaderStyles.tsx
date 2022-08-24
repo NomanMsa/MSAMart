@@ -32,14 +32,16 @@ module.exports = StyleSheet.create({
 		resizeMode: 'contain',
 		width: 25,
 		height: 25,
-		tintColor: Colors.BLACK
+		tintColor: Colors.BLACK,
+		marinBottom:10
 	},
 	dragonIcon: {
-		margin: 5,
-		marginLeft: 15,
+		 
+		marginLeft: 6,
+		marginTop:5,
 		resizeMode: 'contain',
 		height: undefined, width: 100,
-		aspectRatio: 350 / 177,
+		aspectRatio: 355 / 177,
 		//backgroundColor:'#fff',
 	},
 	rightContainer: {

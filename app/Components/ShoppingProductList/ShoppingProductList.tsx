@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { RenderHTML } from 'react-native-render-html'
 import {
   Text,
   View,
@@ -63,6 +64,7 @@ export default class extends Component {
   }
 
   renderProductList = ({ item, index }) => {
+    var html = item.AttributeInfo
     console.log("shopping product list data  ----- ", item);
     return (
       <TouchableOpacity key={index}
@@ -107,6 +109,7 @@ export default class extends Component {
                 >
                   {item.ProductName}
                 </Text>
+                
 
                 {/* {Array.isArray(item.CustomProperties.ProductAttributeInfo) && item.CustomProperties.ProductAttributeInfo.length ?
                   <View style={{ marginTop: 5, marginBottom: 5, }}>
@@ -139,8 +142,8 @@ export default class extends Component {
                     }}>
                     {item.Sku}
                   </Text>
+                  
                 </View>
-                
               <View style={[styles.deliveryDateStyle, this.props.titleBoxStyles]}>
                 <Text
                   ellipsizeMode={'tail'}
@@ -148,6 +151,9 @@ export default class extends Component {
                   {item.DPWEstimatedDeliverydate}
                 </Text>
               </View>
+              <View style={[styles.BottonContentContainer]}>
+                <RenderHTML  source={{ html }}baseStyle={styles.prizeText1} />
+                </View>
 
 
                 <View style={[styles.PriceQuentityCenter, this.props.PriceQuentityCenter]}>
@@ -177,7 +183,7 @@ export default class extends Component {
                     {item.Quantity > 1 ?
                       <Text
                         style={[styles.rateText3, this.props.rateText3Styles]}>
-                        {item.UnitPrice} {'each'}
+                        {item.UnitPrice} {'per unit'}
                       </Text>
                       :
                       <></>

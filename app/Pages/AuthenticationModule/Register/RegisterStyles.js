@@ -20,6 +20,20 @@ export default StyleSheet.create({
     paddingBottom: 20,
     marginBottom: 25,
   },
+  inputContainer:{
+    width: width-60,
+    alignSelf:'center',
+  },
+  phCodeCont:{
+    flexDirection:'column',
+    marginLeft:15,
+  },
+  inputContainerHalf:{
+    //marginTop:45,
+    marginRight:15,
+    width: width/2,//(width-(width/3))-70,
+    alignSelf:'center',
+  },
   pageContainer: { backgroundColor: Colors.WHITE, height: height },
   headerContainer: {
     backgroundColor: Colors.PRIMARY,

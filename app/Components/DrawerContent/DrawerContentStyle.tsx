@@ -9,7 +9,7 @@ module.exports = StyleSheet.create({
     margin: -5,
   },
   userInfoSection: {
-    paddingLeft: 20,
+    paddingLeft: 0,
     backgroundColor: Colors.PRIMARY,
     justifyContent: 'center',
   },
@@ -24,18 +24,18 @@ module.exports = StyleSheet.create({
     lineHeight: 14,
   },
   row: {
-    marginTop: 20,
+    marginTop: 15,
     flexDirection: 'row',
     alignItems: 'center',
   },
   section: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 15,
+    marginRight: 10,
   },
   paragraph: {
     fontWeight: 'bold',
-    marginRight: 3,
+    marginRight: 15,
   },
   drawerSection: {
     //marginTop: 15,
@@ -49,12 +49,13 @@ module.exports = StyleSheet.create({
   preference: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 12,
+    paddingVertical: 10,
     paddingHorizontal: 16,
   },
   rightTopIcon2: {
     height: 20,
     width: 20,
+    mariginLeft:3,
     resizeMode: 'contain',
     alignItems: 'center',
     tintColor: Colors.PRIMARY
@@ -85,7 +86,8 @@ module.exports = StyleSheet.create({
 
   dragonIcon: {
     margin: 5,
-    marginLeft: 15,
+    marginLeft: 50,
+    
     resizeMode: 'contain',
     height: undefined, width: 100,
     aspectRatio: 350 / 177,
@@ -123,7 +125,7 @@ module.exports = StyleSheet.create({
     alignItems: 'flex-start',
   },
   listRowText: {
-    marginLeft: 10,
+    marginLeft: 5,
     fontSize: 12,
     ...Platform.select({
       ios: {

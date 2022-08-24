@@ -49,6 +49,7 @@ interface State {
   name: string;
   email: string;
   password: string;
+  phnumber:string;
   confirmpassword: string;
   nameTouched: boolean;
   emailTouched: boolean;
@@ -58,6 +59,7 @@ interface State {
   confirmPasswordMatch: boolean;
   passwordFormat: boolean;
   loaderVisible: boolean;
+  phnumberTouched:boolean
 
 }
 class Register extends Component {
@@ -69,6 +71,7 @@ class Register extends Component {
       secureTextConfirmPassword: true,
       name: '',
       email: '',
+      phnumber:'',
       password: '',
       confirmpassword: '',
       secureText: true,
@@ -76,6 +79,7 @@ class Register extends Component {
       emailFormat: true,
       confirmPasswordMatch: true,
       RegisterType: '',
+      phnumberTouched:false
 
     };
     this.onRegisterPress = this.onRegisterPress.bind(this);
@@ -92,9 +96,11 @@ class Register extends Component {
   passwordInputRef = React.createRef<FormTextInput>();
   confirmpasswordInputRef = React.createRef<FormTextInput>();
   buttonTriggerRef = React.createRef<Button>();
+  phnumberInputRef = React.createRef<FormTextInput>();
   readonly state: State = {
     name: '',
     email: '',
+    phnumber:'',
     password: '',
     confirmpassword: '',
     nameTouched: false,
@@ -103,13 +109,15 @@ class Register extends Component {
     confirmpasswordTouched: false,
     emailFormat: true,
     passwordFormat: true,
-
+    phnumberTouched:false
 
   };
   handleGoogleLogin = async () => {
     console.log('google login pressed');
     try {
+      
       await GoogleSignin.hasPlayServices();
+    
       await GoogleSignin.signOut();
       const userInfo = await GoogleSignin.signIn();
       console.log('google user info', userInfo);
@@ -122,7 +130,9 @@ class Register extends Component {
       console.log(error);
     }
   };
+  
   extractGooglInfo = (googleInfo, token) => {
+    
     this.setState({
       email: googleInfo.user.email,
       SocialIdentifier: googleInfo.user.id,
@@ -131,6 +141,9 @@ class Register extends Component {
       password: googleInfo.user.givenName+'ms@123',
       confirmpassword:googleInfo.user.givenName+'ms@123'
     });
+    console.log(googleInfo.user);
+    
+    return false;
      this.registerUserOnBackend(token);
     //this.onRegisterPress('');
   };
@@ -158,7 +171,7 @@ class Register extends Component {
             password: user.first_name+'ms@123',
             confirmpassword:user.first_name+'ms@123',
           });
-          console.log('result:', this.state.SocialEmail);
+          console.log('result:',user );
           this.registerUserOnBackend(token);
           //this.registerUserOnBackend('');
         }
@@ -177,6 +190,7 @@ class Register extends Component {
         Email: this.state.email,
         Password: this.state.password,
         ConfirmPassword: this.state.password,
+        Phone:this.state.phnumber
       }),
 
       onSuccessCall: this.onSuccessRegister,
@@ -539,24 +553,24 @@ class Register extends Component {
   };
 
   handleEmailChange = (email: string) => {
-    this.setState({ email: email });
     let reg = Constants.IS_VALID_EMAIL_REGEX; //^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
-    if (reg.test(email) === false) {
+    if (reg.test(email.trim()) === false) {
       console.log('Email is Not Correct');
       this.setState({ emailFormat: false });
       return false;
     } else {
+      this.setState({ email: email });
       this.setState({ emailFormat: true });
     }
   };
   handlePasswordChange = (password: string) => {
-    this.setState({ password: password });
     let regPwd = Constants.IS_VALID_PASSWORD_REGEX; //^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$/;
     if (regPwd.test(password) === false) {
       console.log('password is Not Correct');
       this.setState({ passwordFormat: false });
       return false;
     } else {
+      this.setState({ password: password });
       this.setState({ passwordFormat: true });
     }
   };
@@ -586,7 +600,17 @@ class Register extends Component {
       this.confirmpasswordInputRef.current.focus();
     }
   };
-
+  handlePhnumberChange = (phnumber: string) => {
+    this.setState({ phnumber: phnumber });
+  };
+  handlePhnumberSubmitPress = () => {
+    if (this.phnumberInputRef.current) {
+      this.phnumberInputRef.current.focus();
+    }
+  };
+  handlePhnumberBlur = () => {
+    this.setState({ phnumberTouched: true });
+  };
   handleNameBlur = () => {
     this.setState({ nameTouched: true });
   };
@@ -644,6 +668,7 @@ class Register extends Component {
       !this.state.confirmpassword ||
       !this.state.emailFormat ||
       !this.state.passwordFormat
+      
     ) {
       Alert.alert(
         'MsaMart',
@@ -679,6 +704,7 @@ class Register extends Component {
           Email: this.state.email,
           Password: this.state.password,
           ConfirmPassword: this.state.password,
+          Phone:this.state.phnumber
         }),
         onSuccessCall: this.onSuccessRegister,
         onFailureAPI: this.onFailureAPI,
@@ -714,6 +740,7 @@ class Register extends Component {
     const {
       name,
       email,
+      phnumber,
       password,
       confirmpassword,
       nameTouched,
@@ -722,6 +749,7 @@ class Register extends Component {
       confirmpasswordTouched,
       emailFormat,
       passwordFormat,
+      phnumberTouched,
       confirmPasswordMatch,
     } = this.state;
     var nameError = undefined;
@@ -761,6 +789,19 @@ class Register extends Component {
       confirmpasswordError = Strings.CONFIRMPASSWORD_DO_NOT_MATCH;
     } else {
       confirmpasswordError = undefined;
+    }
+    var phnumberError = undefined;
+    if (!phnumber && phnumberTouched) {
+
+      phnumberError = Strings.PHNUMBER_REQUIRED;
+    } else if (phnumberTouched && phnumber == '') {
+      phnumberError = Strings.PHNUMBER_REQUIRED;
+    } //else if (phnumber.length < 9 || phnumber.length > 14) {
+
+      //phnumberError = 'Number must be of min 9 digits';
+     else {
+
+      phnumberError = undefined;
     }
     return (
       <>
@@ -833,6 +874,33 @@ class Register extends Component {
                     error={emailError}
                     blurOnSubmit={Constants.IS_IOS}
                   />
+                
+                      
+                 
+                    <FormTextInput
+                      title={Strings.PHONE_NUMBER}
+                      error_testId={"phoneNumberError"}
+                      inputStyle={styles.inputStyle}
+                      ref={this.phnumberInputRef}
+                      value={this.state.phnumber}
+                      onChangeText={this.handlePhnumberChange}
+                      onSubmitEditing={this.handlePhnumberSubmitPress}
+                      placeholder={Strings.PHONE_NUMBER}
+                      placeholderTextColor={Colors.GRAY_TEXT}
+                      autoCorrect={false}
+                      keyboardType="phone-pad"
+                      returnKeyType="next"
+                      leftIcon={false}
+                      mandatory={false}
+                      withBorder={true}
+                      onBlur={this.handlePhnumberBlur}
+                      //error={phnumberError}
+                      blurOnSubmit={Constants.IS_IOS}
+                    />
+                
+
+                  
+                  
                   <FormTextInput
                     error_testId={"reg_PasswordError"}
                     testID="Password"

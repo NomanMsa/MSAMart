@@ -36,7 +36,8 @@
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="com.facebook.app.FacebookContentProvider543525824069067"
             android:exported="true" />
-    
+
+
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
@@ -57,11 +58,11 @@
         </intent-filter>
 
         </service>
-         <service android:name="com.emarsys.service.EmarsysFirebaseMessagingService"
+         <!-- <service android:name="com.emarsys.service.EmarsysFirebaseMessagingService"
           android:exported="false">
           <intent-filter>
               <action android:name="com.google.firebase.MESSAGING_EVENT"/>
           </intent-filter>
-        </service>
+        </service> -->
     </application>
 </manifest>

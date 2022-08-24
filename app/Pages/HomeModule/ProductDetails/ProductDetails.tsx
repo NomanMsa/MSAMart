@@ -769,8 +769,15 @@ class ProductDetails extends Component {
   onColorAttributeSelected = (data, Id) => {
     var attributeArry = [];
     attributeArry = this.state.AttributeValueArray;
-
-    attributeArry.push({ id: Id, value: data.Id });
+    for (let i = 0; attributeArry.length > i; i++) {
+      if (attributeArry[i].id == Id) {
+        attributeArry[i].id = attributeArry[i].id;
+        attributeArry[i].value = data.Id;
+       }
+      //else{
+      //   attributeArry.push({ id: Id, value: data.Id });
+      // }
+    }
     this.setState({ AttributeValueArray: attributeArry});
     this.setState({loading:true});
     this.UpdateAttributes();
@@ -779,49 +786,43 @@ class ProductDetails extends Component {
 
   onImageAttributeSelected = (data, Id) => {
     
+    console.log(Id);
     
     var attributeArry = [];
     attributeArry = this.state.AttributeValueArray;
-    attributeArry.push({ id: Id, value: data.Id });
+   // attributeArry.push({ id: Id, value: data.Id });
 
     for (let i = 0; attributeArry.length > i; i++) {
       if (attributeArry[i].id == Id) {
-        attributeArry[i].id = attributeArry[i].Id;
-        attributeArry[i].value = data.Id;
-      } else {
         attributeArry[i].id = attributeArry[i].id;
-        attributeArry[i].value = attributeArry[i].value;
-      }
-    }
-    let newArray = Array.from(new Set(attributeArry.map((a) => a.id))).map(
-      (id) => {
-        return attributeArry.find((a) => a.id === id);
-      },
-    );
+        attributeArry[i].value = data.Id;
+      }else{
+        attributeArry.push({ id: Id, value: data.Id });
+      } 
+         }
+    // let newArray = Array.from(new Set(attributeArry.map((a) => a.id))).map(
+    //   (id) => {
+    //     return attributeArry.find((a) => a.id === id);
+    //   },
+    // );
 
-    this.setState({ AttributeValueArray: newArray });
+    this.setState({ AttributeValueArray: attributeArry });
     this.setState({loading:true});
     this.UpdateAttributes();
     this.setState({loading:false});
   };
 
   onRadioAttributeSelected = (data, Id) => {
-    // console.log("data--", data,"------->", Id);
-    console.log("/*/*/-*-*/*/--/-/-*--/-*-*--*-*-*-*-/-/-/*",Id);
     var attributeArry = [];
     attributeArry = this.state.AttributeValueArray;
     attributeArry.push({ id: Id, value: data.Id });
-    console.log("/*/*/-*-*/*/--/-/-*--/-*-*--*-*-*-*-/-/-/id1*",attributeArry[0].id );
     for (let i = 0; attributeArry.length > i; i++) {
       if (attributeArry[i].id == Id) {
         attributeArry[i].id = attributeArry[i].id;
         attributeArry[i].value = data.Id;
-        console.log("**//*///****/*/////*/*/*/*/*/*/*/*/*/*/*/----*-/*oid",attributeArry);
-        
       } else {
         attributeArry[i].id = attributeArry[i].id;
         attributeArry[i].value = attributeArry[i].value;
-        console.log("**//*///****/*/////*/*/*/*/*/*/*/*/*/*/*/----*-/*oid1",attributeArry);
       }
     }
     let newArray = Array.from(new Set(attributeArry.map((a) => a.id))).map(
@@ -829,7 +830,6 @@ class ProductDetails extends Component {
         return attributeArry.find((a) => a.id === id);
       },
     );
-    // console.log("radiobutoon - ", newArray)
     this.setState({ AttributeValueArray: newArray });
     this.setState({loading:true});
     this.UpdateAttributes();
@@ -864,19 +864,15 @@ class ProductDetails extends Component {
     this.setState({loading:false});
   };
   onCheckBoxAttributeSelected = (data, Id) => {
-    console.log("**/*/*/*/*/**/*/*/*/*/*/*/*/*/*checkboxdata",data);
     var x=0;
     var attributeArry = [];
     var attr= this.state.AttributeValueArray;
-    //attributeArry = data;
-   // for (var j = 0; j < attr.length; j++) {
       for (let i = 0; data.length > i; i++) {
         if (data[i].IsPreSelected == true) {
           if(i>0){
             if(attributeArry[x].id == Id){
             attributeArry[x].id =Id
             attributeArry[x].value =attributeArry[x].value+','+data[i].Id
-            //attributeArry.push({ id: Id, value: data[i].Id });
             }
           }else{
             attributeArry.push({ id: Id, value: data[i].Id });
@@ -897,8 +893,6 @@ class ProductDetails extends Component {
   };
 
   UpdateAttributes = async () => {
-    
-    // console.log("AttributeValueArray---", this.state.AttributeValueArray);
     let a ='{'
     let attributearay =this.state.AttributeValueArray;
     var customProperties = [];
@@ -928,12 +922,7 @@ class ProductDetails extends Component {
       apiUrl: Api.UpdateAttributeAPI + '?productId='+this.state.pData.Id + '&validateAttributeConditions=true&loadPicture=true',
       methodType: 'POST',
       headerData: { 'Content-Type': 'application/json' },
-      bodyData: a,
-        
-        //productId: this.state.pData.Id,
-        //attribute: this.state.AttributeValueArray,
-        //quantity: this.state.QuantitySelectorText,
-      
+      bodyData: a,  
       onSuccessCall: this.onSuccessAttributeUpdate,
       onFailureAPI: this.onFailureAPI,
       onPromiseFailure: this.onPromiseFailure,

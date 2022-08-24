@@ -43,7 +43,7 @@ const Api = {
   ApplyCoupen:
     Constants.BASEs_URL +
     'shoppingcart/applydiscountcoupon?discountcouponcode=', //shoppingcart/applydiscountgiftcouponcode
-  CancelCoupen: Constants.BASEs_URL + 'shoppingcart/removediscountcoupon?discountId=', 
+  CancelCoupen: Constants.BASEs_URL + 'shoppingcart/RemoveDiscountCoupon', 
   CancelGiftCard:
     Constants.BASEs_URL + 'shoppingcart/removegiftcardcode?giftCardId=',
 
@@ -62,7 +62,7 @@ AddReview:Constants.BASEs_URL+'Product/ProductReviewsAdd',
   getuserWishlist: Constants.BASEs_URL + 'shoppingcart/wishlist',
 
   UpdateButtonWishlist: Constants.BASEs_URL + 'shoppingcart/updatewishlist',
-
+AddToWishlistFromCart:Constants.BASEs_URL +'shoppingcart/AddtoWishlistFrom_Cart',
 
   ///////User Address list on checkout page///////////
   UserAddressList: Constants.BASEs_URL + 'checkout/onepagecheckout',

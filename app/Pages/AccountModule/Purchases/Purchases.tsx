@@ -36,7 +36,7 @@ export default class ThankYou extends Component {
   constructor(props: Props) {
     super(props);
     this.state = {
-      loading: false,
+      loading: true,
       statusSorting: [],
       periodFilter: [],
       orderList: [],
@@ -113,9 +113,11 @@ export default class ThankYou extends Component {
   }
   onPromiseFailure(data) {
     console.log(data);
+    this.setState({ loading: false });
   }
   onOffline(data) {
     console.log(data);
+    this.setState({ loading: false });
   }
   fetchPurchases = async () => {
     let Service = {

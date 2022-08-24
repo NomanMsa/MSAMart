@@ -98,8 +98,11 @@ class Home extends Component {
       apiCallInProgress: false,
       appimage: '',
       productTitle: '',
-      categorytitle: ''
+      categorytitle: '',
+      headerlogo:null
     };
+    this.GetConfiguration = this.GetConfiguration.bind(this);
+    this.Success = this.Success.bind(this);
     this.onSuccessCall = this.onSuccessCall.bind(this);
     this.onSuccessWidgetCall = this.onSuccessWidgetCall.bind(this);
     this.fetchHomeData = this.fetchHomeData.bind(this);
@@ -114,7 +117,6 @@ class Home extends Component {
     this.onSuccessFCMToken = this.onSuccessFCMToken.bind(this);
     this.getDiscountTextByCountry = this.getDiscountTextByCountry.bind(this);
     this.fetchAnywhere = this.fetchAnywhere.bind(this);
-    // this.onSuccessTopMenuCall = this.onSuccessTopMenuCall.bind(this);
   }
   onSuccessActivation = async (data) => {
     this.GetConfiguration();
@@ -218,6 +220,7 @@ class Home extends Component {
   }
 
   async componentDidMount() {
+    this.setState({ loading: true });
     this.GetConfiguration();
     // NetInfo.fetch().then(state  => {
     //   console.log('netinfo ip add ****--- ', state.details.ipAddress);
@@ -419,14 +422,14 @@ class Home extends Component {
       CatagoryData: catdata
     })
   };
-  async GetConfiguration() {
+   GetConfiguration() {
     let Service = {
       apiUrl: Api.AppConfig,
       methodType: 'GET',
       headerData: { 'Content-Type': 'application/json' },
       onSuccessCall: this.Success
     }
-    await ServiceCall(Service);
+     ServiceCall(Service);
   }
   async Success(data) {
     var a = "data:image/png;base64,"
@@ -439,6 +442,7 @@ class Home extends Component {
     appdata1.map((element, index) => {
       if (element.ConfigKey == "headerlogo") {
         AsyncStorage.setItem("image", a + element.ImgBinary)
+        this.setState({headerlogo:element.ImgBinary})
       }
       if (element.ConfigKey == "footerlogo") {
         AsyncStorage.setItem("footerlogo", a + element.ImgBinary)
@@ -459,7 +463,7 @@ class Home extends Component {
         AsyncStorage.setItem("semail", element.Body)
       }
     });
-    console.log("***/*/*/*/-*----/-/-/--/-/-/-/-/-/---/-/-//**/*/*/*/gvdsvdhbh", this.state.categorytitle);
+    
 
     // textconfig.map((text,index)=>{
     //   if(text.TextKey =="feturedproduct"){
@@ -479,7 +483,6 @@ class Home extends Component {
 
   }
   onSuccessCall = async (data) => {
-    this.GetConfiguration();
     console.log('HomeData...........', data);
     let catdata = data.model.CategoryModels;
     if (data.errorlist && data.errorlist.length > 0) {
@@ -864,25 +867,25 @@ class Home extends Component {
     console.log('OnViewAllPress...', item);
 
     // console.log("////////////////////////////",myNewUrl);
-    if (item.CustomProperties) {
-      var navigationData = item.CustomProperties.UrlRecord;
+    
+      var navigationData = item;
       if (navigationData) {
-        if (navigationData.EntityName == 'Vendor') {
+        // if (navigationData.SectionName == 'Vendor') {
 
-          let vendorParams = {
-            item_id: navigationData.EntityId,
-            slug_url: ' ',
-            entity_name: 'Vendor',
-          };
-          await analytics().logEvent('banner_click', vendorParams);
-          AppEventsLogger.logEvent(EventTags.BANNER_CLICK, vendorParams);
-          EmarsysEvents.trackEmarsys(EventTags.BANNER_CLICK, vendorParams);
-          this.props.navigation.push('VendorFilterProductList', {
-            passData: { pageName: 'Home', data: { Id: navigationData.EntityId } },
-          });
+        //   let vendorParams = {
+        //     item_id: navigationData.EntityId,
+        //     slug_url: ' ',
+        //     entity_name: 'Vendor',
+        //   };
+        //   await analytics().logEvent('banner_click', vendorParams);
+        //   AppEventsLogger.logEvent(EventTags.BANNER_CLICK, vendorParams);
+        //   EmarsysEvents.trackEmarsys(EventTags.BANNER_CLICK, vendorParams);
+        //   this.props.navigation.push('VendorFilterProductList', {
+        //     passData: { pageName: 'Home', data: { Id: navigationData.EntityId } },
+        //   });
 
-        }
-        if (navigationData.EntityName == 'Category') {
+        // }
+        if (navigationData.SectionName == "NEW ARRIVALS") {
 
           let categoryParams = {
             item_id: navigationData.EntityId,
@@ -893,11 +896,11 @@ class Home extends Component {
           AppEventsLogger.logEvent(EventTags.BANNER_CLICK, categoryParams);
           EmarsysEvents.trackEmarsys(EventTags.BANNER_CLICK, categoryParams);
           this.props.navigation.push('FilterProductList', {
-            passData: { pageName: 'Home', data: { Id: navigationData.EntityId } },
+            passData: { pageName: 'Home', data: { Id: 1 } },
           });
 
         }
-        if (navigationData.EntityName == 'Manufacturer') {
+        if (navigationData.EntityName == 'Best Manufacturer') {
 
           let manufacturerParams = {
             item_id: navigationData.EntityId,
@@ -909,7 +912,7 @@ class Home extends Component {
           AppEventsLogger.logEvent(EventTags.BANNER_CLICK, manufacturerParams);
           EmarsysEvents.trackEmarsys(EventTags.BANNER_CLICK, manufacturerParams);
           this.props.navigation.push('ManufacturerFilterProductList', {
-            passData: { pageName: 'Home', data: { Id: navigationData.EntityId } },
+            passData: { pageName: 'Home', data: { Id: navigationData.Id } },
           });
 
         }
@@ -968,7 +971,7 @@ class Home extends Component {
           item.CustomProperties,
         );
       }
-    }
+    
   };
 
   handleBackButton = () => {
@@ -1021,7 +1024,7 @@ class Home extends Component {
   }
 
   render() {
-    this.GetConfiguration();
+
     // console.log("mapStateToProps:.................. ", this.props.loginStatus)
     return (
       <>
@@ -1047,6 +1050,7 @@ class Home extends Component {
               <Header
                 testId_Logo={"headerLogoImg"}
                 burgerMenuClick={(data) => {
+                  himage:{this.state.headerlogo}
                   this.props.navigation.toggleDrawer();
                   this.props.navigation.navigate('Drawer')
 
@@ -1265,7 +1269,7 @@ class Home extends Component {
                     <AnyProductGrid
                       //key={i}
                       showAllButton={true}
-                      ViewAllClick={() => this.OnViewAllPress(this.state.beforeProductsWidget.anyWhereWidgets)}
+                      ViewAllClick={() => this.OnViewAllPress(this.state.beforeProductsWidget)}
                       listViewContainerStyle={{
                         borderTopWidth: 0,
                         marginTop: 0,

@@ -26,8 +26,9 @@ class Headers extends Component {
 		super(props)
 		this.state = {
 			CartCount: "0",
-			imageUri:null
+			imageUri:this.props.himage
 		};
+		
 		AsyncStorage.getItem("image").then(response => {
 			this.setState({
 			  imageUri:response

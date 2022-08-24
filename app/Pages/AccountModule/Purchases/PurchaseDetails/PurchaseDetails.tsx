@@ -83,9 +83,11 @@ class PurchaseDetails extends Component {
   handleBackButton = () => {
     const routes = this.props.navigation.getState()?.routes;
     const pre = routes[routes.length - 2];
+    console.log("*/*/*/*/*///*/*/**/*/--*-*-*-*-*-*-*-*-*-*-*-*-",pre);
+    
     if(pre.name == 'PayNow'){
       this.props.navigation.push("Home")
-    }    
+    } else this.props.navigation.goBack();
 }
   onSuccessfetchPurchaseDetails(data) {
     console.log("Fetch Purchase Data", data);

@@ -117,8 +117,8 @@ export default class extends Component {
         </Text>
         <Text style={[styles.simpleGrayText, this.props.adressTextStyle]}
         >
-
-          {item.address}
+          {item.address.FirstName+" "+item.address.LastName+','+item.address.Address1 +','+ item.address.Address2+', '+
+	item.address.City +', '+ item.address.StateProvinceName +'-'+ item.address.ZipPostalCode}
         </Text>
       </View>
     );

@@ -64,7 +64,7 @@ export default class extends Component {
 					</View>
 					<View style={[styles.addressRow, this.props.addressRowStyles]}>
 						<Text style={styles.addressTitleText}>Address</Text>
-						<Text style={styles.addressText}>{item.Address1}</Text>
+						<Text style={styles.addressText}>{this.GetFullAddress(item)}</Text>
 					</View>
 					<View style={[styles.addressRow, this.props.addressRowStyles]}>
 						<Text style={styles.addressTitleText}>Phone number</Text>

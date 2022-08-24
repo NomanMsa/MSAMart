@@ -174,8 +174,7 @@ class SignIn extends Component {
   handleEmailChange = (email: string) => {
     this.setState({ email: email });
     let reg = Constants.IS_VALID_EMAIL_REGEX; //^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
-    if (reg.test(email) === false) {
-      console.log('Email is Not Correct');
+    if (reg.test(email.trim()) === false) {
       this.setState({ emailFormat: false });
       return false;
     } else {
@@ -186,7 +185,6 @@ class SignIn extends Component {
     this.setState({ password: password });
     let regPwd = Constants.IS_VALID_PASSWORD_REGEX; //^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$/;
     if (regPwd.test(password) === false) {
-      console.log('Email is Not Correct');
       this.setState({ passwordFormat: false });
       return false;
     } else {
@@ -550,10 +548,11 @@ class SignIn extends Component {
       emailFormat,
       passwordFormat,
     } = this.state;
+    
     var emailError = undefined;
     if (!email && emailTouched) {
       emailError = Strings.EMAIL_REQUIRED;
-    } else if (emailTouched && !emailFormat) {
+    } else if (emailTouched && emailFormat==false) {
       emailError = Strings.EMAIL_WRONG_FORMAT;
     } else {
       emailError = undefined;

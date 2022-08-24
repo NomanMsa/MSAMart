@@ -141,7 +141,7 @@ export default class App extends React.Component {
                     <View style={styles.card}>
                         <Text style={styles.titleStyle}
                         >Per Unit {item.Price}</Text>
-                        <Text style={styles.txtStyle}>{item.CalculatedDiscount.toFixed(2)} % Discount</Text>
+                        {/* <Text style={styles.txtStyle}>{item.CalculatedDiscount.toFixed(2)} % Discount</Text> */}
                         <Text style={styles.txtStyle}>{item.Quantity} Pieces +</Text>
 
                     </View>
