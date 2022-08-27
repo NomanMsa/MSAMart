@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "377145119231-slhvh2rvt7vlipemh74c1h296u4mmm24.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.msamart",
+            "certificate_hash": "3885e830ffdcca44459227df9e3c2b32b2901242"
+          }
+        },
+        {
           "client_id": "377145119231-nmidjhh53pqvmrqftkied075l5u2gsp1.apps.googleusercontent.com",
           "client_type": 3
         }

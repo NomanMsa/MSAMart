@@ -195,12 +195,12 @@ export default class extends Component {
           {this.renderLeft()}
         </View>
 
-        <TouchableOpacity
+        {/* <TouchableOpacity
           testID={this.props.isGrid ? "gridView" : "listView"}
           accessibilityLabel={this.props.isGrid ? "gridView" : "listView"}
           style={[styles.gridRowToggleContainer, this.props.gridRowToggleContStyle]} onPress={() => this.props.userClick()}>
           {this.renderLastLeft()}
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <TouchableOpacity style={[
           styles.filterContainer,

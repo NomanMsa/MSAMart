@@ -24,7 +24,7 @@ module.exports = StyleSheet.create({
     color: Colors.PRIMARY,
     textDecorationLine: 'underline',
     justifyContent: 'center',
-    textAlign: 'center',
+    textAlign: 'left',
   },
   bottomText: {
     fontSize: 16,

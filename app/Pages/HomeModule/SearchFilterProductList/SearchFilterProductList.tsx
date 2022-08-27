@@ -419,7 +419,7 @@ class SearchFilterProductList extends Component {
     
 
     
-
+ 
     console.log("bodyParameters", bodyParameters);
     let Service = {
       apiUrl: Api.externalSearchAPI,

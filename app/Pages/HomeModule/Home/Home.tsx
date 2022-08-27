@@ -68,6 +68,7 @@ import AnyProductGrid from '../../../Components/AnyProductGridListView/AnyProduc
 const Drawer = createDrawerNavigator();
 var tittle1 = '';
 var tittle2 = '';
+var isviewe = false;
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -674,7 +675,9 @@ class Home extends Component {
       beforeBestSellersWidget =data.model.sections[i];
     }
     }
-    
+
+  
+    if(beforeProductsWidget.anyWhereWidgets.length > 4){isviewe =true; } 
     this.setState({
       beforeProductsWidget: beforeProductsWidget,
       topWidget: topWidget,
@@ -1025,7 +1028,6 @@ class Home extends Component {
 
   render() {
 
-    // console.log("mapStateToProps:.................. ", this.props.loginStatus)
     return (
       <>
         {
@@ -1189,7 +1191,7 @@ class Home extends Component {
                     <Text style={styles.PTitle}>{tittle2}</Text>
                     <ProductGridListView
                       //key={i}
-                      showAllButton={true}
+                      showAllButton={false}
                       ViewAllClick={() => this.OnViewAllPress(this.state.productData)}
                       listViewContainerStyle={{
                         borderTopWidth: 0,
@@ -1265,11 +1267,15 @@ class Home extends Component {
                  
                
                   {this.state.beforeProductsWidget != null  &&(<>
+                  
                     <Text style={styles.PTitle}>{this.state.beforeProductsWidget.SectionName}</Text>
                     <AnyProductGrid
+                    
                       //key={i}
-                      showAllButton={true}
+                      
+                      showAllButton={isviewe}
                       ViewAllClick={() => this.OnViewAllPress(this.state.beforeProductsWidget)}
+                      
                       listViewContainerStyle={{
                         borderTopWidth: 0,
                         marginTop: 0,

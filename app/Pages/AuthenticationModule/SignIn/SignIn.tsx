@@ -335,16 +335,19 @@ class SignIn extends Component {
     console.log('on success register');
       //For Normal Registration 
       console.log("Normal Registration")
+      this.setState({
+        email:this.state.SocialEmail,
+        password:this.state.socialPassword
+      })
+      this.onLoginPress()
       if (data.status == true) {
+       
+        
+        
         await analytics().logEvent('Register', { method: 'Native  ' });
         EmarsysEvents.trackEmarsys('Register', { method: 'Native  ' });
         AppEventsLogger.logEvent(EventTags.EVENT_REGISTER, { method: 'Native  ' });
-        this.setState({
-          email:this.state.SocialEmail,
-          password:this.state.socialPassword
-        })
-        
-        this.onLoginPress()
+      
 
         if (data.message != null && data.message.length > 0) {
           setTimeout(() => {

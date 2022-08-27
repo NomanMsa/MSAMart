@@ -67,7 +67,7 @@ const RemotePushController = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'key=AAAAlQQGilg:APA91bFTI736vLbkxr4LK9d2i4tOYy_QMDl18ABRq6saU4v2i8n2OqDZ2VXO5PBSESvDUajk26gIChERFozLakl0chQlUauR03gfvlz1IhbQVN_pTlxKEn5lIdk5iFc6llfDSWVvbkM3',
+          'Authorization': '',
         },
         body: JSON.stringify({
           "application": 'MsaMart',

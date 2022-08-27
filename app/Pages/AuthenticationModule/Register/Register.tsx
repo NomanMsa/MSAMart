@@ -240,6 +240,7 @@ class Register extends Component {
       console.log("Google & FB Registration")
 
       this.onLoginPress();
+      this.props.navigation.dispatch(StackActions.replace('Home'));
       console.log('DATA', data);
       if (data.status == true) {
         // if (
@@ -279,8 +280,7 @@ class Register extends Component {
         // }
         // this.props.navigation.pop();
         // StackActions.replace('Home');
-        this.onLoginPress();
-        this.props.navigation.dispatch(StackActions.replace('Home'));
+      
         console.log(data);
       }
       else {

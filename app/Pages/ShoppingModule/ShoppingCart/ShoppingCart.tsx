@@ -90,7 +90,7 @@ class ShoppingCart extends Component {
       productData:[],
       shoppingCartData: '',
       shoppingCartList: [],
-      isShowallbutton:null,
+      isShowallbutton:false,
       summuryData: [],
       summuryDataCustomProperties: '',
       summuryCustomData: '',
@@ -221,7 +221,7 @@ class ShoppingCart extends Component {
       }
      
     }
-    
+    if(afterProductsWidget.anyWhereWidgets.length > 4) this.state.isShowallbutton= true
     this.setState({
       afterProductsWidget: afterProductsWidget,
     })

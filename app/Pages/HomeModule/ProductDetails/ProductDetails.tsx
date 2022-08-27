@@ -2192,14 +2192,6 @@ Successfetchorderexist=(data)=>{
                     </Text>
                   </TouchableOpacity>
                 }
-
-          {/* <TouchableOpacity onPress={this.Testpopup.bind(this)}>
-          Reviewnull
-            {this.state.modalVisible ===true && <ProductReview modalVisible={this.state.modalVisible}/>}
-          <Text style={[styles.bottomText, this.props.bottomTextStyle]}>
-            Write a Review
-          </Text>
-          </TouchableOpacity> */}
         </View>
       </View>
            

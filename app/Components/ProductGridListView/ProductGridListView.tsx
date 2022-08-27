@@ -422,7 +422,7 @@ export default class extends Component {
           extraData={this.props}
         />
         <>
-          {this.props.showAllButton != null ?
+          {this.props.showAllButton  ?
             <FleashDealsViewAll
               onPress={() => this.props.ViewAllClick()}
               ViewAllLeftIcon={this.props.ViewAllLeftIcon}

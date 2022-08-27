@@ -111,17 +111,17 @@ export default class extends Component {
                 </Text>
                 
 
-                {/* {Array.isArray(item.CustomProperties.ProductAttributeInfo) && item.CustomProperties.ProductAttributeInfo.length ?
+                {/* {Array.isArray(item.AttributeInfo) && item.AttributeInfo.length ?
                   <View style={{ marginTop: 5, marginBottom: 5, }}>
                     <Text
                       ellipsizeMode={'tail'}
                       style={[styles.titleText2, this.props.titleText2Styles]}>
-                      {item.CustomProperties.ProductAttributeInfo[0]}
+                      {item.AttributeInfo}
                     </Text>
                     <Text
                       ellipsizeMode={'tail'}
                       style={[styles.titleText2, this.props.titleText2Styles]}>
-                      {item.CustomProperties.ProductAttributeInfo[1]}
+                      {item.AttributeInfo}
                     </Text>
                   </View>
                   :
@@ -152,6 +152,7 @@ export default class extends Component {
                 </Text>
               </View>
               <View style={[styles.BottonContentContainer]}>
+                
                 <RenderHTML  source={{ html }}baseStyle={styles.prizeText1} />
                 </View>
 
@@ -189,10 +190,10 @@ export default class extends Component {
                       <></>
                     }
 
-                    {item.CustomProperties.OldPrice != '' ?
+                    {item.Discount == '' ?
                       <Text
                         style={[styles.rateText3, this.props.rateText3Styles]}>
-                        {item.CustomProperties.OldPrice} {'savings'}
+                        {item.Discount} {'savings'}
                       </Text>
                       :
                       <></>

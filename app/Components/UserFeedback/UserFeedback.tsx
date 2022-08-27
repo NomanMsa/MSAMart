@@ -40,11 +40,11 @@ export default class extends Component {
    
     //this.calculaterating();
     this.state = {
-      dataLimitIncrementBy: 1,
+      dataLimitIncrementBy: prdata.length,
       dataLimit: 1,
       data:[],
       showIndex: 0,
-      reviewCommentLimit: 150,
+      reviewCommentLimit: 50,
       isReadMore: false,
     };
     
@@ -106,8 +106,23 @@ export default class extends Component {
   };
   const serviceResponse = await ServiceCall(Service);
 }
-
+onclickreadmore(){
+  if(this.state.isReadMore){
+    this.setState({isReadMore: false})
+  }else{
+    this.setState({isReadMore: true})
+  }
   
+ this.render
+  console.log(this.state.isReadMore);
+}
+loadmorereview(){
+  this.setState({
+    dataLimit:
+      this.state.dataLimit + this.state.dataLimitIncrementBy,
+  })
+
+}
     
   
   renderTopLeft = () => {
@@ -171,22 +186,20 @@ export default class extends Component {
             item.item.ReviewText
           ) : (
               <Text style={[styles.readMore, this.props.readMore]}>
-                {item.item.ReviewText.length < this.state.reviewCommentLimit
-                  ? item.item.ReviewText
-                  : item.item.ReviewText.substring(
-                    0,
-                    this.state.reviewCommentLimit,
-                  )}{' '}
+                  {item.item.ReviewText.length > this.state.reviewCommentLimit ? 
+                  item.item.ReviewText.substring(0,50):item.item.ReviewText}
               </Text>
             )}
-          <TouchableOpacity>
+        </Text>
+        {item.item.ReviewText.length > this.state.reviewCommentLimit &&(<>
+        {}
+        <TouchableOpacity  onPress={() => this.onclickreadmore()}>
             <Text
-              style={[styles.middleRightText, this.props.middleRightTextStyle]}>
+              style={[styles.middleRightText]}>
               Read more
             </Text>
           </TouchableOpacity>
-        </Text>
-
+          </>)}
         {/* {item.item.product_img.length ? (
           <ScrollView horizontal={true}>
             {item.item.product_img.map((item, i) => (
@@ -333,22 +346,26 @@ export default class extends Component {
          {/* {this.renderReviewItem()} */}
           
             <FlatList
-              data={prdata}
+              data={prdata.slice(0,this.state.dataLimit)}
               renderItem={this.renderReviewItem}
               keyExtractor={(item, index) => index}
             />
-            {prdata.length != this.state.dataLimit ? (
+            {prdata.length > this.state.dataLimit ? (
               <TouchableOpacity
                 onPress={() =>
-                  this.setState({
-                    dataLimit:
-                      this.state.dataLimit + this.state.dataLimitIncrementBy,
-                  })
+                  this.loadmorereview()
                 }>
                 <Text style={styles.bottomText}>Load more reviews</Text>
               </TouchableOpacity>
             ) : (
-                <Text></Text>
+              <TouchableOpacity
+              onPress={() =>
+                this.setState({
+                  dataLimit:1
+                })
+              }>
+              <Text style={styles.bottomText}>See less</Text>
+            </TouchableOpacity>
               )}
           </View>
 
